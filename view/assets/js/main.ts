@@ -52,7 +52,6 @@ function allScoresAreSame(foods: Food[]): boolean {
   return foods.every((food) => food.score === firstScore);
 }
 
-
 let itemA: { name: string; score: number } | null = null;
 let itemB: { name: string; score: number } | null = null;
 
