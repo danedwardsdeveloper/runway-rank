@@ -1,38 +1,63 @@
-import foods from "./modules/foods.module.js";
+// npx tsc --watch
+import foods from "./modules/foods.js";
 
-function getLowScoringItems() {
-  const minRank = Math.min(...foods.filter((food) => food.rank !== null).map((food) => food.rank));
-
-  return foods.filter((food) => food.rank === null || food.rank === minRank);
+interface Food {
+  name: string;
+  ratings: number;
+  score: number;
 }
 
-function getRandomLowScoringItems() {
-  let unrankedItems = getLowScoringItems();
-  if (unrankedItems.length < 2) {
-    return null;
+function getNextPair() {
+  const unranked = foods.filter((food) => food.ratings === 0);
+
+  if (unranked.length >= 2) {
+    const randomIndexes = getRandomUniqueIndexes(2, unranked.length);
+    return [unranked[randomIndexes[0]], unranked[randomIndexes[1]]];
   }
 
-  const randomIndex1 = Math.floor(Math.random() * unrankedItems.length);
+  if (allScoresAreSame(foods)) {
+    const randomIndexes = getRandomUniqueIndexes(2, foods.length);
+    return [foods[randomIndexes[0]], foods[randomIndexes[1]]];
+  }
 
-  let randomIndex2;
-  do {
-    randomIndex2 = Math.floor(Math.random() * unrankedItems.length);
-  } while (randomIndex2 === randomIndex1);
+  const allFoods = foods.slice();
+  allFoods.sort((a, b) => a.score - b.score);
 
-  return [unrankedItems[randomIndex1], unrankedItems[randomIndex2]];
+  for (let i = 0; i < allFoods.length - 1; i++) {
+    const currentScore = allFoods[i].score;
+    const nextScore = allFoods[i + 1].score;
+
+    const similarScoreThreshold = 0.5;
+    if (Math.abs(currentScore - nextScore) <= similarScoreThreshold) {
+      return [allFoods[i], allFoods[i + 1]];
+    }
+  }
+
+  return undefined;
 }
 
-let itemA: { name: string; rank: number } | null = null;
-let itemB: { name: string; rank: number } | null = null;
-
-const lowScoringItems = getRandomLowScoringItems();
-if (Array.isArray(lowScoringItems)) {
-  [itemA, itemB] = lowScoringItems;
+function getRandomUniqueIndexes(numIndexes: number, maxRange: number): number[] {
+  const indexes: number[] = [];
+  while (indexes.length < numIndexes) {
+    const randomIndex = Math.floor(Math.random() * maxRange);
+    if (!indexes.includes(randomIndex)) {
+      indexes.push(randomIndex);
+    }
+  }
+  return indexes;
 }
+
+function allScoresAreSame(foods: Food[]): boolean {
+  const firstScore = foods[0].score;
+  return foods.every((food) => food.score === firstScore);
+}
+
+
+let itemA: { name: string; score: number } | null = null;
+let itemB: { name: string; score: number } | null = null;
 
 function renderItems() {
-  [itemA, itemB] = getRandomLowScoringItems();
-  console.log(itemA, itemB);
+  [itemA, itemB] = getNextPair();
 
   const captionA = document.querySelector("#caption-A");
   captionA.textContent = itemA.name;
@@ -48,15 +73,15 @@ function renderTags() {
   tagsContainer.innerHTML = "";
 
   const sortedFoods = foods.sort((a, b) => {
-    if (a.rank === null) return 1;
-    if (b.rank === null) return -1;
-    return b.rank - a.rank;
+    if (a.score === null) return 1;
+    if (b.score === null) return -1;
+    return b.score - a.score;
   });
 
   sortedFoods.forEach((food) => {
     let span = document.createElement("span");
-    span.textContent = `${food.name}, ${food.rank}`;
-    if (food.rank > 100) {
+    span.textContent = `${food.name}, ${food.score}`;
+    if (food.score > 100) {
       span.style.backgroundColor = "lightgreen";
     }
     tagsContainer.appendChild(span);
@@ -91,16 +116,23 @@ const Elo = (function () {
 function handleClicks() {
   const btnA = document.querySelector("#btn-A");
   btnA.addEventListener("click", () => {
-    itemA.rank = Elo.getNewRating(itemA.rank, itemB.rank, 1);
-    itemB.rank = Elo.getNewRating(itemB.rank, itemA.rank, 0);
+    itemA.score = Elo.getNewRating(itemA.score, itemB.score, 1);
+    itemA.ratings++;
+    itemB.ratings++;
+
+    itemB.score = Elo.getNewRating(itemB.score, itemA.score, 0);
+
     renderItems();
     renderTags();
   });
 
   const btnB = document.querySelector("#btn-B");
   btnB.addEventListener("click", () => {
-    itemB.rank = Elo.getNewRating(itemB.rank, itemA.rank);
-    itemA.rank = Elo.getNewRating(itemA.rank, itemB.rank);
+    itemB.score = Elo.getNewRating(itemB.score, itemA.score, 1);
+    itemA.score = Elo.getNewRating(itemA.score, itemB.score, 0);
+    itemB.ratings++;
+    itemA.ratings++;
+
     renderItems();
     renderTags();
   });
@@ -109,5 +141,3 @@ function handleClicks() {
 window.onload = function () {
   handleClicks();
 };
-
-const newRating = Elo.getNewRating(100, 100);

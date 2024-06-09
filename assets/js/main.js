@@ -1,34 +1,45 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const foods_module_js_1 = __importDefault(require("./modules/foods.module.js"));
-function getLowScoringItems() {
-    const minRank = Math.min(...foods_module_js_1.default.filter((food) => food.rank !== null).map((food) => food.rank));
-    return foods_module_js_1.default.filter((food) => food.rank === null || food.rank === minRank);
-}
-function getRandomLowScoringItems() {
-    let unrankedItems = getLowScoringItems();
-    if (unrankedItems.length < 2) {
-        return null;
+// npx tsc --watch
+import foods from "./modules/foods.js";
+function getNextPair() {
+    const unranked = foods.filter((food) => food.ratings === 0);
+    if (unranked.length >= 2) {
+        const randomIndexes = getRandomUniqueIndexes(2, unranked.length);
+        return [unranked[randomIndexes[0]], unranked[randomIndexes[1]]];
     }
-    const randomIndex1 = Math.floor(Math.random() * unrankedItems.length);
-    let randomIndex2;
-    do {
-        randomIndex2 = Math.floor(Math.random() * unrankedItems.length);
-    } while (randomIndex2 === randomIndex1);
-    return [unrankedItems[randomIndex1], unrankedItems[randomIndex2]];
+    if (allScoresAreSame(foods)) {
+        const randomIndexes = getRandomUniqueIndexes(2, foods.length);
+        return [foods[randomIndexes[0]], foods[randomIndexes[1]]];
+    }
+    const allFoods = foods.slice();
+    allFoods.sort((a, b) => a.score - b.score);
+    for (let i = 0; i < allFoods.length - 1; i++) {
+        const currentScore = allFoods[i].score;
+        const nextScore = allFoods[i + 1].score;
+        const similarScoreThreshold = 0.5;
+        if (Math.abs(currentScore - nextScore) <= similarScoreThreshold) {
+            return [allFoods[i], allFoods[i + 1]];
+        }
+    }
+    return undefined;
+}
+function getRandomUniqueIndexes(numIndexes, maxRange) {
+    const indexes = [];
+    while (indexes.length < numIndexes) {
+        const randomIndex = Math.floor(Math.random() * maxRange);
+        if (!indexes.includes(randomIndex)) {
+            indexes.push(randomIndex);
+        }
+    }
+    return indexes;
+}
+function allScoresAreSame(foods) {
+    const firstScore = foods[0].score;
+    return foods.every((food) => food.score === firstScore);
 }
 let itemA = null;
 let itemB = null;
-const lowScoringItems = getRandomLowScoringItems();
-if (Array.isArray(lowScoringItems)) {
-    [itemA, itemB] = lowScoringItems;
-}
 function renderItems() {
-    [itemA, itemB] = getRandomLowScoringItems();
-    console.log(itemA, itemB);
+    [itemA, itemB] = getNextPair();
     const captionA = document.querySelector("#caption-A");
     captionA.textContent = itemA.name;
     const captionB = document.querySelector("#caption-B");
@@ -38,17 +49,17 @@ renderItems();
 function renderTags() {
     const tagsContainer = document.querySelector("#tags");
     tagsContainer.innerHTML = "";
-    const sortedFoods = foods_module_js_1.default.sort((a, b) => {
-        if (a.rank === null)
+    const sortedFoods = foods.sort((a, b) => {
+        if (a.score === null)
             return 1;
-        if (b.rank === null)
+        if (b.score === null)
             return -1;
-        return b.rank - a.rank;
+        return b.score - a.score;
     });
     sortedFoods.forEach((food) => {
         let span = document.createElement("span");
-        span.textContent = `${food.name}, ${food.rank}`;
-        if (food.rank > 100) {
+        span.textContent = `${food.name}, ${food.score}`;
+        if (food.score > 100) {
             span.style.backgroundColor = "lightgreen";
         }
         tagsContainer.appendChild(span);
@@ -75,15 +86,19 @@ const Elo = (function () {
 function handleClicks() {
     const btnA = document.querySelector("#btn-A");
     btnA.addEventListener("click", () => {
-        itemA.rank = Elo.getNewRating(itemA.rank, itemB.rank, 1);
-        itemB.rank = Elo.getNewRating(itemB.rank, itemA.rank, 0);
+        itemA.score = Elo.getNewRating(itemA.score, itemB.score, 1);
+        itemA.ratings++;
+        itemB.ratings++;
+        itemB.score = Elo.getNewRating(itemB.score, itemA.score, 0);
         renderItems();
         renderTags();
     });
     const btnB = document.querySelector("#btn-B");
     btnB.addEventListener("click", () => {
-        itemB.rank = Elo.getNewRating(itemB.rank, itemA.rank);
-        itemA.rank = Elo.getNewRating(itemA.rank, itemB.rank);
+        itemB.score = Elo.getNewRating(itemB.score, itemA.score, 1);
+        itemA.score = Elo.getNewRating(itemA.score, itemB.score, 0);
+        itemB.ratings++;
+        itemA.ratings++;
         renderItems();
         renderTags();
     });
@@ -91,4 +106,4 @@ function handleClicks() {
 window.onload = function () {
     handleClicks();
 };
-const newRating = Elo.getNewRating(100, 100);
+//# sourceMappingURL=main.js.map
