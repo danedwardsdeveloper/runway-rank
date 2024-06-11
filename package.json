@@ -6,7 +6,7 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha --require  \"**/*.test.js\"",
     "start": "nodemon server.js --ignore ./view"
   },
   "dependencies": {
@@ -24,7 +24,8 @@
     "rimraf": "^5.0.7"
   },
   "devDependencies": {
-    "jest": "^29.7.0",
+    "chai": "^5.1.1",
+    "mocha": "^10.4.0",
     "nodemon": "^2.0.22",
     "pg": "^8.12.0"
   }

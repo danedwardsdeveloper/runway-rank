@@ -1,15 +1,22 @@
-const { getAllItems, getTotalItems, getTop10 } = require("./items.controller");
+import chai from "chai";
+const expect = chai.expect;
 
-test("getAllItems fetches all items and returns them as JSON", async () => {
-  // Mock the pool.query function (assuming you use Jest mocking)
-  const mockQuery = jest.fn().mockResolvedValue({ rows: [{ id: 1 }, { id: 2 }] });
-  pool.query = mockQuery;
+describe("getAllItems function", () => {
+  it("fetches all items and returns them as JSON", async () => {
+    // Mock database interaction (using a library like Sinon)
+    const mockQuery = {}; // Replace with actual mocking logic
+    pool.query = mockQuery;
 
-  const req = {}; // Mock request object (not used in this function)
-  const res = { json: jest.fn() }; // Mock response object
+    const req = {}; // Mock request object (not used in this function)
+    const res = { json: sinon.spy() }; // Mock response object using Sinon
 
-  await getAllItems(req, res);
+    await getAllItems(req, res);
 
-  expect(mockQuery).toHaveBeenCalledWith("SELECT * FROM items"); // Verify query execution
-  expect(res.json).toHaveBeenCalledWith({ rows: [{ id: 1 }, { id: 2 }] }); // Verify response data
+    expect(mockQuery).to.have.been.calledOnce; // Verify query execution
+    expect(res.json).to.have.been.calledOnceWith([
+      {
+        /* sample item data */
+      },
+    ]); // Verify response data
+  });
 });
