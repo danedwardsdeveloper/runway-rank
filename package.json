@@ -7,7 +7,7 @@
   "license": "ISC",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js --ignore ./view"
+    "start": "nodemon server.js --ignore ./view"
   },
   "dependencies": {
     "angular": "^1.8.3",
@@ -24,6 +24,7 @@
     "rimraf": "^5.0.7"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
     "nodemon": "^2.0.22",
     "pg": "^8.12.0"
   }

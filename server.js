@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 
-const itemsRouter = require("./routes/itemsRouter.js");
+const itemsRouter = require("./entities/items/items.router.js");
 
 const app = express();
 const port = 3000;
@@ -11,9 +11,15 @@ app.use(cors());
 
 app.use("/api", itemsRouter);
 
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: "Internal Server Error" });
+app.use((error, req, res, next) => {
+  res.status(error.status || 500);
+  console.log("ERROR", error);
+  res.json({
+    error: {
+      message: error.message,
+      status: error.status,
+    },
+  });
 });
 
 app.listen(port, () => {
