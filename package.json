@@ -6,7 +6,7 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "test": "mocha --require  \"**/*.test.js\"",
+    "test": "mocha --require  ",
     "start": "nodemon server.js --ignore ./view"
   },
   "dependencies": {
