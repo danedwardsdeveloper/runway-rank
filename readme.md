@@ -6,3 +6,5 @@
 - **Login page**
 - **Comparison page**. Two images side-by-side - you click your favorite and the images are immediately replaced. Once you've rated 50 pairs, you can view the top-rated images.
 - **Top-rated images page**. Displays images and their rank.
+
+https://en.wikipedia.org/wiki/Elo_rating_system

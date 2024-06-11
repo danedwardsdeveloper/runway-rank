@@ -1,6 +1,6 @@
 const pool = require("../../pool.js");
 
-const { calculateWholePairs } = require("./utils.js");
+const { calculateWholePairs, calculateEloRating } = require("./utils.js");
 
 const getAllItems = async (req, res) => {
   try {
@@ -38,18 +38,44 @@ const getPairsRated = async (req, res) => {
 
 const postRatings = async (req, res) => {
   try {
-    const { winner } = req.body;
-    if (!winner) {
+    const { winnerID, loserID } = req.body;
+
+    if (!winnerID || !loserID) {
       return res.status(400).json({ message: "Request body missing required field(s)" });
     }
+
+    const currentScores = await pool.query(
+      `SELECT average_score
+   FROM items
+   WHERE id IN ($1, $2)`,
+      [winnerID, loserID]
+    );
+
+    const currentWinnerScore = currentScores.rows[0].average_score;
+    const currentLoserScore = currentScores.rows[1].average_score;
+
+    const newWinnerScore = calculateEloRating(currentWinnerScore, currentLoserScore, 1);
+    const newLoserScore = calculateEloRating(currentLoserScore, currentWinnerScore, 0);
 
     const updateWinner = await pool.query(
       `UPDATE items
       SET num_of_ratings = num_of_ratings + 1,
-          average_score = (average_score + 10)
-      WHERE id = $1`,
-      [winner]
+          average_score = $1
+      WHERE id = $2`,
+      [newWinnerScore, winnerID]
     );
+
+    const updateLoser = await pool.query(
+      `UPDATE items
+      SET num_of_ratings = num_of_ratings + 1,
+          average_score = $1
+      WHERE id = $2`,
+      [newLoserScore, loserID]
+    );
+
+    if (!updateWinner.rowCount && !updateLoser.rowCount) {
+      return res.status(404).json({ message: "Items not found" });
+    }
 
     res.json({ message: "Ratings updated successfully" });
   } catch (error) {
