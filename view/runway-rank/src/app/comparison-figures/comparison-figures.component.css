@@ -1,0 +1,34 @@
+.figure-container {
+  display: flex;
+  justify-content: center;
+}
+.figure-container button {
+  margin: 1rem;
+  border-radius: 4px;
+  background-color: #eee;
+  transition: all 0.05s ease-in-out;
+}
+.figure-container button:hover {
+  outline: solid 5px lightgreen;
+}
+.figure-container button:active {
+  transform: scale(0.98);
+  box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
+}
+.figure-container button figure {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 200px;
+  width: 150px;
+}
+.figure-container button figure figcaption {
+  font-size: 2.2rem;
+  font-weight: 700;
+  text-align: center;
+}
+.controls {
+  margin-top: 6rem;
+  text-align: center;
+  font-size: 1.6rem;
+}
