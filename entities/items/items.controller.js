@@ -86,6 +86,17 @@ const postRatings = async (req, res) => {
 
 const getNextPair = async (req, res) => {
   try {
+    let lowestNumOfRatings = 0;
+    while (true) {
+      const results = await pool.query(`SELECT id, num_of_ratings FROM items WHERE num_of_ratings <= $1`, [lowestNumOfRatings]);
+
+      if (results.rows.length >= 2) {
+        res.json(results.rows);
+        console.log(results);
+        return;
+      }
+      lowestNumOfRatings++;
+    }
   } catch (error) {
     console.error("Error fetching items:", error);
     return res.status(500).json({ message: "Error getting next pair" });
@@ -107,6 +118,6 @@ module.exports = {
   getTotalPairs,
   getPairsRated,
   postRatings,
-  // getNextPair,
+  getNextPair,
   getTop10,
 };
