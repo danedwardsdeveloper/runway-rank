@@ -91,7 +91,7 @@ const getNextPair = async (req, res) => {
       const results = await pool.query(`SELECT id, num_of_ratings FROM items WHERE num_of_ratings <= $1`, [lowestNumOfRatings]);
 
       if (results.rows.length >= 2) {
-        res.json(results.rows);
+        res.json(results.rows.slice(0, 2));
         console.log(results);
         return;
       }
