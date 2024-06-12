@@ -91,7 +91,6 @@ const getNextPair = async (req, res) => {
       const results = await pool.query(`SELECT id, name, subtitle, num_of_ratings, image_path FROM items WHERE num_of_ratings <= $1`, [lowestNumOfRatings]);
 
       if (results.rows.length >= 2) {
-        console.log(results);
         const formattedData = results.rows.slice(0, 2).map((item) => {
           return {
             ...item,
