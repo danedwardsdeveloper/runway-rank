@@ -35,7 +35,7 @@ export default {
     return {
       baseUrl: process.env.NODE_ENV === "development" ? "http://localhost:3000" : "http://www.runwayrank.com",
       nextPair: [{}, {}],
-      isLoggedIn: true,
+      isLoggedIn: false,
       accessTopLewks: false
     };
   },
