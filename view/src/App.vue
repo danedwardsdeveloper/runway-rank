@@ -1,14 +1,16 @@
 <template>
+  <CreateAccount />
   <main>
     <h1>Runway Rank</h1>
-    <p v-if="isLoggedIn">Vote for your favourite</p>
+    <p v-if="isLoggedIn">Vote for your favourite!</p>
     <p v-else>
       <a href="">Create an account</a>
       or <a href=""> log in</a> to vote for your favourite
     </p>
     <p>Cast votes for all pairs to see the
-      <a href="" :class="{ disabled: accessTopLewks }">top ten lewks</a>
+      <a href="" :class="{ disabled: accessTopLewks }">top ten lewks</a>. (<span>{{ 50 }}</span> pairs remaining).
     </p>
+
     <div class="container">
 
       <button @click="handleClick(0)" :disabled="!isLoggedIn">
@@ -16,6 +18,7 @@
           <img :src="`${baseUrl}${nextPair[0].image_path}`" alt="Image" />
         </div>
         <h2>{{ nextPair[0].name }}</h2>
+        <p>{{ nextPair[0].subtitle }}</p>
       </button>
 
       <button @click="handleClick(1)" :disabled="!isLoggedIn">
@@ -23,6 +26,7 @@
           <img :src="`${baseUrl}${nextPair[1].image_path}`" alt="Image" />
         </div>
         <h2>{{ nextPair[1].name }}</h2>
+        <p>{{ nextPair[1].subtitle }}</p>
       </button>
 
     </div>
@@ -30,12 +34,17 @@
 </template>
 
 <script>
+import CreateAccount from './components/CreateAccount.vue'
+
 export default {
+  components: {
+    CreateAccount
+  },
   data() {
     return {
       baseUrl: process.env.NODE_ENV === "development" ? "http://localhost:3000" : "http://www.runwayrank.com",
       nextPair: [{}, {}],
-      isLoggedIn: true,
+      isLoggedIn: false,
       accessTopLewks: false
     };
   },
@@ -79,7 +88,7 @@ export default {
 };
 </script>
 
-<style scoped lang="less">
+<style scoped>
 main {
   text-align: center;
   font-family: Arial, sans-serif;
@@ -89,7 +98,6 @@ main {
 p {
   font-size: 16px;
   margin: 0;
-  line-height: 1.8;
 }
 
 a {
@@ -146,6 +154,15 @@ a {
         box-shadow: none;
       }
     }
+  }
+
+  h2 {
+    margin: 12px 0 6px 0;
+  }
+
+  p {
+    text-align: left;
+    padding: 5px;
   }
 }
 
