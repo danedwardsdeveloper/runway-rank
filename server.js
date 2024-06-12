@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 
 const itemsRouter = require("./entities/items/items.router.js");
+const accountsRouter = require("./entities/accounts/accounts.router.js");
 
 const app = express();
 const port = 3000;
@@ -14,6 +15,7 @@ const imagesDir = path.join(__dirname, "images");
 app.use("/images", express.static(imagesDir));
 
 app.use("/api", itemsRouter);
+app.use("/api", accountsRouter);
 
 app.use((error, req, res, next) => {
   res.status(error.status || 500);
