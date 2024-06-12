@@ -1,17 +1,24 @@
 <template>
   <main>
     <h1>Runway Rank</h1>
-    <p>Vote for your favourite</p>
+    <p v-if="isLoggedIn">Vote for your favourite</p>
+    <p v-else>
+      <a href="">Create an account</a>
+      or <a href=""> log in</a> to vote for your favourite
+    </p>
+    <p>Cast votes for all pairs to see the
+      <a href="" :class="{ disabled: accessTopLewks }">top ten lewks</a>
+    </p>
     <div class="container">
 
-      <button @click="handleClick(0)">
+      <button @click="handleClick(0)" :disabled="!isLoggedIn">
         <div class="image-container">
           <img :src="`${baseUrl}${nextPair[0].image_path}`" alt="Image" />
         </div>
         <h2>{{ nextPair[0].name }}</h2>
       </button>
 
-      <button @click="handleClick(1)">
+      <button @click="handleClick(1)" :disabled="!isLoggedIn">
         <div class="image-container">
           <img :src="`${baseUrl}${nextPair[1].image_path}`" alt="Image" />
         </div>
@@ -27,7 +34,9 @@ export default {
   data() {
     return {
       baseUrl: process.env.NODE_ENV === "development" ? "http://localhost:3000" : "http://www.runwayrank.com",
-      nextPair: [{}, {}]
+      nextPair: [{}, {}],
+      isLoggedIn: true,
+      accessTopLewks: false
     };
   },
 
@@ -70,50 +79,86 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="less">
 main {
   text-align: center;
   font-family: Arial, sans-serif;
   box-sizing: border-box;
 }
 
+p {
+  font-size: 16px;
+  margin: 0;
+  line-height: 1.8;
+}
+
+a {
+  &:visited {
+    color: navy;
+  }
+
+  &.disabled {
+    &:visited {
+      color: #444;
+
+    }
+
+    &:hover {
+      cursor: not-allowed;
+    }
+  }
+}
+
 .container {
   display: flex;
   justify-content: center;
-}
 
-.container button {
-  width: 300px;
-  height: 400px;
-  margin: 30px;
-  background-color: #EEE;
-  border: none;
-  outline: 4px solid transparent;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
-}
+  button {
+    width: 300px;
+    height: 400px;
+    margin: 30px;
+    background-color: #EEE;
+    border: none;
+    outline: 4px solid transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
 
-button:hover {
-  outline-color: lightgreen;
-}
+    &:hover {
+      outline-color: lightgreen;
+    }
 
-button:active {
-  transform: scale(0.98);
-  box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
+    &:active {
+      transform: scale(0.98);
+      box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+
+      &:hover {
+        outline-color: grey;
+      }
+
+      &:active {
+        transform: scale(1);
+        box-shadow: none;
+      }
+    }
+  }
 }
 
 .image-container {
   width: 100%;
   height: auto;
   overflow: hidden;
-  padding: 10px
-}
+  padding: 10px;
 
-.image-container img {
-  max-width: 100%;
-  height: auto;
-  display: block;
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
 }
 </style>
