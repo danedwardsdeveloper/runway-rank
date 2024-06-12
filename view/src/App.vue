@@ -3,12 +3,21 @@
     <h1>Runway Rank</h1>
     <p>Vote for your favourite</p>
     <div class="container">
+
       <button @click="handleClick(0)">
+        <div class="image-container">
+          <img :src="`${baseUrl}${nextPair[0].image_path}`" alt="Image" />
+        </div>
         <h2>{{ nextPair[0].name }}</h2>
       </button>
+
       <button @click="handleClick(1)">
+        <div class="image-container">
+          <img :src="`${baseUrl}${nextPair[1].image_path}`" alt="Image" />
+        </div>
         <h2>{{ nextPair[1].name }}</h2>
       </button>
+
     </div>
   </main>
 </template>
@@ -17,6 +26,7 @@
 export default {
   data() {
     return {
+      baseUrl: process.env.NODE_ENV === "development" ? "http://localhost:3000" : "http://www.runwayrank.com",
       nextPair: [{}, {}]
     };
   },
@@ -64,6 +74,7 @@ export default {
 main {
   text-align: center;
   font-family: Arial, sans-serif;
+  box-sizing: border-box;
 }
 
 .container {
@@ -91,5 +102,18 @@ button:hover {
 button:active {
   transform: scale(0.98);
   box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
+}
+
+.image-container {
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+  padding: 10px
+}
+
+.image-container img {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 </style>

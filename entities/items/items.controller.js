@@ -95,7 +95,7 @@ const getNextPair = async (req, res) => {
         const formattedData = results.rows.slice(0, 2).map((item) => {
           return {
             ...item,
-            image_path: `images/${item.image_path}`,
+            image_path: `/images/${item.image_path}`,
           };
         });
         return res.json(formattedData);
