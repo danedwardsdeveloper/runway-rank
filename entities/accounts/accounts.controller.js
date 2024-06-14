@@ -2,6 +2,7 @@ const pool = require("../../pool.js");
 const bcrypt = require("bcrypt");
 
 const createAccount = async (req, res) => {
+  console.log("Request body:", req.body);
   const { email, password, firstName } = req.body;
 
   if (!email || !email.includes("@")) {
@@ -17,7 +18,7 @@ const createAccount = async (req, res) => {
     const existingUser = result.rows[0].exists;
 
     if (existingUser) {
-      return res.status(409).json({ message: "Account with this email already exists" });
+      return res.status(409).json({ message: "An error occurred during account creation" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -34,6 +35,10 @@ const createAccount = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: `An error occurred during account creation: ${error}` });
   }
+};
+
+module.exports = {
+  createAccount,
 };
 
 // app.post('/login', (req, res) => {
@@ -56,7 +61,3 @@ const createAccount = async (req, res) => {
 //       }
 //     });
 //   });
-
-module.exports = {
-  createAccount,
-};

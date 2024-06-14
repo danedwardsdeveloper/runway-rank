@@ -8,11 +8,11 @@
         </div>
 
         <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-            <form class="space-y-6" @submit.prevent="handleSubmit">
+            <form class="space-y-6" @submit.prevent="createAccount">
                 <div>
-                    <label for="name" class="block text-sm font-medium leading-6 text-gray-900">First name</label>
+                    <label for="firstName" class="block text-sm font-medium leading-6 text-gray-900">First name</label>
                     <div class="mt-2">
-                        <input id="name" name="name" type="name" autocomplete="given-name"
+                        <input id="firstName" v-model="firstName" name="name" type="name" autocomplete="given-name"
                             class="block w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                     </div>
                 </div>
@@ -20,7 +20,7 @@
                 <div>
                     <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
                     <div class="mt-2">
-                        <input id="email" name="email" type="email" autocomplete="email" required=""
+                        <input id="email" name="email" type="email" v-model="email" autocomplete="email" required=""
                             class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                     </div>
                 </div>
@@ -33,7 +33,7 @@
                         </div> -->
                     </div>
                     <div class="mt-2">
-                        <input id="password" name="password" type="password" required=""
+                        <input id="password" v-model="password" name="password" type="password" required=""
                             class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                     </div>
                 </div>
@@ -44,6 +44,10 @@
                         account</button>
                 </div>
             </form>
+
+            <div v-if="errorMessage">
+                <p class="mt-4 text-red-500 text-center">{{ errorMessage }}</p>
+            </div>
 
             <p class="mt-10 text-center text-sm text-gray-500">
                 Already have an account?
@@ -56,44 +60,57 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
-    components: {
-    },
     data() {
         return {
-            firstName: '',
             email: '',
             password: '',
+            firstName: '',
+            errorMessage: null,
+            navigation: [
+                { name: 'Log in', href: '/log-in' },
+            ],
         };
     },
     methods: {
-        handleSubmit() {
-            this.createAccount();
-        },
         async createAccount() {
             const url = 'http://localhost:3000/api/accounts/create-account';
             const data = {
-                name: this.name,
+                firstName: this.firstName,
                 email: this.email,
                 password: this.password,
             };
 
             try {
-                const response = await axios.post(url, data);
-                console.log('Account created:', response.data);
-                // Handle successful account creation response (e.g., redirect)
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Unknown error occurred');
+                }
+
+                const responseData = await response.json();
+                console.log('Account created:', responseData);
+                this.$router.push('/');
+
             } catch (error) {
+                if (error.message) {
+                    this.errorMessage = error.message;
+                } else {
+                    this.errorMessage = 'An unexpected error occurred';
+                }
                 console.error('Account creation error:', error);
-                // Handle account creation errors (e.g., display error message)
             }
         },
     },
-    navigation: [
-        { name: 'Log in', href: '/log-in' },
-    ],
 };
 </script>
+
 
 <style scoped></style>
