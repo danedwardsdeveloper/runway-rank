@@ -37,15 +37,24 @@
 </template>
 
 <script>
+import { computed } from 'vue';
+import { useAuthStore } from '../stores/auth.js';
 
 export default {
     components: {
+    },
+    setup() {
+        const authStore = useAuthStore();
+        const isLoggedIn = computed(() => authStore.user !== null);
+
+        return {
+            isLoggedIn,
+        };
     },
     data() {
         return {
             baseUrl: process.env.NODE_ENV === "development" ? "http://localhost:3000" : "http://www.runwayrank.com",
             nextPair: [{}, {}],
-            isLoggedIn: true,
             accessTopLewks: false
         };
     },

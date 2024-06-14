@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import MenuBarComponent from './components/MenuBarComponent'
+import MenuBarComponent from './components/MenuBarComponent';
 
 export default {
     components: {
