@@ -1,5 +1,6 @@
 const express = require("express");
 const session = require("express-session");
+const passport = require("passport");
 const cors = require("cors");
 require("dotenv").config();
 
@@ -9,18 +10,20 @@ const accountsRouter = require("./entities/accounts/accounts.router.js");
 const app = express();
 const port = 3000;
 
-app.use(express.json());
-app.use(cors());
-
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: { secure: false, maxAge: 60000 },
-    // Not secure for development, set maxAge for expiration
+    // Not secure for development
   })
 );
+
+app.use(express.json());
+app.use(cors());
+app.use(passport.session());
+app.use(passport.initialize());
 
 const path = require("path");
 const imagesDir = path.join(__dirname, "images");

@@ -1,8 +1,10 @@
 const pool = require("../../pool.js");
 const bcrypt = require("bcrypt");
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
 
 const createAccount = async (req, res) => {
-  console.log("Request body:", req.body);
+  // console.log("Request body:", req.body);
   const { email, password, firstName } = req.body;
 
   if (!email || !email.includes("@")) {
@@ -37,27 +39,81 @@ const createAccount = async (req, res) => {
   }
 };
 
-module.exports = {
-  createAccount,
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const result = await pool.query("SELECT id, email, first_name FROM accounts WHERE id = $1", [id]);
+    if (result.rows.length > 0) {
+      done(null, result.rows[0]);
+    } else {
+      done(new Error("User not found"));
+    }
+  } catch (error) {
+    done(error);
+  }
+});
+
+passport.use(
+  new LocalStrategy({ usernameField: "email" }, async (email, password, done) => {
+    try {
+      const result = await pool.query("SELECT * FROM accounts WHERE email = $1", [email]);
+      if (result.rows.length === 0) {
+        return done(null, false, { message: "Incorrect email or password" });
+      }
+
+      const user = result.rows[0];
+
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (isMatch) {
+        return done(null, user);
+      } else {
+        return done(null, false, { message: "Incorrect email or password" });
+      }
+    } catch (error) {
+      return done(error);
+    }
+  })
+);
+
+const logIn = (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) {
+      return res.status(500).send("Internal Server Error");
+    }
+    if (!user) {
+      return res.status(401).send(info.message || "Invalid username or password");
+    }
+    req.logIn(user, (loginErr) => {
+      if (loginErr) {
+        return res.status(500).send("Login error");
+      }
+      const userData = { userId: user.id, email: user.email, firstName: user.first_name };
+      const sessionCookie = JSON.stringify(userData);
+      res.cookie("Session", sessionCookie, {
+        httpOnly: true,
+        secure: false,
+        maxAge: 600000,
+      });
+      return res.send("Login successful!");
+    });
+  })(req, res, next);
 };
 
-// app.post('/login', (req, res) => {
-//     if (/* valid credentials */) {
-//       req.session.userId = 123;
-//       req.session.loggedIn = true;
-//       res.status(200).json({ message: 'Login successful' });
-//     } else {
-//       res.status(401).json({ message: 'Invalid credentials' });
-//     }
-//   });
+const logOut = (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      return res.status(500).send("Logout error");
+    }
+    res.clearCookie("Session");
+    res.send("Logout successful!");
+  });
+};
 
-// app.get('/logout', (req, res) => {
-//     req.session.destroy((err) => {
-//       if (err) {
-//         console.error(err);
-//         res.status(500).json({ message: 'Error logging out' });
-//       } else {
-//         res.status(200).json({ message: 'Logged out successfully' });
-//       }
-//     });
-//   });
+module.exports = {
+  createAccount,
+  logIn,
+  logOut,
+};
