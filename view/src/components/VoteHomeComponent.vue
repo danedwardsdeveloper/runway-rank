@@ -1,8 +1,9 @@
 <template>
     <p v-if="isLoggedIn" class="text-center">Vote for your favourite!</p>
     <p v-else>
-        <a href="">Create an account</a>
-        or <a href=""> log in</a> to vote for your favourite. Cast votes for all pairs to see the
+        <a href="" class="text-blue-500 underline">Create an account</a>
+        or <a href="" class="text-blue-500 underline"> log in</a> to vote for your favourite. Cast votes for all pairs
+        to see the
         <a href="" :class="{ disabled: accessTopLewks }">top ten lewks</a>. (<span>{{ 50 }}</span> pairs remaining).
     </p>
 
@@ -38,7 +39,7 @@
 
 <script>
 import { computed } from 'vue';
-import { useAuthStore } from '../stores/auth.js';
+import { useAuthStore } from '../../auth.js';
 
 export default {
     components: {

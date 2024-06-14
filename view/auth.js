@@ -1,4 +1,3 @@
-// src/stores/auth.js
 import { defineStore } from "pinia";
 import Cookies from "js-cookie";
 

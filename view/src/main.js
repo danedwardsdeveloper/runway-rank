@@ -2,6 +2,8 @@ import { createApp } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 import { createPinia } from "pinia";
 
+import { useAuthStore } from "../auth.js";
+
 import "./index.css";
 
 import App from "./App.vue";
@@ -22,6 +24,21 @@ const router = createRouter({
     { path: "/log-in", name: "log-in", component: LogInComponent },
     { path: "/create-account", name: "create-account", component: CreateAccountComponent },
   ],
+});
+
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore();
+  authStore.checkAuth();
+
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    if (!authStore.user) {
+      next({ name: "log-in" });
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
 });
 
 const pinia = createPinia();
