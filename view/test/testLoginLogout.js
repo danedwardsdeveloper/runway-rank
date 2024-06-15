@@ -1,4 +1,5 @@
 const { Builder, By, until } = require('selenium-webdriver');
+const chrome = require('selenium-webdriver/chrome');
 require('chromedriver');
 const assert = require('assert');
 
@@ -7,7 +8,16 @@ describe('Login and Logout Tests', function () {
 	this.timeout(30000);
 
 	before(async function () {
-		driver = await new Builder().forBrowser('chrome').build();
+		let options = new chrome.Options();
+		options.addArguments('headless');
+		options.addArguments('disable-gpu');
+		options.addArguments('no-sandbox');
+		options.addArguments('disable-dev-shm-usage');
+
+		driver = await new Builder()
+			.forBrowser('chrome')
+			.setChromeOptions(options)
+			.build();
 
 		const homeUrl = 'http://localhost:8080/';
 		await driver.get(homeUrl);
