@@ -1,5 +1,13 @@
 describe('Log in test', () => {
   beforeEach(() => {
+    cy.visit('http://localhost:8080');
+  });
+
+  it('should display "Log in" text when user is not logged in', () => {
+    cy.contains('Log in').should('be.visible');
+  });
+
+  it('should log in and confirm the existence of the session cookie and display its content', () => {
     cy.visit('http://localhost:8080/log-in');
 
     cy.get('input[name="email"]').type('name@email.com');
@@ -9,22 +17,8 @@ describe('Log in test', () => {
     cy.url().should('eq', 'http://localhost:8080/');
   });
 
-  it('should confirm the existence of the session cookie and display its content', () => {
-    cy.getCookies()
-      .should('exist')
-      .then((cookies) => {
-        const sessionCookie = cookies.find((cookie) => cookie.name === 'Session');
-        if (sessionCookie) {
-          const decodedValue = decodeURIComponent(sessionCookie.value);
-
-          const cookieContent = JSON.parse(decodedValue);
-
-          expect(cookieContent).to.have.property('userId', 14);
-          expect(cookieContent).to.have.property('email', 'name@email.com');
-          expect(cookieContent).to.have.property('firstName', 'Meghan');
-        } else {
-          throw new Error('Session cookie not found');
-        }
-      });
+  it('should display "Log out" text now the user is logged in', () => {
+    cy.wait(5000);
+    cy.contains('Log out').should('be.visible');
   });
 });

@@ -32,8 +32,6 @@ export const useAuthStore = defineStore('auth', {
 
         const session = this.getCookie('session');
 
-        console.log('Session cookie content after login:', session);
-
         if (session) {
           try {
             const decodedSession = decodeURIComponent(session);
@@ -50,8 +48,6 @@ export const useAuthStore = defineStore('auth', {
           } catch (parseError) {
             console.error('Failed to parse session cookie:', parseError);
           }
-        } else {
-          console.error('Session cookie not found after login.');
         }
       } catch (error) {
         console.error('Login error:', error);
@@ -87,13 +83,9 @@ export const useAuthStore = defineStore('auth', {
         const userData = JSON.parse(decodedSession);
         this.user = userData;
         this.session = decodedSession;
-        console.log('Auth check - User found:', this.user);
-        console.log('Auth check - Session found:', this.session);
       } else {
         this.user = null;
         this.session = null;
-        console.log('Auth check - No user found');
-        console.log('Auth check - No session found');
       }
     },
 

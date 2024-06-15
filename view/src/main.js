@@ -13,6 +13,7 @@ import HotOneHundredComponent from './components/HotOneHundredComponent.vue';
 import UploadComponent from './components/UploadComponent.vue';
 import CreateAccountComponent from './components/CreateAccountComponent.vue';
 import LogInComponent from './components/LogInComponent.vue';
+import LogOutComponent from './components/LogOutComponent.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -22,6 +23,7 @@ const router = createRouter({
     { path: '/hot-100', name: 'hot', component: HotOneHundredComponent },
     { path: '/upload', name: 'upload', component: UploadComponent },
     { path: '/log-in', name: 'log-in', component: LogInComponent },
+    { path: '/log-out', name: 'log-out', component: LogOutComponent },
     { path: '/create-account', name: 'create-account', component: CreateAccountComponent },
   ],
 });

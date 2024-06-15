@@ -1,20 +1,22 @@
 <template>
 
-    <div>
-        <p v-if="isLoggedIn" class="text-center">Vote for your favourite!</p>
+    <div class="text-center py-3">
+        <p v-if="isLoggedIn" class="text-center">Vote for your favourite! Cast votes for all pairs to see the <a href=""
+                :class="{ disabled: accessTopLewks }">top ten lewks</a>. <span class="underline">{{ 50 }}</span> pairs
+            remaining.
+        </p>
         <p v-else>
-            <a href="" class="text-blue-500 underline">Create an account</a>
-            or <a href="" class="text-blue-500 underline"> log in</a> to vote for your favourite. Cast votes for all
-            pairs
-            to see the
-            <a href="" :class="{ disabled: accessTopLewks }">top ten lewks</a>. (<span>{{ 50 }}</span> pairs remaining).
+            <router-link to="/create-account" href="" class="text-blue-500 underline">Create an account</router-link>
+            or <router-link to="/log-in" class="text-blue-500 underline"> log in</router-link> to vote for your
+            favourite.
         </p>
     </div>
 
     <div class="container mx-auto p-4 w-6/12">
         <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
 
-            <button class="bg-white rounded-lg hover:outline outline-green-500 hover:shadow-lg shadow-md"
+            <button
+                :class="['bg-white rounded-lg shadow-md hover:outline', { ' outline-green-500 hover:shadow-lg cursor-pointer': isLoggedIn, 'hover:outline-gray-500 cursor-not-allowed': !isLoggedIn }]"
                 @click="handleClick(0)" :disabled="!isLoggedIn">
                 <img :src="`${baseUrl}${nextPair[0].image_path}`" :alt="`${baseUrl}${nextPair[0].image_path}`"
                     class="rounded-t-lg">
@@ -25,7 +27,8 @@
                 </div>
             </button>
 
-            <button class="bg-white rounded-lg hover:outline outline-green-500 hover:shadow-lg shadow-md"
+            <button
+                :class="['bg-white rounded-lg shadow-md hover:outline', { ' outline-green-500 hover:shadow-lg cursor-pointer': isLoggedIn, 'hover:outline-gray-500 cursor-not-allowed': !isLoggedIn }]"
                 @click="handleClick(1)" :disabled="!isLoggedIn">
                 <img :src="`${baseUrl}${nextPair[1].image_path}`" :alt="`${baseUrl}${nextPair[1].image_path}`"
                     class="rounded-t-lg">
@@ -50,13 +53,9 @@ export default {
         const authStore = useAuthStore();
         const isLoggedIn = computed(() => authStore.user !== null);
 
-        // authStore.user = { id: 1, email: 'test@example.com' };
-        // console.log('User set for testing:', authStore.user);
-
         watch(isLoggedIn, (newValue, oldValue) => {
             console.log(`Login state changed: ${oldValue} -> ${newValue}`);
         });
-
         return {
             isLoggedIn,
         };
@@ -65,7 +64,7 @@ export default {
         return {
             baseUrl: process.env.NODE_ENV === "development" ? "http://localhost:3000" : "http://www.runwayrank.com",
             nextPair: [{}, {}],
-            accessTopLewks: false
+            accessTopLewks: true
         };
     },
 

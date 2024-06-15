@@ -21,8 +21,17 @@
                     </div>
                     <!-- Main menu-->
                     <div class="hidden sm:ml-6 sm:block">
-                        <div class="flex space-x-4">
-                            <router-link v-for="item in navigation" :key="item.name" :to="item.href"
+                        <div v-if="!isLoggedIn" class="flex space-x-4">
+                            <router-link v-for="item in authenticatedNavigation" :key="item.name" :to="item.href"
+                                class="rounded-md px-3 py-2 text-sm font-medium" :class="{
+                                    'bg-gray-900 text-white': $route.path === item.href,
+                                    'text-gray-300 hover:bg-gray-700 hover:text-white': $route.path !== item.href
+                                }" aria-current="page">
+                                {{ item.name }}
+                            </router-link>
+                        </div>
+                        <div v-else class="flex space-x-4">
+                            <router-link v-for="item in unauthenticatedNavigation" :key="item.name" :to="item.href"
                                 class="rounded-md px-3 py-2 text-sm font-medium" :class="{
                                     'bg-gray-900 text-white': $route.path === item.href,
                                     'text-gray-300 hover:bg-gray-700 hover:text-white': $route.path !== item.href
@@ -45,41 +54,32 @@
 <script setup>
 import { Disclosure, DisclosureButton } from '@headlessui/vue'
 import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline'
-</script>
+import { computed, watch } from 'vue';
+import { useAuthStore } from '../auth.js';
 
-<script>
-export default {
-    components: {
-    },
-    data() {
-        return {
-            isAuthenticated: false,
-            // computed: {
-            //     isAuthenticated() {
-            //         return this.$store.state.isAuthenticated;
-            //     }
-            // },
-            navigation: [
-                // 'name' sets the menu link text
-                // 'href' set the displayed url. Must match the paths in main.js
-                { name: 'Vote', href: '/' },
-                { name: 'Hot 100', href: '/hot-100' },
-                { name: 'About', href: '/about' },
-                { name: 'Upload', href: '/upload' },
-                { name: 'Create account', href: '/create-account' },
-                { name: 'Log in', href: '/log-in' },
-            ],
-            authenticatedNavigation: [
-                { name: 'My profile', href: '/' },
-                { name: 'Sign out', href: '/about' }
-            ],
-            unauthenticatedNavigation: [
-                { name: 'Create Account', href: '/create-account' },
-                { name: 'Sign In', href: '/sign-in' }
-            ]
-        };
-    }
-};
+const authStore = useAuthStore();
+const isLoggedIn = computed(() => authStore.user !== null);
+
+watch(isLoggedIn, (newValue, oldValue) => {
+    console.log(`Login state changed: ${oldValue} -> ${newValue}`);
+});
+
+const authenticatedNavigation = [
+    { name: 'Vote', href: '/' },
+    { name: 'Hot 100', href: '/hot-100' },
+    { name: 'About', href: '/about' },
+    { name: 'Upload', href: '/upload' },
+    { name: 'Create account', href: '/create-account' },
+    { name: 'Log in', href: '/log-in' },
+];
+
+const unauthenticatedNavigation = [
+    { name: 'Vote', href: '/' },
+    { name: 'Hot 100', href: '/hot-100' },
+    { name: 'About', href: '/about' },
+    { name: 'Upload', href: '/upload' },
+    { name: 'Log out', href: '/log-out' },
+];
 </script>
 
 <style scoped>
