@@ -1,11 +1,15 @@
 <template>
-    <p v-if="isLoggedIn" class="text-center">Vote for your favourite!</p>
-    <p v-else>
-        <a href="" class="text-blue-500 underline">Create an account</a>
-        or <a href="" class="text-blue-500 underline"> log in</a> to vote for your favourite. Cast votes for all pairs
-        to see the
-        <a href="" :class="{ disabled: accessTopLewks }">top ten lewks</a>. (<span>{{ 50 }}</span> pairs remaining).
-    </p>
+
+    <div>
+        <p v-if="isLoggedIn" class="text-center">Vote for your favourite!</p>
+        <p v-else>
+            <a href="" class="text-blue-500 underline">Create an account</a>
+            or <a href="" class="text-blue-500 underline"> log in</a> to vote for your favourite. Cast votes for all
+            pairs
+            to see the
+            <a href="" :class="{ disabled: accessTopLewks }">top ten lewks</a>. (<span>{{ 50 }}</span> pairs remaining).
+        </p>
+    </div>
 
     <div class="container mx-auto p-4 w-6/12">
         <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
@@ -46,8 +50,8 @@ export default {
         const authStore = useAuthStore();
         const isLoggedIn = computed(() => authStore.user !== null);
 
-        authStore.user = { id: 1, email: 'test@example.com' };
-        console.log('User set for testing:', authStore.user);
+        // authStore.user = { id: 1, email: 'test@example.com' };
+        // console.log('User set for testing:', authStore.user);
 
         watch(isLoggedIn, (newValue, oldValue) => {
             console.log(`Login state changed: ${oldValue} -> ${newValue}`);

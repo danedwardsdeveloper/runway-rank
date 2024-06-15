@@ -1,18 +1,18 @@
-const pool = require("../../pool.js");
-const bcrypt = require("bcrypt");
-const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
+const pool = require('../../pool.js');
+const bcrypt = require('bcrypt');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 
 const createAccount = async (req, res) => {
   // console.log("Request body:", req.body);
   const { email, password, firstName } = req.body;
 
-  if (!email || !email.includes("@")) {
-    return res.status(400).json({ message: "Invalid email format" });
+  if (!email || !email.includes('@')) {
+    return res.status(400).json({ message: 'Invalid email format' });
   }
 
   if (!password || password.length < 6) {
-    return res.status(400).json({ message: "Password must be at least 6 characters long" });
+    return res.status(400).json({ message: 'Password must be at least 6 characters long' });
   }
 
   try {
@@ -20,7 +20,7 @@ const createAccount = async (req, res) => {
     const existingUser = result.rows[0].exists;
 
     if (existingUser) {
-      return res.status(409).json({ message: "An error occurred during account creation" });
+      return res.status(409).json({ message: 'An error occurred during account creation' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -33,7 +33,7 @@ const createAccount = async (req, res) => {
     req.session.email = email;
     console.log(req.session);
 
-    res.status(201).json({ message: "Account created successfully and logged in" });
+    res.status(201).json({ message: 'Account created successfully and logged in' });
   } catch (error) {
     return res.status(500).json({ message: `An error occurred during account creation: ${error}` });
   }
@@ -45,11 +45,11 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
   try {
-    const result = await pool.query("SELECT id, email, first_name FROM accounts WHERE id = $1", [id]);
+    const result = await pool.query('SELECT id, email, first_name FROM accounts WHERE id = $1', [id]);
     if (result.rows.length > 0) {
       done(null, result.rows[0]);
     } else {
-      done(new Error("User not found"));
+      done(new Error('User not found'));
     }
   } catch (error) {
     done(error);
@@ -57,11 +57,11 @@ passport.deserializeUser(async (id, done) => {
 });
 
 passport.use(
-  new LocalStrategy({ usernameField: "email" }, async (email, password, done) => {
+  new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
     try {
-      const result = await pool.query("SELECT * FROM accounts WHERE email = $1", [email]);
+      const result = await pool.query('SELECT * FROM accounts WHERE email = $1', [email]);
       if (result.rows.length === 0) {
-        return done(null, false, { message: "Incorrect email or password" });
+        return done(null, false, { message: 'Incorrect email or password' });
       }
 
       const user = result.rows[0];
@@ -70,7 +70,7 @@ passport.use(
       if (isMatch) {
         return done(null, user);
       } else {
-        return done(null, false, { message: "Incorrect email or password" });
+        return done(null, false, { message: 'Incorrect email or password' });
       }
     } catch (error) {
       return done(error);
@@ -79,25 +79,37 @@ passport.use(
 );
 
 const logIn = (req, res, next) => {
-  passport.authenticate("local", (err, user, info) => {
+  passport.authenticate('local', (err, user, info) => {
     if (err) {
-      return res.status(500).send("Internal Server Error");
+      return res.status(500).json({ message: 'Internal Server Error' });
     }
     if (!user) {
-      return res.status(401).send(info.message || "Invalid username or password");
+      return res.status(401).json({ message: info.message || 'Invalid username or password' });
     }
     req.logIn(user, (loginErr) => {
       if (loginErr) {
-        return res.status(500).json({ message: "Login error" });
+        return res.status(500).json({ message: 'Login error' });
       }
       const userData = { userId: user.id, email: user.email, firstName: user.first_name };
       const sessionCookie = JSON.stringify(userData);
-      res.cookie("Session", sessionCookie, {
+
+      const maxAge = 60 * 60 * 1000;
+      const expiryDate = new Date(Date.now() + maxAge);
+
+      // console.log('Current time:', new Date());
+      // console.log('Expiry date:', expiryDate);
+
+      res.cookie('Session', sessionCookie, {
         httpOnly: true,
         secure: false,
-        maxAge: 600000,
+        expires: expiryDate,
       });
-      return res.json({ message: "Login successful!", user: userData });
+
+      // This fixes a weird issue where the sid.connect cookie expiry was an hour in the past
+      req.session.cookie.expires = expiryDate;
+      req.session.cookie.maxAge = maxAge;
+
+      return res.json({ message: 'Login successful!', user: userData });
     });
   })(req, res, next);
 };
@@ -105,10 +117,10 @@ const logIn = (req, res, next) => {
 const logOut = (req, res) => {
   req.logout((err) => {
     if (err) {
-      return res.status(500).send("Logout error");
+      return res.status(500).send('Logout error');
     }
-    res.clearCookie("Session");
-    res.send("Logout successful!");
+    res.clearCookie('Session');
+    res.send('Logout successful!');
   });
 };
 
