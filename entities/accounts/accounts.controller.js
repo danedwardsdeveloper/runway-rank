@@ -100,7 +100,7 @@ const logIn = (req, res, next) => {
       // console.log('Expiry date:', expiryDate);
 
       res.cookie('Session', sessionCookie, {
-        httpOnly: true,
+        httpOnly: false,
         secure: false,
         expires: expiryDate,
       });
@@ -109,7 +109,7 @@ const logIn = (req, res, next) => {
       req.session.cookie.expires = expiryDate;
       req.session.cookie.maxAge = maxAge;
 
-      return res.json({ message: 'Login successful!', user: userData });
+      return res.json({ message: 'Login successful!', user: userData, session: sessionCookie });
     });
   })(req, res, next);
 };

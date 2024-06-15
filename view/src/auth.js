@@ -30,7 +30,7 @@ export const useAuthStore = defineStore('auth', {
 
         const data = await response.json();
 
-        const session = this.getCookie('Session');
+        const session = this.getCookie('session');
 
         console.log('Session cookie content after login:', session);
 
@@ -97,7 +97,6 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    // Helper functions to manage cookies
     getCookie(name) {
       const value = `; ${document.cookie}`;
       const parts = value.split(`; ${name}=`);

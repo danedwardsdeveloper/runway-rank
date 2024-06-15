@@ -1,4 +1,4 @@
-describe('Session Cookie Test', () => {
+describe('Log in test', () => {
   beforeEach(() => {
     cy.visit('http://localhost:8080/log-in');
 
@@ -13,18 +13,11 @@ describe('Session Cookie Test', () => {
     cy.getCookies()
       .should('exist')
       .then((cookies) => {
-        cy.log('All Cookies:', JSON.stringify(cookies));
-        console.log('All Cookies:', cookies);
-
         const sessionCookie = cookies.find((cookie) => cookie.name === 'Session');
         if (sessionCookie) {
           const decodedValue = decodeURIComponent(sessionCookie.value);
-          cy.log('Session Cookie:', decodedValue);
-          console.log('Session Cookie:', decodedValue); // Logs to the browser's console
 
           const cookieContent = JSON.parse(decodedValue);
-          cy.log('Parsed Cookie Content:', JSON.stringify(cookieContent));
-          console.log('Parsed Cookie Content:', cookieContent); // Logs to the browser's console
 
           expect(cookieContent).to.have.property('userId', 14);
           expect(cookieContent).to.have.property('email', 'name@email.com');
