@@ -1,11 +1,17 @@
 import { defineStore } from 'pinia';
-import Cookies from 'js-cookie';
+import { useRouter } from 'vue-router';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null,
     session: null,
   }),
+
+  setup() {
+    const router = useRouter();
+    return { router };
+  },
+
   actions: {
     async login(email, password) {
       try {
@@ -23,16 +29,30 @@ export const useAuthStore = defineStore('auth', {
         }
 
         const data = await response.json();
-        const session = Cookies.get('Session');
-        const decodedSession = decodeURIComponent(session);
-        const parsedSession = JSON.parse(decodedSession);
-        console.log('Session cookie content after login:', parsedSession);
 
-        this.user = data.user;
-        this.session = parsedSession;
+        const session = this.getCookie('Session');
 
-        console.log('User after login:', this.user);
-        console.log('Session after login:', this.session);
+        console.log('Session cookie content after login:', session);
+
+        if (session) {
+          try {
+            const decodedSession = decodeURIComponent(session);
+            console.log('Decoded session:', decodedSession);
+
+            const parsedSession = JSON.parse(decodedSession);
+            console.log('Parsed session:', parsedSession);
+
+            this.user = data.user;
+            this.session = parsedSession;
+
+            // Navigate to the dashboard
+            this.router.push('/dashboard');
+          } catch (parseError) {
+            console.error('Failed to parse session cookie:', parseError);
+          }
+        } else {
+          console.error('Session cookie not found after login.');
+        }
       } catch (error) {
         console.error('Login error:', error);
       }
@@ -52,7 +72,7 @@ export const useAuthStore = defineStore('auth', {
           throw new Error('Logout failed');
         }
 
-        Cookies.remove('Session');
+        this.deleteCookie('Session');
         this.user = null;
         this.session = null;
       } catch (error) {
@@ -61,7 +81,7 @@ export const useAuthStore = defineStore('auth', {
     },
 
     checkAuth() {
-      const session = Cookies.get('Session');
+      const session = this.getCookie('Session');
       if (session) {
         const decodedSession = decodeURIComponent(session);
         const userData = JSON.parse(decodedSession);
@@ -75,6 +95,27 @@ export const useAuthStore = defineStore('auth', {
         console.log('Auth check - No user found');
         console.log('Auth check - No session found');
       }
+    },
+
+    // Helper functions to manage cookies
+    getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    },
+
+    setCookie(name, value, days) {
+      let expires = '';
+      if (days) {
+        const date = new Date();
+        date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+        expires = `; expires=${date.toUTCString()}`;
+      }
+      document.cookie = `${name}=${value || ''}${expires}; path=/`;
+    },
+
+    deleteCookie(name) {
+      document.cookie = `${name}=; Max-Age=-99999999;`;
     },
   },
 });
