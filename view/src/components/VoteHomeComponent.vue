@@ -38,15 +38,20 @@
 </template>
 
 <script>
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import { useAuthStore } from '../../auth.js';
 
 export default {
-    components: {
-    },
     setup() {
         const authStore = useAuthStore();
         const isLoggedIn = computed(() => authStore.user !== null);
+
+        authStore.user = { id: 1, email: 'test@example.com' };
+        console.log('User set for testing:', authStore.user);
+
+        watch(isLoggedIn, (newValue, oldValue) => {
+            console.log(`Login state changed: ${oldValue} -> ${newValue}`);
+        });
 
         return {
             isLoggedIn,

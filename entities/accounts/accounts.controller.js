@@ -88,7 +88,7 @@ const logIn = (req, res, next) => {
     }
     req.logIn(user, (loginErr) => {
       if (loginErr) {
-        return res.status(500).send("Login error");
+        return res.status(500).json({ message: "Login error" });
       }
       const userData = { userId: user.id, email: user.email, firstName: user.first_name };
       const sessionCookie = JSON.stringify(userData);
@@ -97,7 +97,7 @@ const logIn = (req, res, next) => {
         secure: false,
         maxAge: 600000,
       });
-      return res.send("Login successful!");
+      return res.json({ message: "Login successful!", user: userData });
     });
   })(req, res, next);
 };

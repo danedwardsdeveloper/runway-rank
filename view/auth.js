@@ -9,7 +9,7 @@ export const useAuthStore = defineStore("auth", {
   actions: {
     async login(email, password) {
       try {
-        const response = await fetch("http://localhost:3000/accounts/log-in", {
+        const response = await fetch("http://localhost:3000/api/accounts/log-in", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -30,6 +30,7 @@ export const useAuthStore = defineStore("auth", {
         console.error("Login error:", error);
       }
     },
+
     async logout() {
       try {
         const response = await fetch("http://localhost:3000/accounts/log-out", {
@@ -51,6 +52,7 @@ export const useAuthStore = defineStore("auth", {
         console.error("Logout error:", error);
       }
     },
+
     checkAuth() {
       const session = Cookies.get("Session");
       if (session) {

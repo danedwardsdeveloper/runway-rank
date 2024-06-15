@@ -44,3 +44,6 @@ router.beforeEach((to, from, next) => {
 const pinia = createPinia();
 
 createApp(App).use(router).use(pinia).mount("#app");
+
+const authStore = useAuthStore();
+authStore.checkAuth();
