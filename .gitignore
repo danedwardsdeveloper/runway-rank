@@ -8,3 +8,4 @@
 .config
 *.log
 .DS_Store
+.eslintrc.js
