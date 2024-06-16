@@ -18,9 +18,6 @@
                 <div>
                     <div class="flex items-center justify-between">
                         <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Password</label>
-                        <!-- <div class="text-sm">
-                            <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500">Forgot password?</a>
-                        </div> -->
                     </div>
                     <div class="mt-2">
                         <input id="password" name="password" type="password" autocomplete="current-password"
@@ -36,6 +33,10 @@
                 </div>
             </form>
 
+            <div v-if="errorMessage">
+                <p class="error-message mt-4 text-red-500 text-center">{{ errorMessage }}</p>
+            </div>
+
             <p class="mt-10 text-center text-sm text-gray-500">
                 Don't have an account?
                 {{ ' ' }}
@@ -45,10 +46,36 @@
         </div>
     </div>
 </template>
+<!-- <script setup>
+import { ref } from 'vue';
+import { useAuthStore } from '../auth';
+import { RouterLink } from 'vue-router';
 
+const email = ref('');
+const password = ref('');
+const errorMessage = ref('');
+
+const authStore = useAuthStore();
+
+const login = async () => {
+    try {
+        const success = await authStore.login(email, password);
+        if (success) {
+            errorMessage.value = ''; // Clear error message
+            this.$router.push('/');
+        } else {
+            errorMessage.value = 'Invalid email or password'; // Set error message
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        errorMessage.value = 'An error occurred. Please try again later.'; // Set error message
+    }
+};
+</script> -->
 <script>
 import { useAuthStore } from '../auth';
 import { RouterLink } from 'vue-router';
+// import { useRouter } from 'vue-router';
 
 export default {
     components: {
@@ -58,15 +85,21 @@ export default {
         return {
             email: '',
             password: '',
+            errorMessage: '',
         };
     },
     methods: {
         async login() {
+            // const router = useRouter();
             try {
                 const authStore = useAuthStore();
                 await authStore.login(this.email, this.password);
+                this.errorMessage = null;
+                // router.push('/');
             } catch (error) {
                 console.error('Login error:', error);
+                this.errorMessage = 'Invalid email or password';
+                console.log('Login failed, errorMessage:', error);
             }
         },
     },
