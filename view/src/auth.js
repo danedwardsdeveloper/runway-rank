@@ -46,7 +46,6 @@ export const useAuthStore = defineStore('auth', {
 						this.user = data.user;
 						this.session = parsedSession;
 
-						// this.router.push('/dashboard');
 						return {
 							success: true,
 							user: data.user,
