@@ -1,7 +1,9 @@
 <template>
-    <div class="container mx-auto py-8">
+    <div class="mx-auto py-8">
         <h1 class="text-3xl font-bold mb-6 text-center">Top Ten Drag Race Lewks</h1>
-        <p v-if="!accessTopLewks" class="text-red-500 text-center"><a href="">Cast more votes to view the top ten.</a>
+        <p v-if="!accessTopLewks" class="text-red-500 text-center"><a href="">Cast <span class="font-bold">{{
+            ratingsUntilAccess }} </span> more votes
+                to view the top ten.</a>
         </p>
         <div v-if="accessTopLewks" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 m-4">
             <div v-for="(item, index) in items" :key="item.id"
@@ -40,7 +42,7 @@
                     </div>
 
                     <div class="flex flex-col justify-end">
-                        <h2 class="text-6xl bold">{{ index + 1 }}</h2>
+                        <h2 class="text-6xl bold">{{ index }}</h2>
                     </div>
                 </div>
 
@@ -53,18 +55,63 @@
 </template>
 
 <script>
+import { computed, watch } from 'vue';
+import { useAuthStore } from '../auth.js';
+
 export default {
+    setup() {
+        const authStore = useAuthStore();
+        const isLoggedIn = computed(() => authStore.user !== null);
+
+        watch(isLoggedIn, (newValue, oldValue) => {
+            console.log(`Login state changed: ${oldValue} -> ${newValue}`);
+        });
+        return {
+            isLoggedIn,
+        };
+    },
     data() {
         return {
             items: [],
             baseUrl: process.env.NODE_ENV === "development" ? "http://localhost:3000/images/" : "http://www.runwayrank.com/images/",
             accessTopLewks: false,
+            wholePairs: null,
+            ratingsUntilAccess: null,
         };
     },
     mounted() {
-        this.fetchTopTenImages();
+        this.checkAccessAndFetchData();
     },
     methods: {
+        async checkAccessAndFetchData() {
+            try {
+                const [pairsRatedResponse, wholePairsResponse] = await Promise.all([
+                    fetch('http://localhost:3000/api/items/pairs-rated'),
+                    fetch('http://localhost:3000/api/items/whole-pairs')
+                ]);
+
+                if (!pairsRatedResponse.ok || !wholePairsResponse.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const pairsRatedData = await pairsRatedResponse.json();
+                const wholePairsData = await wholePairsResponse.json();
+
+                const pairsRated = pairsRatedData;
+                const wholePairs = wholePairsData;
+
+                this.wholePairs = wholePairs;
+                this.ratingsUntilAccess = wholePairs - pairsRated;
+
+                this.accessTopLewks = pairsRated >= wholePairs;
+
+                if (this.accessTopLewks) {
+                    this.fetchTopTenImages();
+                }
+            } catch (error) {
+                console.error('There was a problem with the fetch operation:', error);
+            }
+        },
         async fetchTopTenImages() {
             try {
                 const response = await fetch('http://localhost:3000/api/items/top-10');
@@ -80,10 +127,3 @@ export default {
     }
 };
 </script>
-
-<style>
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-</style>
