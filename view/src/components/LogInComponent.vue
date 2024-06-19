@@ -20,8 +20,7 @@
                         <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Password</label>
                     </div>
                     <div class="mt-2">
-                        <input id="password" name="password" type="password" autocomplete="current-password"
-                            v-model="password" required
+                        <input id="password" name="password" autocomplete="current-password" v-model="password" required
                             class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                     </div>
                 </div>
@@ -46,36 +45,9 @@
         </div>
     </div>
 </template>
-<!-- <script setup>
-import { ref } from 'vue';
-import { useAuthStore } from '../auth';
-import { RouterLink } from 'vue-router';
-
-const email = ref('');
-const password = ref('');
-const errorMessage = ref('');
-
-const authStore = useAuthStore();
-
-const login = async () => {
-    try {
-        const success = await authStore.login(email, password);
-        if (success) {
-            errorMessage.value = ''; // Clear error message
-            this.$router.push('/');
-        } else {
-            errorMessage.value = 'Invalid email or password'; // Set error message
-        }
-    } catch (error) {
-        console.error('Login error:', error);
-        errorMessage.value = 'An error occurred. Please try again later.'; // Set error message
-    }
-};
-</script> -->
 <script>
 import { useAuthStore } from '../auth';
 import { RouterLink } from 'vue-router';
-// import { useRouter } from 'vue-router';
 
 export default {
     components: {
@@ -90,16 +62,28 @@ export default {
     },
     methods: {
         async login() {
-            // const router = useRouter();
+            const authStore = useAuthStore();
             try {
-                const authStore = useAuthStore();
-                await authStore.login(this.email, this.password);
-                this.errorMessage = null;
-                // router.push('/');
+                const res = await authStore.login(this.email, this.password);
+
+                console.log(`Response: ${res}`)
+
+                if (res.success) {
+                    this.errorMessage = null;
+                    this.$router.push({ name: 'homeview' });
+                } else {
+                    console.error('Login error:', res);
+                    this.errorMessage = 'Invalid email or password';
+                }
             } catch (error) {
-                console.error('Login error:', error);
-                this.errorMessage = 'Invalid email or password';
-                console.log('Login failed, errorMessage:', error);
+                if (error.response) {
+                    console.log('Login failed, status code:', error.response.status);
+                    console.log('Login failed, response data:', error.response.data);
+                    this.errorMessage = 'Invalid email or password';
+                } else {
+                    console.log('Login failed, errorMessage:', error.message);
+                    this.errorMessage = 'An error occurred during login';
+                }
             }
         },
     },

@@ -65,37 +65,28 @@ watch(isLoggedIn, (newValue, oldValue) => {
 });
 
 const authenticatedNavigation = [
-    { name: 'Vote', href: '/' },
     { name: 'Hot 100', href: '/hot-100' },
     { name: 'About', href: '/about' },
-    { name: 'Upload', href: '/upload' },
     { name: 'Create account', href: '/create-account' },
     { name: 'Log in', href: '/log-in' },
 ];
 
 const unauthenticatedNavigation = [
-    { name: 'Vote', href: '/' },
     { name: 'Hot 100', href: '/hot-100' },
     { name: 'About', href: '/about' },
-    { name: 'Upload', href: '/upload' },
     { name: 'Log out', href: '/log-out' },
 ];
 </script>
 
 <style scoped>
-/* Define your styles for active and inactive states */
 .router-link-active {
     background-color: #1a202c;
-    /* bg-gray-900 */
     color: white;
-    /* text-white */
 }
 
 .router-link-exact-active {
     background-color: #1a202c;
-    /* bg-gray-900 */
     color: white;
-    /* text-white */
 }
 
 .logo {

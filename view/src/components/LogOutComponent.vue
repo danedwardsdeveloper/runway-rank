@@ -1,9 +1,12 @@
 <template>
-    <div class="flex justify-center py-8">
-        <button @click="confirmLogout"
-            class="rounded-md px-3 py-2 text-sm font-medium bg-green-500 text-black hover:bg-green-300 hover:text-gray-800">
-            Log Out
-        </button>
+    <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+        <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+            <div>
+                <button @click="confirmLogout"
+                    class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Log
+                    out</button>
+            </div>
+        </div>
     </div>
 </template>
 

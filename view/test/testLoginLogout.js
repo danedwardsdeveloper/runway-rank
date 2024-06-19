@@ -9,10 +9,14 @@ describe('Login and Logout Tests', function () {
 
 	const loginUrl = 'http://localhost:8080/log-in';
 	const homeUrl = 'http://localhost:8080/';
+	const incorrectEmail = 'email@fake.com';
+	const incorrectPassword = 'password';
+	const email = 'name@email.com';
+	const password = 'password123';
 
 	before(async function () {
 		let options = new chrome.Options();
-		// options.addArguments('headless');
+		options.addArguments('headless');
 		options.addArguments('disable-gpu');
 		options.addArguments('no-sandbox');
 		options.addArguments('disable-dev-shm-usage');
@@ -26,9 +30,9 @@ describe('Login and Logout Tests', function () {
 		await driver.manage().deleteAllCookies();
 	});
 
-	// after(async function () {
-	// 	await driver.quit();
-	// });
+	after(async function () {
+		await driver.quit();
+	});
 
 	it('should display a link that says "Create an account"', async function () {
 		const linkText = 'Create an account';
@@ -71,9 +75,7 @@ describe('Login and Logout Tests', function () {
 	});
 
 	it('should not change the URL when the wrong credentials are used to log in', async function () {
-		const incorrectEmail = 'email@fake.com';
 		await driver.findElement(By.id('email')).sendKeys(incorrectEmail);
-		const incorrectPassword = 'password';
 		await driver.findElement(By.id('password')).sendKeys(incorrectPassword);
 		await driver.findElement(By.css('button[type="submit"]')).click();
 
@@ -94,9 +96,7 @@ describe('Login and Logout Tests', function () {
 
 	it('should log in successfully', async function () {
 		try {
-			const email = 'name@email.com';
 			await driver.findElement(By.id('email')).sendKeys(email);
-			const password = 'password123';
 			await driver.findElement(By.id('password')).sendKeys(password);
 			await driver.findElement(By.css('button[type="submit"]')).click();
 

@@ -46,14 +46,23 @@ export const useAuthStore = defineStore('auth', {
 						this.user = data.user;
 						this.session = parsedSession;
 
-						// Navigate to the dashboard
-						this.router.push('/dashboard');
+						// this.router.push('/dashboard');
+						return {
+							success: true,
+							user: data.user,
+							session: parsedSession,
+						};
 					} catch (parseError) {
 						console.error('Failed to parse session cookie:', parseError);
+						return {
+							success: false,
+							error: 'Failed to parse session cookie',
+						};
 					}
 				}
 			} catch (error) {
 				console.error('Login error:', error);
+				return { success: false, error: error.message };
 			}
 		},
 
@@ -72,7 +81,7 @@ export const useAuthStore = defineStore('auth', {
 				);
 
 				if (!response.ok) {
-					console.error('Login failed:', response.statusText);
+					// console.error('Login failed:', response.statusText);
 					return false;
 				}
 
@@ -84,7 +93,7 @@ export const useAuthStore = defineStore('auth', {
 
 				return true;
 			} catch (error) {
-				console.error('Login failed:');
+				// console.error('Login failed:');
 				return false;
 			}
 		},
