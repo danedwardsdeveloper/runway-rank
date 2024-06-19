@@ -12,35 +12,26 @@
         </p>
     </div>
 
-    <div class="container mx-auto p-4 w-6/12">
-        <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+    <div class="images-container">
 
+        <div>
             <button
-                :class="['bg-white rounded-lg shadow-md hover:outline', { ' outline-green-500 hover:shadow-lg cursor-pointer': isLoggedIn, 'hover:outline-gray-500 cursor-not-allowed': !isLoggedIn }]"
+                :class="[' card hover:outline', { ' outline-green-500 hover:shadow-lg cursor-pointer': isLoggedIn, 'hover:outline-gray-500 cursor-not-allowed': !isLoggedIn }]"
                 @click="handleClick(0)" :disabled="!isLoggedIn">
                 <img :src="`${baseUrl}${nextPair[0].image_path}`" :alt="`${baseUrl}${nextPair[0].image_path}`"
-                    class="rounded-t-lg">
-                <div class="p-6">
-                    <h2 class="font-bold mb-2 text-2xl">{{ nextPair[0].name }}
-                    </h2>
-                    <p class="mb-2">{{ nextPair[0].subtitle }}</p>
-                </div>
+                    class="rounded-lg">
             </button>
+        </div>
 
+        <div>
             <button
-                :class="['bg-white rounded-lg shadow-md hover:outline', { ' outline-green-500 hover:shadow-lg cursor-pointer': isLoggedIn, 'hover:outline-gray-500 cursor-not-allowed': !isLoggedIn }]"
+                :class="[' card hover:outline', { ' outline-green-500 hover:shadow-lg cursor-pointer': isLoggedIn, 'hover:outline-gray-500 cursor-not-allowed': !isLoggedIn }]"
                 @click="handleClick(1)" :disabled="!isLoggedIn">
                 <img :src="`${baseUrl}${nextPair[1].image_path}`" :alt="`${baseUrl}${nextPair[1].image_path}`"
                     class="rounded-t-lg">
-                <div class="p-6">
-                    <h2 class="font-bold mb-2 text-2xl">{{ nextPair[1].name }}
-                    </h2>
-                    <p class="mb-2">{{ nextPair[1].subtitle }}</p>
-                </div>
             </button>
-
-
         </div>
+
     </div>
 </template>
 
@@ -108,17 +99,15 @@ export default {
 </script>
 
 <style lang="less">
-button.card {
-    /* width: 300px;
-    height: 400px;
-    margin: 30px;
-    background-color: #EEE;
-    border: none;
-    outline: 4px solid transparent;
+.images-container {
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center; */
+    width: 100%;
+    justify-content: center;
+}
+
+button.card {
+    margin: 10px;
+    border-radius: 10px;
 
     &:hover {
         outline-color: lightgreen;
@@ -141,55 +130,10 @@ button.card {
             box-shadow: none;
         }
     }
-}
-
-/* p {
-    font-size: 16px;
-    margin: 0;
-}
-
-a {
-    &:visited {
-        color: navy;
-    }
-
-    &.disabled {
-        &:visited {
-            color: #444;
-
-        }
-
-        &:hover {
-            cursor: not-allowed;
-        }
-    }
-}
-
-.container {
-    display: flex;
-    justify-content: center;
-
-
-    h2 {
-        margin: 12px 0 6px 0;
-    }
-
-    p {
-        text-align: left;
-        padding: 5px;
-    }
-}
-
-.image-container {
-    width: 100%;
-    height: auto;
-    overflow: hidden;
-    padding: 10px;
 
     img {
-        max-width: 100%;
-        height: auto;
-        display: block;
+        max-width: 500px;
+        max-height: 500px;
     }
-} */
+}
 </style>
