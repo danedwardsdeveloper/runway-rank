@@ -65,14 +65,13 @@ watch(isLoggedIn, (newValue, oldValue) => {
 });
 
 const authenticatedNavigation = [
-    { name: 'Hot 100', href: '/hot-100' },
+    { name: 'Top Ten', href: '/top-ten' },
     { name: 'About', href: '/about' },
-    { name: 'Create account', href: '/create-account' },
     { name: 'Log in', href: '/log-in' },
 ];
 
 const unauthenticatedNavigation = [
-    { name: 'Hot 100', href: '/hot-100' },
+    { name: 'Top Ten', href: '/top-ten' },
     { name: 'About', href: '/about' },
     { name: 'Log out', href: '/log-out' },
 ];

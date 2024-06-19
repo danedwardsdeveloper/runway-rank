@@ -1,6 +1,6 @@
 <template>
     <div class="container mx-auto py-8">
-        <h1 class="text-3xl font-bold mb-6 text-center">Top 10 Images</h1>
+        <h1 class="text-3xl font-bold mb-6 text-center">Top Ten Drag Race Lewks</h1>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 m-4">
             <div v-for="(item, index) in items" :key="item.id"
                 class="bg-white p-4 rounded-lg shadow-lg flex flex-col justify-between">
