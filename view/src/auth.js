@@ -33,7 +33,8 @@ export const useAuthStore = defineStore('auth', {
 
 				const data = await response.json();
 
-				const session = this.getCookie('session');
+				// const session = this.getCookie('session');
+				const session = data.session;
 
 				if (session) {
 					try {
@@ -58,6 +59,11 @@ export const useAuthStore = defineStore('auth', {
 							error: 'Failed to parse session cookie',
 						};
 					}
+				} else {
+					return {
+						success: false,
+						error: 'Session cookie not found',
+					};
 				}
 			} catch (error) {
 				console.error('Login error:', error);

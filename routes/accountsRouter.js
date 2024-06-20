@@ -6,6 +6,14 @@ const LocalStrategy = require('passport-local').Strategy;
 
 const accountsRouter = express.Router();
 
+const isAuthenticated = (req, res, next) => {
+	if (req.isAuthenticated()) {
+		return next();
+	} else {
+		res.status(401).json({ message: 'Unauthorized' });
+	}
+};
+
 // Controller functions
 const createAccount = async (req, res) => {
 	const { email, password, firstName } = req.body;
@@ -129,7 +137,7 @@ const logIn = (req, res, next) => {
 			};
 			const sessionCookie = JSON.stringify(userData);
 
-			const maxAge = 60 * 60 * 1000;
+			const maxAge = 2 * 60 * 60 * 1000;
 			const expiryDate = new Date(Date.now() + maxAge);
 
 			res.cookie('Session', sessionCookie, {
@@ -138,7 +146,7 @@ const logIn = (req, res, next) => {
 				expires: expiryDate,
 			});
 
-			req.session.cookie.expires = expiryDate;
+			req.session.cookie.expires = new Date(Date.now() + maxAge);
 			req.session.cookie.maxAge = maxAge;
 
 			return res.json({
@@ -160,9 +168,37 @@ const logOut = (req, res) => {
 	});
 };
 
+const getFewestRatedItems = async (req, res) => {
+	try {
+		const result = await pool.query(
+			'SELECT id, name, subtitle, num_of_ratings, image_path FROM items ORDER BY num_of_ratings ASC LIMIT 2'
+		);
+
+		if (result.rows.length < 2) {
+			return res.status(404).json({ message: 'Not enough items found' });
+		}
+
+		const items = result.rows.map((item) => ({
+			...item,
+			image_path: `/images/${item.image_path}`,
+		}));
+
+		res.json(items);
+	} catch (error) {
+		console.error('Error fetching items:', error);
+		return res.status(500).json({ message: 'Error fetching items' });
+	}
+};
+
 // Routes
 accountsRouter.post('/accounts/create-account', createAccount);
 accountsRouter.post('/accounts/log-in', logIn);
 accountsRouter.post('/accounts/log-out', logOut);
+
+accountsRouter.get(
+	'/accounts/fewest-ratings',
+	isAuthenticated,
+	getFewestRatedItems
+);
 
 module.exports = accountsRouter;
