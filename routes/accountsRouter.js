@@ -195,10 +195,37 @@ const getFewestRatedItems = async (req, res) => {
 	}
 };
 
+const getPairsRated = async (req, res) => {
+	const { userId } = req.body;
+
+	if (!userId) {
+		return res.status(400).json({ message: 'User ID is required' });
+	}
+
+	try {
+		const data = await pool.query(
+			`SELECT COUNT(*) AS total 
+             FROM ratings 
+             WHERE rated_by = $1 
+               AND num_of_ratings > 0`,
+			[userId]
+		);
+
+		const totalCount = data.rows[0].total;
+		res.json({ total: totalCount });
+	} catch (error) {
+		console.error('Error fetching ratings:', error);
+		return res
+			.status(500)
+			.json({ message: 'Error getting the number of rated items' });
+	}
+};
+
 // Routes
 accountsRouter.post('/accounts/log-in', logIn);
 accountsRouter.post('/accounts/create-account', createAccount);
 accountsRouter.post('/accounts/log-out', logOut);
+accountsRouter.post('/accounts/pairs-until-access', getPairsRated);
 
 accountsRouter.get(
 	'/accounts/fewest-ratings',
