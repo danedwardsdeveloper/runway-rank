@@ -30,6 +30,14 @@
                         class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Log
                         in</button>
                 </div>
+
+                <div>
+                    <button type="button" @click="quickLogin"
+                        class="flex w-full justify-center rounded-md bg-green-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">
+                        Log in Quickly
+                    </button>
+                </div>
+
             </form>
 
             <div v-if="errorMessage">
@@ -85,6 +93,11 @@ export default {
                     this.errorMessage = 'An error occurred during login';
                 }
             }
+        },
+        async quickLogin() {
+            this.email = 'name@email.com';
+            this.password = 'password123';
+            await this.login();
         },
     },
 };
