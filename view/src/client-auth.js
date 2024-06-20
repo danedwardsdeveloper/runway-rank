@@ -93,9 +93,8 @@ export const useAuthStore = defineStore('auth', {
 					return false;
 				}
 
-				this.deleteCookie('Session'); // Delete the JWT token from cookies
-				this.user = null;
-				this.session = null;
+				localStorage.removeItem('token');
+				localStorage.removeItem('user');
 
 				this.router.push('/');
 

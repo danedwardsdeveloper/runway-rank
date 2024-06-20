@@ -163,12 +163,13 @@ const logIn = (req, res, next) => {
 };
 
 const logOut = (req, res) => {
+	console.log('Logout route called');
 	req.logout((err) => {
 		if (err) {
 			return res.status(500).send('Logout error');
 		}
 		res.clearCookie('Session');
-		res.send('Logout successful!');
+		res.status(200).send('Logout successful!');
 	});
 };
 

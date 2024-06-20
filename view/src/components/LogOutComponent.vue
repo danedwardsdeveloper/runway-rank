@@ -28,25 +28,48 @@ export default {
         const authStore = useAuthStore();
         const router = useRouter();
 
-        const logout = async () => {
+        return {
+            authStore,
+            router
+        };
+    },
+    methods: {
+        async logout() {
+            console.log('Logout method called');
             try {
-                await authStore.logout();
-                router.push('/log-in');
+                // Make an API call to the server to log out
+                const response = await fetch('http://localhost:3000/api/accounts/log-out', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                console.log('Logout API response:', response);
+
+                if (!response.ok) {
+                    throw new Error('Logout failed');
+                }
+
+                // Clear local storage and cookies
+                localStorage.removeItem('session');
+                document.cookie = 'Session=; Max-Age=0; path=/;';
+
+                // Update the state and redirect to login page
+                this.authStore.logout(); // Assuming logout is an action in the auth store
+                this.$router.push('/log-in');
             } catch (error) {
                 console.error('Logout error:', error);
             }
-        };
+        },
 
-        const confirmLogout = () => {
+        confirmLogout() {
+            console.log('Confirm logout method called');
             if (confirm('Are you sure you want to log out?')) {
-                logout();
+                this.logout();
             }
-        };
-
-        return {
-            logout,
-            confirmLogout,
-        };
+        },
     },
 };
 </script>
