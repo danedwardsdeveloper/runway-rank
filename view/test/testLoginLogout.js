@@ -17,7 +17,7 @@ describe('Login and Logout Tests', function () {
 
 	before(async function () {
 		let options = new chrome.Options();
-		options.addArguments('headless');
+		// options.addArguments('headless');
 		options.addArguments('disable-gpu');
 		options.addArguments('no-sandbox');
 		options.addArguments('disable-dev-shm-usage');
@@ -81,9 +81,8 @@ describe('Login and Logout Tests', function () {
 		await driver.findElement(By.css('button[type="submit"]')).click();
 
 		const currentUrl = await driver.wait(until.urlIs(loginUrl), 5000);
-		console.log(`Current URL: ${currentUrl}`); // Log current URL
+		console.log(`Current URL: ${currentUrl}`);
 
-		// Strict comparison with assert.strictEqual
 		assert.strictEqual(
 			currentUrl,
 			loginUrl,
@@ -97,8 +96,15 @@ describe('Login and Logout Tests', function () {
 	});
 
 	it('should log in successfully', async function () {
-		await driver.findElement(By.id('email')).sendKeys(email);
-		await driver.findElement(By.id('password')).sendKeys(password);
+		const emailField = await driver.findElement(By.id('email'));
+		const passwordField = await driver.findElement(By.id('password'));
+
+		await emailField.clear();
+		await emailField.sendKeys(email);
+
+		await passwordField.clear();
+		await passwordField.sendKeys(password);
+
 		await driver.findElement(By.css('button[type="submit"]')).click();
 
 		const linkText = 'Log out';

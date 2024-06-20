@@ -46,14 +46,16 @@ export const useAuthStore = defineStore('auth', {
 						this.user = jwtDecode(token);
 						console.log('User after decoding token:', this.user);
 
-						this.setCookie('Session', token, 1 / 6);
+						// this.setCookie('Session', token, 1 / 6);
+						// localStorage.setItem('token', token);
 
 						localStorage.setItem('token', token);
+						localStorage.setItem('user', JSON.stringify(this.user));
 
 						return {
 							success: true,
-							user: data.user,
-							session: token,
+							user: this.user,
+							token,
 						};
 					} catch (parseError) {
 						console.error('Failed to parse JWT token:', parseError);
@@ -105,8 +107,10 @@ export const useAuthStore = defineStore('auth', {
 
 		checkAuth() {
 			const token = localStorage.getItem('token');
-			if (token) {
+			const user = localStorage.getItem('user');
+			if (token && user) {
 				this.token = token;
+				this.user = JSON.parse(user);
 			} else {
 				this.token = null;
 				this.user = null;
