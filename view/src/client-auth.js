@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'vue-router';
 import jwt from 'jsonwebtoken';
 
@@ -41,8 +42,9 @@ export const useAuthStore = defineStore('auth', {
 						const decodedToken = jwt.decode(token);
 						console.log('Decoded token:', decodedToken);
 
-						this.user = data.user; // Assign the user data from the response
-						this.session = token; // Store the JWT token
+						this.token = token;
+						this.user = jwtDecode(token);
+						console.log('User after decoding token:', this.user);
 
 						this.setCookie('Session', token, 1 / 6);
 

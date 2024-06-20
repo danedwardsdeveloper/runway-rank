@@ -8,7 +8,7 @@
 		"build": "vue-cli-service build",
 		"lint": "vue-cli-service lint",
 		"pretest": "clear",
-		"test": "mocha"
+		"test": "mocha --reporter spec"
 	},
 	"dependencies": {
 		"@headlessui/vue": "^1.7.22",
@@ -25,6 +25,7 @@
 		"https-browserify": "^1.0.0",
 		"js-cookie": "^3.0.5",
 		"jsonwebtoken": "^9.0.2",
+		"jwt-decode": "^4.0.0",
 		"mocha": "10.4.0",
 		"node-polyfill-webpack-plugin": "^4.0.0",
 		"os-browserify": "^0.3.0",

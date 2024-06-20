@@ -9,6 +9,7 @@ describe('Login and Logout Tests', function () {
 
 	const loginUrl = 'http://localhost:8080/log-in';
 	const homeUrl = 'http://localhost:8080/';
+	const logOutUrl = 'http://localhost:8080/log-out';
 	const incorrectEmail = 'email@fake.com';
 	const incorrectPassword = 'password';
 	const email = 'name@email.com';
@@ -79,9 +80,10 @@ describe('Login and Logout Tests', function () {
 		await driver.findElement(By.id('password')).sendKeys(incorrectPassword);
 		await driver.findElement(By.css('button[type="submit"]')).click();
 
-		await driver.wait(until.urlIs(loginUrl), 5000);
+		const currentUrl = await driver.wait(until.urlIs(loginUrl), 5000);
+		console.log(`Current URL: ${currentUrl}`); // Log current URL
 
-		const currentUrl = await driver.getCurrentUrl();
+		// Strict comparison with assert.strictEqual
 		assert.strictEqual(
 			currentUrl,
 			loginUrl,
@@ -95,55 +97,36 @@ describe('Login and Logout Tests', function () {
 	});
 
 	it('should log in successfully', async function () {
-		try {
-			await driver.findElement(By.id('email')).sendKeys(email);
-			await driver.findElement(By.id('password')).sendKeys(password);
-			await driver.findElement(By.css('button[type="submit"]')).click();
+		await driver.findElement(By.id('email')).sendKeys(email);
+		await driver.findElement(By.id('password')).sendKeys(password);
+		await driver.findElement(By.css('button[type="submit"]')).click();
 
-			const linkText = 'Log out';
-			let link = null;
-			const timeout = Date.now() + 10000;
+		const linkText = 'Log out';
 
-			while (Date.now() < timeout) {
-				await driver.navigate().refresh();
-				try {
-					link = await driver.findElement(
-						By.xpath(`//a[text()='${linkText}']`)
-					);
-					if (link) {
-						break;
-					}
-				} catch (error) {}
-				await driver.sleep(1000);
-			}
+		const logoutLink = await driver.wait(
+			until.elementLocated(By.xpath(`//a[text()='${linkText}']`)),
+			10000,
+			`"${linkText}" link not found`
+		);
+		await driver.wait(until.elementIsVisible(logoutLink), 10000);
 
-			assert(link, `"${linkText}" link not found`);
-		} catch (error) {
-			console.error('Test failed:', error);
-		}
+		assert(logoutLink, `"${linkText}" link not found`);
 	});
 
-	// await driver.wait(until.urlIs(homeUrl), 10000);
-
-	// const currentUrl = await driver.getCurrentUrl();
-	// assert.strictEqual(
-	// 	currentUrl,
-	// 	homeUrl,
-	// 	'Redirect to the homepage when logged in successfully'
-	// );
-
 	it('should log out successfully', async function () {
-		// Assuming you are already logged in from the previous test
+		await driver.get(logOutUrl);
 
-		// Find the logout button/link and click it
-		const logoutButton = await driver.findElement(By.name('logout'));
-		await logoutButton.click();
+		const logoutLink = await driver.wait(
+			until.elementLocated(By.xpath("//a[text()='Log out']")),
+			10000
+		);
+		await driver.wait(until.elementIsVisible(logoutLink), 10000);
+		await logoutLink.click();
 
-		// Wait for the logout to complete
-		await driver.wait(until.urlIs(loginUrl), 5000);
+		const alert = await driver.wait(until.alertIsPresent(), 10000);
+		await alert.accept();
 
-		// Verify logout by checking the current URL
-		const currentUrl = await driver.getCurrentUrl();
+		const currentUrl = await driver.wait(until.urlIs(loginUrl), 5000);
 		assert.strictEqual(currentUrl, loginUrl, 'Logout was not successful');
 	});
 });

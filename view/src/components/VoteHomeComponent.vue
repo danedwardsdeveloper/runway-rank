@@ -1,6 +1,7 @@
 <template>
 
     <div class="text-center py-3">
+        <p v-if="user" class="text-blue-600">Hello, {{ user.firstName }}!</p>
         <p v-if="isLoggedIn" class="text-center">Vote for your favourite! Cast votes for all pairs to see the <a href=""
                 :class="{ disabled: accessTopLewks }">top ten lewks</a>. <span class="underline">{{ 50 }}</span> pairs
             remaining.
@@ -43,13 +44,15 @@ export default {
     setup() {
         const authStore = useAuthStore();
         const isLoggedIn = computed(() => authStore.user !== null);
+        authStore.checkAuth();
 
         watch(isLoggedIn, (newValue, oldValue) => {
             console.log(`Login state changed: ${oldValue} -> ${newValue}`);
         });
         return {
             isLoggedIn,
-            authStore
+            authStore,
+            user: authStore.user,
         };
     },
     data() {
