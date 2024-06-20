@@ -102,7 +102,7 @@ describe('Login and Logout Tests', function () {
 
 			const linkText = 'Log out';
 			let link = null;
-			const timeout = Date.now() + 10000; // 10 seconds timeout
+			const timeout = Date.now() + 10000;
 
 			while (Date.now() < timeout) {
 				await driver.navigate().refresh();
@@ -113,10 +113,8 @@ describe('Login and Logout Tests', function () {
 					if (link) {
 						break;
 					}
-				} catch (error) {
-					// If the element is not found, continue trying
-				}
-				await driver.sleep(1000); // Wait for 1 second before retrying
+				} catch (error) {}
+				await driver.sleep(1000);
 			}
 
 			assert(link, `"${linkText}" link not found`);
