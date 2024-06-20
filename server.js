@@ -4,7 +4,7 @@ const passport = require('passport');
 const cors = require('cors');
 require('dotenv').config();
 
-const itemsRouter = require('./entities/items/items.router.js');
+const itemsRouter = require('./entities/itemsRouter.js');
 const accountsRouter = require('./entities/accounts/accounts.router.js');
 
 const app = express();

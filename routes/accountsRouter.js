@@ -1,10 +1,13 @@
-const pool = require('../../pool.js');
+const express = require('express');
+const pool = require('../pool.js');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
+const accountsRouter = express.Router();
+
+// Controller functions
 const createAccount = async (req, res) => {
-	// console.log("Request body:", req.body);
 	const { email, password, firstName } = req.body;
 
 	if (!email || !email.includes('@')) {
@@ -47,11 +50,9 @@ const createAccount = async (req, res) => {
 			message: 'Account created successfully and logged in',
 		});
 	} catch (error) {
-		return res
-			.status(500)
-			.json({
-				message: `An error occurred during account creation: ${error}`,
-			});
+		return res.status(500).json({
+			message: `An error occurred during account creation: ${error}`,
+		});
 	}
 };
 
@@ -131,16 +132,12 @@ const logIn = (req, res, next) => {
 			const maxAge = 60 * 60 * 1000;
 			const expiryDate = new Date(Date.now() + maxAge);
 
-			// console.log('Current time:', new Date());
-			// console.log('Expiry date:', expiryDate);
-
 			res.cookie('Session', sessionCookie, {
 				httpOnly: false,
 				secure: false,
 				expires: expiryDate,
 			});
 
-			// This fixes a weird issue where the sid.connect cookie expiry was an hour in the past
 			req.session.cookie.expires = expiryDate;
 			req.session.cookie.maxAge = maxAge;
 
@@ -163,8 +160,9 @@ const logOut = (req, res) => {
 	});
 };
 
-module.exports = {
-	createAccount,
-	logIn,
-	logOut,
-};
+// Routes
+accountsRouter.post('/accounts/create-account', createAccount);
+accountsRouter.post('/accounts/log-in', logIn);
+accountsRouter.post('/accounts/log-out', logOut);
+
+module.exports = accountsRouter;
