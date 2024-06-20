@@ -16,7 +16,7 @@
 
         <div>
             <button
-                :class="[' card hover:outline', { ' outline-green-500 hover:shadow-lg cursor-pointer': isLoggedIn, 'hover:outline-gray-500 cursor-not-allowed': !isLoggedIn }]"
+                :class="[' card outline-4 hover:outline', { ' outline-green-500 hover:shadow-lg cursor-pointer': isLoggedIn, 'hover:outline-gray-500 cursor-not-allowed': !isLoggedIn }]"
                 @click="handleClick(0)" :disabled="!isLoggedIn">
                 <img :src="`${baseUrl}${nextPair[0].image_path}`" :alt="`${baseUrl}${nextPair[0].image_path}`"
                     class="rounded-lg">
@@ -25,10 +25,10 @@
 
         <div>
             <button
-                :class="[' card hover:outline', { ' outline-green-500 hover:shadow-lg cursor-pointer': isLoggedIn, 'hover:outline-gray-500 cursor-not-allowed': !isLoggedIn }]"
+                :class="[' card outline-4 hover:outline', { ' outline-green-500 hover:shadow-lg cursor-pointer': isLoggedIn, 'hover:outline-gray-500 cursor-not-allowed': !isLoggedIn }]"
                 @click="handleClick(1)" :disabled="!isLoggedIn">
                 <img :src="`${baseUrl}${nextPair[1].image_path}`" :alt="`${baseUrl}${nextPair[1].image_path}`"
-                    class="rounded-t-lg">
+                    class="rounded-lg">
             </button>
         </div>
 
