@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { useRouter } from 'vue-router';
+import jwt from 'jsonwebtoken';
 
 export const useAuthStore = defineStore('auth', {
 	state: () => ({
@@ -33,36 +34,36 @@ export const useAuthStore = defineStore('auth', {
 
 				const data = await response.json();
 
-				// const session = this.getCookie('session');
-				const session = data.session;
+				const token = data.token;
 
-				if (session) {
+				if (token) {
 					try {
-						const decodedSession = decodeURIComponent(session);
-						console.log('Decoded session:', decodedSession);
+						const decodedToken = jwt.decode(token);
+						console.log('Decoded token:', decodedToken);
 
-						const parsedSession = JSON.parse(decodedSession);
-						console.log('Parsed session:', parsedSession);
+						this.user = data.user; // Assign the user data from the response
+						this.session = token; // Store the JWT token
 
-						this.user = data.user;
-						this.session = parsedSession;
+						this.setCookie('Session', token, 1 / 6);
+
+						localStorage.setItem('token', token);
 
 						return {
 							success: true,
 							user: data.user,
-							session: parsedSession,
+							session: token,
 						};
 					} catch (parseError) {
-						console.error('Failed to parse session cookie:', parseError);
+						console.error('Failed to parse JWT token:', parseError);
 						return {
 							success: false,
-							error: 'Failed to parse session cookie',
+							error: 'Failed to parse JWT token',
 						};
 					}
 				} else {
 					return {
 						success: false,
-						error: 'Session cookie not found',
+						error: 'Token not found in response',
 					};
 				}
 			} catch (error) {
@@ -81,16 +82,14 @@ export const useAuthStore = defineStore('auth', {
 						headers: {
 							'Content-Type': 'application/json',
 						},
-						// body: JSON.stringify({ email, password }),
 					}
 				);
 
 				if (!response.ok) {
-					// console.error('Login failed:', response.statusText);
 					return false;
 				}
 
-				this.deleteCookie('Session');
+				this.deleteCookie('Session'); // Delete the JWT token from cookies
 				this.user = null;
 				this.session = null;
 
@@ -98,21 +97,17 @@ export const useAuthStore = defineStore('auth', {
 
 				return true;
 			} catch (error) {
-				// console.error('Login failed:');
 				return false;
 			}
 		},
 
 		checkAuth() {
-			const session = this.getCookie('Session');
-			if (session) {
-				const decodedSession = decodeURIComponent(session);
-				const userData = JSON.parse(decodedSession);
-				this.user = userData;
-				this.session = decodedSession;
+			const token = localStorage.getItem('token');
+			if (token) {
+				this.token = token;
 			} else {
+				this.token = null;
 				this.user = null;
-				this.session = null;
 			}
 		},
 

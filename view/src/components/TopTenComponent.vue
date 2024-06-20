@@ -56,7 +56,7 @@
 
 <script>
 import { computed, watch } from 'vue';
-import { useAuthStore } from '../auth.js';
+import { useAuthStore } from '../client-auth.js';
 
 export default {
     setup() {

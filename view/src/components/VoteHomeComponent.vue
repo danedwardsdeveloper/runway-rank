@@ -37,7 +37,7 @@
 
 <script>
 import { computed, watch } from 'vue';
-import { useAuthStore } from '../auth.js';
+import { useAuthStore } from '../client-auth.js';
 
 export default {
     setup() {
@@ -49,6 +49,7 @@ export default {
         });
         return {
             isLoggedIn,
+            authStore
         };
     },
     data() {
@@ -85,7 +86,10 @@ export default {
 
             const response = await fetch('http://localhost:3000/api/items/post-ratings', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.authStore.session}`
+                },
                 body: JSON.stringify(postData)
             });
 

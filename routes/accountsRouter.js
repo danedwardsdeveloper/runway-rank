@@ -3,6 +3,7 @@ const pool = require('../pool.js');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const { generateToken, verifyToken } = require('./server-auth.js');
 
 const accountsRouter = express.Router();
 
@@ -64,25 +65,25 @@ const createAccount = async (req, res) => {
 	}
 };
 
-passport.serializeUser((user, done) => {
-	done(null, user.id);
-});
+// passport.serializeUser((user, done) => {
+// 	done(null, user.id);
+// });
 
-passport.deserializeUser(async (id, done) => {
-	try {
-		const result = await pool.query(
-			'SELECT id, email, first_name FROM accounts WHERE id = $1',
-			[id]
-		);
-		if (result.rows.length > 0) {
-			done(null, result.rows[0]);
-		} else {
-			done(new Error('User not found'));
-		}
-	} catch (error) {
-		done(error);
-	}
-});
+// passport.deserializeUser(async (id, done) => {
+// 	try {
+// 		const result = await pool.query(
+// 			'SELECT id, email, first_name FROM accounts WHERE id = $1',
+// 			[id]
+// 		);
+// 		if (result.rows.length > 0) {
+// 			done(null, result.rows[0]);
+// 		} else {
+// 			done(new Error('User not found'));
+// 		}
+// 	} catch (error) {
+// 		done(error);
+// 	}
+// });
 
 passport.use(
 	new LocalStrategy(
@@ -117,42 +118,45 @@ passport.use(
 );
 
 const logIn = (req, res, next) => {
+	console.log('Starting login process'); // Log start of the login process
+
 	passport.authenticate('local', (err, user, info) => {
 		if (err) {
+			console.error('Passport authentication error:', err); // Log any authentication error
 			return res.status(500).json({ message: 'Internal Server Error' });
 		}
 		if (!user) {
+			console.log('User not found or invalid credentials:', info); // Log when user is not found or invalid credentials
 			return res
 				.status(401)
 				.json({ message: info.message || 'Invalid username or password' });
 		}
+
 		req.logIn(user, (loginErr) => {
 			if (loginErr) {
+				console.error('req.logIn error:', loginErr); // Log any error during req.logIn
 				return res.status(500).json({ message: 'Login error' });
 			}
-			const userData = {
-				userId: user.id,
-				email: user.email,
-				firstName: user.first_name,
-			};
-			const sessionCookie = JSON.stringify(userData);
 
-			const maxAge = 2 * 60 * 60 * 1000;
-			const expiryDate = new Date(Date.now() + maxAge);
+			console.log('User logged in successfully:', user); // Log successful login
+			const token = generateToken(user);
+			console.log('Generated JWT token:', token); // Log the generated token
 
-			res.cookie('Session', sessionCookie, {
-				httpOnly: false,
-				secure: false,
-				expires: expiryDate,
+			res.cookie('Session', token, {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production',
+				maxAge: 4 * 60 * 60 * 1000, // 4 hours
 			});
 
-			req.session.cookie.expires = new Date(Date.now() + maxAge);
-			req.session.cookie.maxAge = maxAge;
-
+			console.log('Sending response with user info and token');
 			return res.json({
 				message: 'Login successful!',
-				user: userData,
-				session: sessionCookie,
+				user: {
+					userId: user.id,
+					email: user.email,
+					firstName: user.first_name,
+				},
+				token,
 			});
 		});
 	})(req, res, next);
@@ -191,8 +195,8 @@ const getFewestRatedItems = async (req, res) => {
 };
 
 // Routes
-accountsRouter.post('/accounts/create-account', createAccount);
 accountsRouter.post('/accounts/log-in', logIn);
+accountsRouter.post('/accounts/create-account', createAccount);
 accountsRouter.post('/accounts/log-out', logOut);
 
 accountsRouter.get(

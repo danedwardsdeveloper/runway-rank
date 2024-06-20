@@ -2,7 +2,9 @@ const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
+require('./passport');
 
 const itemsRouter = require('./routes/itemsRouter.js');
 const accountsRouter = require('./routes/accountsRouter.js');
@@ -25,19 +27,21 @@ app.use(
 	})
 );
 
+app.use(express.json());
+app.use(cookieParser());
+
 app.use(
 	session({
 		secret: process.env.SESSION_SECRET,
 		resave: false,
 		saveUninitialized: false,
 		cookie: {
-			secure: true,
-			expires: new Date(Date.now() + 2 * 60 * 60 * 1000),
+			secure: process.env.NODE_ENV === 'production',
+			maxAge: 4 * 60 * 60 * 1000, // 4 hours
 		},
 	})
 );
 
-app.use(express.json());
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -48,15 +52,14 @@ app.use('/images', express.static(imagesDir));
 app.use('/api', itemsRouter);
 app.use('/api', accountsRouter);
 
-app.use((error, req, res, next) => {
-	res.status(error.status || 500);
-	console.log('ERROR', error);
-	res.json({
-		error: {
-			message: error.message,
-			status: error.status,
-		},
-	});
+// Catch-all error handler for detecting multiple responses
+app.use((err, req, res, next) => {
+	console.error('Unhandled error:', err); // Log unhandled errors
+	if (!res.headersSent) {
+		res.status(500).json({ error: err.message });
+	} else {
+		console.error('Headers already sent:', err.message); // Log if headers are already sent
+	}
 });
 
 app.listen(port, () => {
