@@ -3,7 +3,8 @@
     <div class="text-center py-3">
         <p v-if="user" class="text-blue-600">Hello, {{ user.firstName }}!</p>
         <p v-if="isLoggedIn" class="text-center">Vote for your favourite! Cast votes for all pairs to see the <a href=""
-                :class="{ disabled: accessTopLewks }">top ten lewks</a>. <span class="underline">{{ 50 }}</span> pairs
+                :class="{ disabled: accessTopLewks }">top ten lewks</a>. <span class="underline">{{ totalPairs }}</span>
+            pairs
             remaining.
         </p>
         <p v-else>
@@ -49,6 +50,7 @@ export default {
         watch(isLoggedIn, (newValue, oldValue) => {
             console.log(`Login state changed: ${oldValue} -> ${newValue}`);
         });
+
         return {
             isLoggedIn,
             authStore,
@@ -59,12 +61,14 @@ export default {
         return {
             baseUrl: process.env.NODE_ENV === "development" ? "http://localhost:3000" : "http://www.runwayrank.com",
             nextPair: [{}, {}],
+            totalPairs: null,
             accessTopLewks: true
         };
     },
 
     mounted() {
         this.fetchInitialPair();
+        this.getTotalPairs();
     },
 
     methods: {
@@ -74,6 +78,12 @@ export default {
             const response = await fetch('http://localhost:3000/api/items/get-next-pair');
             const data = await response.json();
             this.nextPair = data;
+        },
+
+        async getTotalPairs() {
+            const response = await fetch('http://localhost:3000/api/items/whole-pairs');
+            const data = await response.json();
+            this.totalPairs = data;
         },
 
         async handleClick(itemIndex) {
