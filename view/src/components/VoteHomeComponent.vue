@@ -2,16 +2,21 @@
 
     <div class="text-center py-3">
         <p v-if="user" class="text-blue-600">Hello, {{ user.firstName }}!</p>
-        <p v-if="isLoggedIn" class="text-center">Vote for your favourite! Cast votes for all pairs to see the <a href=""
-                :class="{ disabled: accessTopLewks }">top ten lewks</a>. <span class="underline">{{ totalPairs }}</span>
-            pairs
-            remaining.
-        </p>
-        <p v-else>
+        <div v-if="isLoggedIn" class="text-center">
+            <p class="text-center">Vote for your favourite! Cast votes for all pairs to see the <a href=""
+                    :class="{ disabled: accessTopLewks }">top ten lewks</a>.</p>
+            <p class="text-blue-600">
+                <span>{{ ratedPairs }} </span> pairs out of
+                <span class="underline">{{ totalPairs }}</span> pairs rated.
+            </p>
+
+        </div>
+
+        <div v-else>
             <router-link to="/create-account" href="" class="text-blue-500 underline">Create an account</router-link>
             or <router-link to="/log-in" class="text-blue-500 underline"> log in</router-link> to vote for your
             favourite.
-        </p>
+        </div>
     </div>
 
     <div class="images-container">
@@ -38,7 +43,7 @@
 </template>
 
 <script>
-import { computed, watch } from 'vue';
+import { computed, ref, onMounted, watch } from 'vue';
 import { useAuthStore } from '../client-auth.js';
 
 export default {
@@ -46,17 +51,52 @@ export default {
         const authStore = useAuthStore();
         const isLoggedIn = computed(() => authStore.user !== null);
         authStore.checkAuth();
+        const ratedPairs = ref(100000);
+
+        const fetchPairsRated = async () => {
+            const userId = authStore.user ? authStore.user.userId : null;
+            if (userId) {
+                try {
+                    const response = await fetch('http://localhost:3000/api/accounts/pairs-until-access', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ userId }),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch pairs rated');
+                    }
+
+                    const data = await response.json();
+                    ratedPairs.value = data.total;
+                } catch (error) {
+                    console.error('Error fetching pairs rated:', error);
+                }
+            } else {
+                console.warn('User ID not available');
+            }
+        };
 
         watch(isLoggedIn, (newValue, oldValue) => {
             console.log(`Login state changed: ${oldValue} -> ${newValue}`);
+        });
+
+        onMounted(() => {
+            if (isLoggedIn.value) {
+                fetchPairsRated();
+            }
         });
 
         return {
             isLoggedIn,
             authStore,
             user: authStore.user,
+            ratedPairs
         };
     },
+
     data() {
         return {
             baseUrl: process.env.NODE_ENV === "development" ? "http://localhost:3000" : "http://www.runwayrank.com",
