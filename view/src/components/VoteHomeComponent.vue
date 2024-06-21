@@ -10,7 +10,7 @@
                 <span>{{ totalPairs }}</span> pairs rated.
             </p>
             <p :class="{ 'text-red-500': !accessTopLewks, 'text-green-500': accessTopLewks }">Access top lewks: <span>{{
-                    accessTopLewks }}</span></p>
+                accessTopLewks }}</span></p>
 
         </div>
 
