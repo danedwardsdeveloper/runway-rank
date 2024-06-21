@@ -1,12 +1,12 @@
 <template>
     <div class="mx-auto py-8 text-center">
         <h1 class="text-3xl font-bold mb-6 text-center">Top Ten Drag Race Lewks</h1>
-        <p>Access top lewks: <span>{{ accessTopLewks }}</span></p>
 
-        <!-- <p v-if="!accessTopLewks" class="text-red-500 text-center"><a href="">Cast <span class="font-bold">{{
+        <p v-if="!accessTopLewks" class="text-red-500 text-center"><a href="">Cast <span class="font-bold">{{
             ratingsUntilAccess }} </span> more votes
                 to view the top ten.</a>
-        </p> -->
+        </p>
+
         <div v-if="accessTopLewks" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 m-4">
             <div v-for="(item, index) in topTen" :key="item.id"
                 class="bg-white p-4 rounded-lg shadow-lg flex flex-col justify-between">
@@ -35,7 +35,7 @@
 
                 <img src="../assets/mystery-drag-queen.webp" alt="Mystery look" class="w-full h-auto rounded-md">
 
-                <div class="flex justify-between">
+                <div class="flex justify-between text-left">
                     <div>
                         <h2 class="text-xl font-semibold mt-2">Queen Name</h2>
                         <h2 class="text-m gray-700 mb-2">Lewk description</h2>
@@ -44,7 +44,7 @@
                     </div>
 
                     <div class="flex flex-col justify-end">
-                        <h2 class="text-6xl bold">{{ index }}</h2>
+                        <h2 class="text-6xl bold">{{ index + 1 }}</h2>
                     </div>
                 </div>
 
@@ -87,19 +87,10 @@ export default {
 
         onMounted(() => {
             checkAccessTopLewks();
-            // Check the initial state and call renderTopTen if accessTopLewks is true
             if (isAccessTopLewks.value) {
                 renderTopTen();
             }
         });
-
-        // watch(isAccessTopLewks, (newValue) => {
-        //     accessTopLewks.value = newValue;
-        //     // Also check the new value and call renderTopTen if true
-        //     if (newValue) {
-        //         renderTopTen();
-        //     }
-        // });
 
         return {
             accessTopLewks,
