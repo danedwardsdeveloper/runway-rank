@@ -2,7 +2,7 @@ import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import { createPinia } from 'pinia';
 
-import { useAuthStore } from './auth-store';
+import { useAuthStore } from './authStore';
 
 import './index.css';
 
