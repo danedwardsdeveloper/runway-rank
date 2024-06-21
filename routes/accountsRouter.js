@@ -5,7 +5,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const { generateToken, verifyToken } = require('./server-auth.js');
 
-const { calculateWholePairs } = require('./utils.js');
+const { calculateWholePairs, calculateMinimumPairs } = require('./utils.js');
 
 const accountsRouter = express.Router();
 
@@ -230,7 +230,7 @@ const getPairsRated = async (req, res) => {
 		);
 
 		const totalCount = data.rows[0].total;
-		const pairsRated = calculateWholePairs(totalCount);
+		const pairsRated = calculateMinimumPairs(totalCount);
 		res.json({ pairsRated: pairsRated });
 	} catch (error) {
 		console.error('Error fetching ratings:', error);

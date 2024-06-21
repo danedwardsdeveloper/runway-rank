@@ -1,6 +1,10 @@
 const express = require('express');
 const pool = require('../pool.js');
-const { calculateWholePairs, calculateEloRating } = require('./utils.js');
+const {
+	calculateEloRating,
+	calculateWholePairs,
+	calculateMinimumPairs,
+} = require('./utils.js');
 
 const itemsRouter = express.Router();
 
@@ -19,7 +23,7 @@ const getTotalPairs = async (req, res) => {
 	try {
 		let data = await pool.query('SELECT COUNT(*) AS total FROM items');
 		let totalCount = data.rows[0].total;
-		let wholePairs = calculateWholePairs(totalCount);
+		let wholePairs = calculateMinimumPairs(totalCount);
 		res.json({ totalPairs: wholePairs });
 	} catch (error) {
 		console.error('Error fetching items:', error);

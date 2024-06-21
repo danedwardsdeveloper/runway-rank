@@ -1,19 +1,3 @@
-// import { defineStore } from 'pinia';
-
-// export const useAccessStore = defineStore('access', {
-// 	state: () => ({
-// 		accessTopLewks: false,
-// 	}),
-// 	actions: {
-// 		setTopLewksAccess(value) {
-// 			this.accessTopLewks = value;
-// 		},
-// 	},
-// 	getters: {
-// 		isAccessTopLewks: (state) => state.accessTopLewks,
-// 	},
-// });
-
 import { defineStore } from 'pinia';
 
 export const useAccessStore = defineStore('access', {
