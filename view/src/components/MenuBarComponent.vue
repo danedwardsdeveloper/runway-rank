@@ -65,8 +65,8 @@
                                     :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Settings</a>
                                 </MenuItem>
                                 <MenuItem v-slot="{ active }">
-                                <a href="#"
-                                    :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Sign
+                                <a href="#" @click="handleLogout"
+                                    :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Log
                                     out</a>
                                 </MenuItem>
                             </MenuItems>
@@ -93,35 +93,46 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
 import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline'
 
-import { computed, watch } from 'vue';
+import { computed, watch, ref } from 'vue';
 import { useAuthStore } from '../authStore.js';
+import { useRouter } from 'vue-router';
 
 const authStore = useAuthStore();
 const isLoggedIn = computed(() => authStore.user !== null);
+const router = useRouter();
 
 watch(isLoggedIn, (newValue, oldValue) => {
     console.log(`Login state changed: ${oldValue} -> ${newValue}`);
 });
 
-const userInitial = computed(() => {
-    if (authStore.user.firstName) {
-        console.log(`User: ${authStore.user.firstName}`);
-        return authStore.user.firstName.charAt(0).toUpperCase();
+const userInitial = ref('');
+
+watch(isLoggedIn, (newValue, oldValue) => {
+    console.log(`Login state changed: ${oldValue} -> ${newValue}`);
+    if (newValue && authStore.user && authStore.user.firstName) {
+        userInitial.value = authStore.user.firstName.charAt(0).toUpperCase();
+    } else {
+        userInitial.value = '';
     }
-    return '';
 });
 
 const navigation = computed(() => {
     return isLoggedIn.value ? [
         { name: 'Top Ten', href: '/top-ten' },
         { name: 'About', href: '/about' },
-        { name: 'Log out', href: '/log-out' },
+        // { name: 'Log out', href: '/log-out' },
     ] : [
         { name: 'Top Ten', href: '/top-ten' },
         { name: 'About', href: '/about' },
         { name: 'Log in', href: '/log-in' },
     ];
 });
+
+const handleLogout = () => {
+    authStore.logout();
+    router.push('/log-in');
+    userInitial.value = '';
+};
 
 </script>
 
