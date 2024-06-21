@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import { jwtDecode } from 'jwt-decode';
-// import { useRouter } from 'vue-router';
 import jwt from 'jsonwebtoken';
 
 export const useAuthStore = defineStore('auth', {
@@ -8,11 +7,6 @@ export const useAuthStore = defineStore('auth', {
 		user: null,
 		session: null,
 	}),
-
-	// setup() {
-	// 	const router = useRouter();
-	// 	return { router };
-	// },
 
 	actions: {
 		async login(email, password) {
@@ -112,25 +106,5 @@ export const useAuthStore = defineStore('auth', {
 				this.user = null;
 			}
 		},
-
-		// getCookie(name) {
-		// 	const value = `; ${document.cookie}`;
-		// 	const parts = value.split(`; ${name}=`);
-		// 	if (parts.length === 2) return parts.pop().split(';').shift();
-		// },
-
-		// setCookie(name, value, days) {
-		// 	let expires = '';
-		// 	if (days) {
-		// 		const date = new Date();
-		// 		date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-		// 		expires = `; expires=${date.toUTCString()}`;
-		// 	}
-		// 	document.cookie = `${name}=${value || ''}${expires}; path=/`;
-		// },
-
-		// deleteCookie(name) {
-		// 	document.cookie = `${name}=; Max-Age=-99999999;`;
-		// },
 	},
 });

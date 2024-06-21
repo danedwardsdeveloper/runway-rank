@@ -9,6 +9,7 @@
                 <span class="underline underline-offset-2">{{ pairsRated }} </span> out of
                 <span>{{ totalPairs }}</span> pairs rated.
             </p>
+            <p>Access top lewks: <span>{{ accessTopLewks }}</span></p>
 
         </div>
 
@@ -45,16 +46,19 @@
 <script>
 import { computed, ref, onMounted, watch } from 'vue';
 import { useAuthStore } from '../auth-store.js';
+import { useAccessStore } from '../access-store.js';
 
 export default {
     setup() {
         const authStore = useAuthStore();
         authStore.checkAuth();
+        const accessStore = useAccessStore();
         const isLoggedIn = computed(() => authStore.user !== null);
 
         const pairsRated = ref(0);
         const totalPairs = ref(100);
         const nextPair = ref([{}, {}]);
+        const accessTopLewks = ref(false);
 
         const getInitialPair = async () => {
             const response = await fetch('http://localhost:3000/api/items/get-next-pair');
@@ -176,6 +180,18 @@ export default {
             }
         };
 
+        watch(isLoggedIn, (newValue, oldValue) => {
+            console.log(`Login state changed: ${oldValue} -> ${newValue}`);
+        });
+
+        const checkAccessTopLewks = computed(() => {
+            return pairsRated.value >= totalPairs.value;
+        });
+
+        watch(checkAccessTopLewks, (newValue) => {
+            accessStore.setAccessTopLewks(newValue);
+            accessTopLewks.value = newValue;
+        });
 
         onMounted(() => {
             getInitialPair();
@@ -183,10 +199,6 @@ export default {
             if (isLoggedIn.value) {
                 getPairsRated();
             }
-        });
-
-        watch(isLoggedIn, (newValue, oldValue) => {
-            console.log(`Login state changed: ${oldValue} -> ${newValue}`);
         });
 
         return {
@@ -200,59 +212,17 @@ export default {
             postRatings,
             getNextPair,
             user: authStore.user,
+            accessTopLewks: computed(() => accessStore.isAccessTopLewks),
         };
     },
 
     data() {
         return {
             baseUrl: process.env.NODE_ENV === "development" ? "http://localhost:3000" : "http://www.runwayrank.com",
-            accessTopLewks: true
+            // accessTopLewks: true
         };
     }
 }
-// ,
-// methods: {
-
-
-
-
-//     async postRatings(itemIndex) {
-//         let postData = {};
-
-//         if (itemIndex === 0) {
-//             postData.winnerID = this.nextPair[0].id;
-//             postData.loserID = this.nextPair[1].id;
-//         } else {
-//             postData.winnerID = this.nextPair[1].id;
-//             postData.loserID = this.nextPair[0].id;
-//         }
-
-//         const userId = this.authStore.user ? this.authStore.user.userId : null;
-
-//         if (!userId) {
-//             console.warn('User ID is not available. Cannot post ratings.');
-//             return;
-//         }
-
-//         postData.userID = userId;
-
-//         const response = await fetch('http://localhost:3000/api/ratings/post-ratings', {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//                 'Authorization': `Bearer ${this.authStore.session}`
-//             },
-//             body: JSON.stringify(postData)
-//         });
-
-//         const result = await response.json();
-//         if (!response.ok) {
-//             console.log(result);
-//         }
-
-//         this.getNextPair()
-//         this.getPairsRated()
-//     }
 </script>
 
 <style lang="less">
