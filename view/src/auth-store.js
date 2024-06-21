@@ -2,6 +2,8 @@ import { defineStore } from 'pinia';
 import { jwtDecode } from 'jwt-decode';
 import jwt from 'jsonwebtoken';
 
+import { useAccessStore } from './accessStore';
+
 export const useAuthStore = defineStore('auth', {
 	state: () => ({
 		user: null,
@@ -86,6 +88,9 @@ export const useAuthStore = defineStore('auth', {
 
 				localStorage.removeItem('token');
 				localStorage.removeItem('user');
+
+				const accessStore = useAccessStore();
+				accessStore.setAccessTopLewks(false);
 
 				this.router.push('/');
 

@@ -46,7 +46,7 @@
 <script>
 import { computed, ref, onMounted, watch } from 'vue';
 import { useAuthStore } from '../auth-store.js';
-import { useAccessStore } from '../access-store.js';
+import { useAccessStore } from '../accessStore.js';
 
 export default {
     setup() {

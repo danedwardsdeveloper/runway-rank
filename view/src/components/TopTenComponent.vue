@@ -8,7 +8,7 @@
                 to view the top ten.</a>
         </p> -->
         <div v-if="accessTopLewks" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 m-4">
-            <div v-for="(item, index) in items" :key="item.id"
+            <div v-for="(item, index) in topTen" :key="item.id"
                 class="bg-white p-4 rounded-lg shadow-lg flex flex-col justify-between">
 
                 <img :src="`${baseUrl}${item.image_path}`" :alt="item.name" class="w-full h-auto rounded-md">
@@ -57,28 +57,54 @@
 </template>
 
 <script>
-import { ref, onMounted, watch } from 'vue';
-import { useAccessStore } from '../access-store.js'; // Adjust the path as needed
+import { ref, onMounted, computed } from 'vue';
+import { useAccessStore } from '../accessStore.js';
 
 export default {
     setup() {
         const accessStore = useAccessStore();
         const accessTopLewks = ref(false);
+        const topTen = ref([]);
+
+        const isAccessTopLewks = computed(() => accessStore.isAccessTopLewks);
 
         const checkAccessTopLewks = () => {
             accessTopLewks.value = accessStore.isAccessTopLewks;
         };
 
+        const renderTopTen = async () => {
+            try {
+                const response = await fetch('http://localhost:3000/api/items/top-10');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                topTen.value = data.rows;
+            } catch (error) {
+                console.error('There was a problem with the fetch operation:', error);
+            }
+        }
+
         onMounted(() => {
             checkAccessTopLewks();
+            // Check the initial state and call renderTopTen if accessTopLewks is true
+            if (isAccessTopLewks.value) {
+                renderTopTen();
+            }
         });
 
-        watch(() => accessStore.isAccessTopLewks, (newValue) => {
-            accessTopLewks.value = newValue;
-        });
+        // watch(isAccessTopLewks, (newValue) => {
+        //     accessTopLewks.value = newValue;
+        //     // Also check the new value and call renderTopTen if true
+        //     if (newValue) {
+        //         renderTopTen();
+        //     }
+        // });
 
         return {
             accessTopLewks,
+            topTen,
+            baseUrl: process.env.NODE_ENV === "development" ? "http://localhost:3000/images/" : "http://www.runwayrank.com/images/",
         };
     },
 };
