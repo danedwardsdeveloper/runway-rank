@@ -20,7 +20,7 @@ const getTotalPairs = async (req, res) => {
 		let data = await pool.query('SELECT COUNT(*) AS total FROM items');
 		let totalCount = data.rows[0].total;
 		let wholePairs = calculateWholePairs(totalCount);
-		res.json(wholePairs);
+		res.json({ totalPairs: wholePairs });
 	} catch (error) {
 		console.error('Error fetching items:', error);
 		return res
@@ -36,7 +36,8 @@ const getPairsRated = async (req, res) => {
 		);
 		let totalCount = data.rows[0].total;
 		let wholePairs = calculateWholePairs(totalCount);
-		res.json(wholePairs);
+		res.json({ totalPairs: wholePairs });
+		console.log(res);
 	} catch (error) {
 		console.error('Error fetching items:', error);
 		return res
@@ -143,10 +144,11 @@ const getTop10 = async (req, res) => {
 
 // Routes
 itemsRouter.get('/items', getAllItems);
-itemsRouter.get('/items/whole-pairs', getTotalPairs);
+itemsRouter.get('/items/total-pairs', getTotalPairs);
 itemsRouter.get('/items/pairs-rated', getPairsRated);
 itemsRouter.get('/items/get-next-pair', getNextPair);
 itemsRouter.get('/items/top-10', getTop10);
+
 itemsRouter.post('/items/post-ratings', postRatings);
 
 module.exports = itemsRouter;

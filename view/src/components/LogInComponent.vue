@@ -54,7 +54,7 @@
     </div>
 </template>
 <script>
-import { useAuthStore } from '../client-auth';
+import { useAuthStore } from '../auth-store';
 import { RouterLink } from 'vue-router';
 
 export default {

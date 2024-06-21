@@ -55,7 +55,7 @@
 import { Disclosure, DisclosureButton } from '@headlessui/vue'
 import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { computed, watch } from 'vue';
-import { useAuthStore } from '../client-auth.js';
+import { useAuthStore } from '../auth-store.js';
 
 const authStore = useAuthStore();
 const isLoggedIn = computed(() => authStore.user !== null);

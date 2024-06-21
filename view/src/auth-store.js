@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { jwtDecode } from 'jwt-decode';
-import { useRouter } from 'vue-router';
+// import { useRouter } from 'vue-router';
 import jwt from 'jsonwebtoken';
 
 export const useAuthStore = defineStore('auth', {
@@ -9,10 +9,10 @@ export const useAuthStore = defineStore('auth', {
 		session: null,
 	}),
 
-	setup() {
-		const router = useRouter();
-		return { router };
-	},
+	// setup() {
+	// 	const router = useRouter();
+	// 	return { router };
+	// },
 
 	actions: {
 		async login(email, password) {
@@ -45,9 +45,6 @@ export const useAuthStore = defineStore('auth', {
 						this.token = token;
 						this.user = jwtDecode(token);
 						console.log('User after decoding token:', this.user);
-
-						// this.setCookie('Session', token, 1 / 6);
-						// localStorage.setItem('token', token);
 
 						localStorage.setItem('token', token);
 						localStorage.setItem('user', JSON.stringify(this.user));
@@ -116,24 +113,24 @@ export const useAuthStore = defineStore('auth', {
 			}
 		},
 
-		getCookie(name) {
-			const value = `; ${document.cookie}`;
-			const parts = value.split(`; ${name}=`);
-			if (parts.length === 2) return parts.pop().split(';').shift();
-		},
+		// getCookie(name) {
+		// 	const value = `; ${document.cookie}`;
+		// 	const parts = value.split(`; ${name}=`);
+		// 	if (parts.length === 2) return parts.pop().split(';').shift();
+		// },
 
-		setCookie(name, value, days) {
-			let expires = '';
-			if (days) {
-				const date = new Date();
-				date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-				expires = `; expires=${date.toUTCString()}`;
-			}
-			document.cookie = `${name}=${value || ''}${expires}; path=/`;
-		},
+		// setCookie(name, value, days) {
+		// 	let expires = '';
+		// 	if (days) {
+		// 		const date = new Date();
+		// 		date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+		// 		expires = `; expires=${date.toUTCString()}`;
+		// 	}
+		// 	document.cookie = `${name}=${value || ''}${expires}; path=/`;
+		// },
 
-		deleteCookie(name) {
-			document.cookie = `${name}=; Max-Age=-99999999;`;
-		},
+		// deleteCookie(name) {
+		// 	document.cookie = `${name}=; Max-Age=-99999999;`;
+		// },
 	},
 });

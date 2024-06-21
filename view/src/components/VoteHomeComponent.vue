@@ -6,8 +6,8 @@
             <p class="text-center">Vote for your favourite! Cast votes for all pairs to see the <a href=""
                     :class="{ disabled: accessTopLewks }">top ten lewks</a>.</p>
             <p class="text-blue-600">
-                <span>{{ ratedPairs }} </span> out of
-                <span class="underline">{{ totalPairs }}</span> pairs rated.
+                <span class="underline underline-offset-2">{{ pairsRated }} </span> out of
+                <span>{{ totalPairs }}</span> pairs rated.
             </p>
 
         </div>
@@ -44,25 +44,34 @@
 
 <script>
 import { computed, ref, onMounted, watch } from 'vue';
-import { useAuthStore } from '../client-auth.js';
+import { useAuthStore } from '../auth-store.js';
 
 export default {
     setup() {
         const authStore = useAuthStore();
-        const isLoggedIn = computed(() => authStore.user !== null);
         authStore.checkAuth();
-        const ratedPairs = ref(100000);
+        const isLoggedIn = computed(() => authStore.user !== null);
 
-        const fetchPairsRated = async () => {
-            const userId = authStore.user ? authStore.user.userId : null;
-            if (userId) {
+        const pairsRated = ref(0);
+        const totalPairs = ref(100);
+        const nextPair = ref([{}, {}]);
+
+        const getInitialPair = async () => {
+            const response = await fetch('http://localhost:3000/api/items/get-next-pair');
+            const data = await response.json();
+            nextPair.value = data;
+        };
+
+        const getPairsRated = async () => {
+            const userID = authStore.user ? authStore.user.userId : null;
+            if (userID) {
                 try {
-                    const response = await fetch('http://localhost:3000/api/accounts/pairs-until-access', {
+                    const response = await fetch('http://localhost:3000/api/accounts/pairs-rated', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({ userId }),
+                        body: JSON.stringify({ userID }),
                     });
 
                     if (!response.ok) {
@@ -70,7 +79,8 @@ export default {
                     }
 
                     const data = await response.json();
-                    ratedPairs.value = data.total;
+                    console.log(data);
+                    pairsRated.value = data.pairsRated;
                 } catch (error) {
                     console.error('Error fetching pairs rated:', error);
                 }
@@ -79,52 +89,68 @@ export default {
             }
         };
 
-        watch(isLoggedIn, (newValue, oldValue) => {
-            console.log(`Login state changed: ${oldValue} -> ${newValue}`);
-        });
-
-        onMounted(() => {
-            if (isLoggedIn.value) {
-                fetchPairsRated();
-            }
-        });
-
-        return {
-            isLoggedIn,
-            authStore,
-            user: authStore.user,
-            ratedPairs,
-            fetchPairsRated
-        };
-    },
-
-    data() {
-        return {
-            baseUrl: process.env.NODE_ENV === "development" ? "http://localhost:3000" : "http://www.runwayrank.com",
-            nextPair: [{}, {}],
-            totalPairs: null,
-            accessTopLewks: true
-        };
-    },
-
-    mounted() {
-        this.fetchInitialPair();
-        this.getTotalPairs();
-    },
-
-    methods: {
-        async fetchInitialPair() {
-            const response = await fetch('http://localhost:3000/api/items/get-next-pair');
+        const getTotalPairs = async () => {
+            const response = await fetch('http://localhost:3000/api/items/total-pairs');
             const data = await response.json();
-            this.nextPair = data;
-        },
+            console.log(data);
+            totalPairs.value = data.totalPairs;
+        };
 
-        async fetchNextPair() {
+        const postRatings = async (itemIndex) => {
             try {
-                const userId = this.$store.state.auth.user ? this.$store.state.auth.user.userId : null;
+                authStore.checkAuth();
+                const userID = authStore.user ? authStore.user.userId : null;
+                // console.log(`User ID = ${userID}`);
+                const token = authStore.token;
+                // console.log(`Token = ${token}`);
 
-                if (!userId) {
+                if (!userID || !token) {
+                    console.warn('User ID or token is not available. Cannot post ratings.');
+                    return;
+                }
+
+                const postData = {
+                    userID: userID,
+                    winnerID: itemIndex === 0 ? nextPair.value[0].id : nextPair.value[1].id,
+                    loserID: itemIndex === 0 ? nextPair.value[1].id : nextPair.value[0].id
+                };
+
+                // console.log(postData);
+
+                const response = await fetch('http://localhost:3000/api/ratings/post-ratings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(postData)
+                });
+
+                const result = await response.json();
+                if (!response.ok) {
+                    console.log(result);
+                }
+
+                getNextPair();
+                getPairsRated();
+            } catch (error) {
+                console.error('Error posting ratings:', error);
+            }
+        };
+
+        const getNextPair = async () => {
+            try {
+                const userID = authStore.user ? authStore.user.userId : null;
+
+                if (!userID) {
                     console.warn('User ID is not available. Skipping fetch operation.');
+                    return;
+                }
+
+                const token = authStore.token;
+
+                if (!token) {
+                    console.warn('Token is not available. Skipping fetch operation.');
                     return;
                 }
 
@@ -132,8 +158,9 @@ export default {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({ userId })
+                    body: JSON.stringify({ userID })
                 });
 
                 if (!response.ok) {
@@ -143,57 +170,89 @@ export default {
                 }
 
                 const data = await response.json();
-                this.nextPair = data;
+                nextPair.value = data;
             } catch (error) {
                 console.error('Error fetching next pair:', error);
             }
-        },
+        };
 
-        async getTotalPairs() {
-            const response = await fetch('http://localhost:3000/api/items/whole-pairs');
-            const data = await response.json();
-            this.totalPairs = data;
-        },
 
-        async postRatings(itemIndex) {
-            let postData = {};
-
-            if (itemIndex === 0) {
-                postData.winnerID = this.nextPair[0].id;
-                postData.loserID = this.nextPair[1].id;
-            } else {
-                postData.winnerID = this.nextPair[1].id;
-                postData.loserID = this.nextPair[0].id;
+        onMounted(() => {
+            getInitialPair();
+            getTotalPairs();
+            if (isLoggedIn.value) {
+                getPairsRated();
             }
+        });
 
-            const userId = this.authStore.user ? this.authStore.user.userId : null;
+        watch(isLoggedIn, (newValue, oldValue) => {
+            console.log(`Login state changed: ${oldValue} -> ${newValue}`);
+        });
 
-            if (!userId) {
-                console.warn('User ID is not available. Cannot post ratings.');
-                return;
-            }
+        return {
+            isLoggedIn,
+            pairsRated,
+            totalPairs,
+            nextPair,
+            getInitialPair,
+            getTotalPairs,
+            getPairsRated,
+            postRatings,
+            getNextPair,
+            user: authStore.user,
+        };
+    },
 
-            postData.userID = userId;
-
-            const response = await fetch('http://localhost:3000/api/ratings/post-ratings', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this.authStore.session}`
-                },
-                body: JSON.stringify(postData)
-            });
-
-            const result = await response.json();
-            if (!response.ok) {
-                console.log(result);
-            }
-
-            this.fetchInitialPair()
-            this.fetchPairsRated()
-        }
+    data() {
+        return {
+            baseUrl: process.env.NODE_ENV === "development" ? "http://localhost:3000" : "http://www.runwayrank.com",
+            accessTopLewks: true
+        };
     }
-};
+}
+// ,
+// methods: {
+
+
+
+
+//     async postRatings(itemIndex) {
+//         let postData = {};
+
+//         if (itemIndex === 0) {
+//             postData.winnerID = this.nextPair[0].id;
+//             postData.loserID = this.nextPair[1].id;
+//         } else {
+//             postData.winnerID = this.nextPair[1].id;
+//             postData.loserID = this.nextPair[0].id;
+//         }
+
+//         const userId = this.authStore.user ? this.authStore.user.userId : null;
+
+//         if (!userId) {
+//             console.warn('User ID is not available. Cannot post ratings.');
+//             return;
+//         }
+
+//         postData.userID = userId;
+
+//         const response = await fetch('http://localhost:3000/api/ratings/post-ratings', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'Authorization': `Bearer ${this.authStore.session}`
+//             },
+//             body: JSON.stringify(postData)
+//         });
+
+//         const result = await response.json();
+//         if (!response.ok) {
+//             console.log(result);
+//         }
+
+//         this.getNextPair()
+//         this.getPairsRated()
+//     }
 </script>
 
 <style lang="less">

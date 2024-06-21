@@ -175,11 +175,27 @@ const logOut = (req, res) => {
 	});
 };
 
-const getFewestRatedItems = async (req, res) => {
+const getNextPair = async (req, res) => {
 	try {
-		const result = await pool.query(
-			'SELECT id, name, subtitle, num_of_ratings, image_path FROM items ORDER BY num_of_ratings ASC LIMIT 2'
-		);
+		const userID = req.body.userID;
+		console.log(`Req body: ${userID}`);
+
+		const query = `
+            SELECT items.id, items.name, items.subtitle, items.num_of_ratings, items.image_path,
+                   COALESCE(ratings.num_of_ratings, 0) AS user_num_of_ratings
+            FROM items
+            LEFT JOIN (
+                SELECT item_id, COUNT(*) AS num_of_ratings
+                FROM ratings
+                WHERE rated_by = $1
+                GROUP BY item_id
+            ) AS ratings
+            ON items.id = ratings.item_id
+            ORDER BY user_num_of_ratings ASC, items.num_of_ratings ASC
+            LIMIT 2;
+        `;
+
+		const result = await pool.query(query, [userID]);
 
 		if (result.rows.length < 2) {
 			return res.status(404).json({ message: 'Not enough items found' });
@@ -198,9 +214,9 @@ const getFewestRatedItems = async (req, res) => {
 };
 
 const getPairsRated = async (req, res) => {
-	const { userId } = req.body;
+	const { userID } = req.body;
 
-	if (!userId) {
+	if (!userID) {
 		return res.status(400).json({ message: 'User ID is required' });
 	}
 
@@ -210,12 +226,12 @@ const getPairsRated = async (req, res) => {
              FROM ratings 
              WHERE rated_by = $1 
                AND num_of_ratings > 0`,
-			[userId]
+			[userID]
 		);
 
 		const totalCount = data.rows[0].total;
 		const pairsRated = calculateWholePairs(totalCount);
-		res.json({ total: pairsRated });
+		res.json({ pairsRated: pairsRated });
 	} catch (error) {
 		console.error('Error fetching ratings:', error);
 		return res
@@ -228,12 +244,9 @@ const getPairsRated = async (req, res) => {
 accountsRouter.post('/accounts/log-in', logIn);
 accountsRouter.post('/accounts/create-account', createAccount);
 accountsRouter.post('/accounts/log-out', logOut);
-accountsRouter.post('/accounts/pairs-until-access', getPairsRated);
+accountsRouter.post('/accounts/pairs-rated', getPairsRated);
 
-accountsRouter.get(
-	'/accounts/fewest-ratings',
-	isAuthenticated,
-	getFewestRatedItems
-);
+accountsRouter.post('/accounts/next-pair', getNextPair);
+// accountsRouter.post('/accounts/next-pair', isAuthenticated, getNextPair);
 
 module.exports = accountsRouter;

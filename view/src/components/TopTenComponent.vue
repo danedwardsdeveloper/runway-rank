@@ -2,7 +2,7 @@
     <div class="mx-auto py-8">
         <h1 class="text-3xl font-bold mb-6 text-center">Top Ten Drag Race Lewks</h1>
         <p v-if="!accessTopLewks" class="text-red-500 text-center"><a href="">Cast <span class="font-bold">{{
-            ratingsUntilAccess }} </span> more votes
+                    ratingsUntilAccess }} </span> more votes
                 to view the top ten.</a>
         </p>
         <div v-if="accessTopLewks" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 m-4">
@@ -56,7 +56,7 @@
 
 <script>
 import { computed, watch } from 'vue';
-import { useAuthStore } from '../client-auth.js';
+import { useAuthStore } from '../auth-store.js';
 
 export default {
     setup() {
