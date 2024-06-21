@@ -9,7 +9,8 @@
                 <span class="underline underline-offset-2">{{ pairsRated }} </span> out of
                 <span>{{ totalPairs }}</span> pairs rated.
             </p>
-            <p>Access top lewks: <span>{{ accessTopLewks }}</span></p>
+            <p :class="{ 'text-red-500': !accessTopLewks, 'text-green-500': accessTopLewks }">Access top lewks: <span>{{
+                    accessTopLewks }}</span></p>
 
         </div>
 
