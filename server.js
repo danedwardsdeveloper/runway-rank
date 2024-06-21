@@ -8,6 +8,7 @@ require('./passport');
 
 const itemsRouter = require('./routes/itemsRouter.js');
 const accountsRouter = require('./routes/accountsRouter.js');
+const ratingsRouter = require('./routes/ratingsRouter.js');
 
 const app = express();
 const port = 3000;
@@ -51,14 +52,14 @@ app.use('/images', express.static(imagesDir));
 
 app.use('/api', itemsRouter);
 app.use('/api', accountsRouter);
+app.use('/api', ratingsRouter);
 
-// Catch-all error handler for detecting multiple responses
 app.use((err, req, res, next) => {
-	console.error('Unhandled error:', err); // Log unhandled errors
+	console.error('Unhandled error:', err);
 	if (!res.headersSent) {
 		res.status(500).json({ error: err.message });
 	} else {
-		console.error('Headers already sent:', err.message); // Log if headers are already sent
+		console.error('Headers already sent:', err.message);
 	}
 });
 

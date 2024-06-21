@@ -6,7 +6,7 @@
             <p class="text-center">Vote for your favourite! Cast votes for all pairs to see the <a href=""
                     :class="{ disabled: accessTopLewks }">top ten lewks</a>.</p>
             <p class="text-blue-600">
-                <span>{{ ratedPairs }} </span> pairs out of
+                <span>{{ ratedPairs }} </span> out of
                 <span class="underline">{{ totalPairs }}</span> pairs rated.
             </p>
 
@@ -24,7 +24,7 @@
         <div>
             <button
                 :class="[' card outline-4 hover:outline', { ' outline-green-500 hover:shadow-lg cursor-pointer': isLoggedIn, 'hover:outline-gray-500 cursor-not-allowed': !isLoggedIn }]"
-                @click="handleClick(0)" :disabled="!isLoggedIn">
+                @click="postRatings(0)" :disabled="!isLoggedIn">
                 <img :src="`${baseUrl}${nextPair[0].image_path}`" :alt="`${baseUrl}${nextPair[0].image_path}`"
                     class="rounded-lg">
             </button>
@@ -33,7 +33,7 @@
         <div>
             <button
                 :class="[' card outline-4 hover:outline', { ' outline-green-500 hover:shadow-lg cursor-pointer': isLoggedIn, 'hover:outline-gray-500 cursor-not-allowed': !isLoggedIn }]"
-                @click="handleClick(1)" :disabled="!isLoggedIn">
+                @click="postRatings(1)" :disabled="!isLoggedIn">
                 <img :src="`${baseUrl}${nextPair[1].image_path}`" :alt="`${baseUrl}${nextPair[1].image_path}`"
                     class="rounded-lg">
             </button>
@@ -93,7 +93,8 @@ export default {
             isLoggedIn,
             authStore,
             user: authStore.user,
-            ratedPairs
+            ratedPairs,
+            fetchPairsRated
         };
     },
 
@@ -113,11 +114,39 @@ export default {
 
     methods: {
         async fetchInitialPair() {
-            // const endpoint = this.isLoggedIn ? '/api/accounts/fewest-ratings' : '/api/items/get-next-pair';
-            // const response = await fetch(`http://localhost:3000${endpoint}`);
             const response = await fetch('http://localhost:3000/api/items/get-next-pair');
             const data = await response.json();
             this.nextPair = data;
+        },
+
+        async fetchNextPair() {
+            try {
+                const userId = this.$store.state.auth.user ? this.$store.state.auth.user.userId : null;
+
+                if (!userId) {
+                    console.warn('User ID is not available. Skipping fetch operation.');
+                    return;
+                }
+
+                const response = await fetch('http://localhost:3000/api/accounts/next-pair', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ userId })
+                });
+
+                if (!response.ok) {
+                    const responseBody = await response.text();
+                    console.error(`Failed to fetch next pair. Status: ${response.status}, Status Text: ${response.statusText}, Response Body: ${responseBody}`);
+                    throw new Error('Failed to fetch next pair');
+                }
+
+                const data = await response.json();
+                this.nextPair = data;
+            } catch (error) {
+                console.error('Error fetching next pair:', error);
+            }
         },
 
         async getTotalPairs() {
@@ -126,7 +155,7 @@ export default {
             this.totalPairs = data;
         },
 
-        async handleClick(itemIndex) {
+        async postRatings(itemIndex) {
             let postData = {};
 
             if (itemIndex === 0) {
@@ -137,7 +166,16 @@ export default {
                 postData.loserID = this.nextPair[0].id;
             }
 
-            const response = await fetch('http://localhost:3000/api/items/post-ratings', {
+            const userId = this.authStore.user ? this.authStore.user.userId : null;
+
+            if (!userId) {
+                console.warn('User ID is not available. Cannot post ratings.');
+                return;
+            }
+
+            postData.userID = userId;
+
+            const response = await fetch('http://localhost:3000/api/ratings/post-ratings', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -152,6 +190,7 @@ export default {
             }
 
             this.fetchInitialPair()
+            this.fetchPairsRated()
         }
     }
 };
