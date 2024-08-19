@@ -6,5 +6,7 @@ validateEnvironment();
 const port: number = environment.PORT;
 
 app.listen(port, () => {
-	console.log(`Server is running on port ${port}`);
+	if (environment.isDevelopment) {
+		console.log(`API available at http://localhost:${port}`);
+	}
 });
