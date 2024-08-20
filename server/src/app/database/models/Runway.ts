@@ -1,20 +1,8 @@
 import mongoose from 'mongoose';
-import { ObjectId } from 'mongoose';
 
-export interface IRunway {
-	name: string;
-	queen_id: ObjectId;
-	queen_name: string;
-	franchise?: string;
-	season?: number;
-	episode?: number;
-	episode_name?: string;
-	score: number;
-	ratings_count: number;
-	image_url: string;
-}
+import { RunwayItem } from 'src/types.js';
 
-const RunwaySchema = new mongoose.Schema<IRunway>({
+const RunwaySchema = new mongoose.Schema<RunwayItem>({
 	name: { type: String, required: true },
 	queen_id: {
 		type: mongoose.Schema.Types.ObjectId,
@@ -31,4 +19,4 @@ const RunwaySchema = new mongoose.Schema<IRunway>({
 	image_url: { type: String, required: true },
 });
 
-export const Runway = mongoose.model<IRunway>('Runway', RunwaySchema);
+export const RunwayModel = mongoose.model<RunwayItem>('Runway', RunwaySchema);
