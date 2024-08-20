@@ -1,8 +1,10 @@
 import express from 'express';
 
-import publicRouter from './routes/public/public.js';
+import { connectToDatabase } from './database/database.js';
+import publicRouter from './routes/publicRouter.js';
 
 const app = express();
+connectToDatabase();
 
 app.use('/', publicRouter);
 
