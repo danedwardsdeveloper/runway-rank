@@ -7,11 +7,14 @@ const nonEmptyStr = makeValidator((value) => {
 	return value;
 });
 
+const removeQuotes = makeValidator((value) => {
+	return value.replace(/^["']|["']$/g, '');
+});
+
 const envConfig = {
 	NODE_ENV: str({ choices: ['development', 'production'] }),
 	PORT: num(),
-	// MAILCHIMP_API_KEY: nonEmptyStr(),
-	// ALLOWED_ORIGINS: nonEmptyStr(),
+	MONGO_STRING: removeQuotes(nonEmptyStr()),
 };
 
 export const environment = cleanEnv(process.env, envConfig);
