@@ -1,12 +1,12 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
-import { IUser } from 'src/types.js';
+import { User } from '../../../types.js';
 
-const UserSchema = new mongoose.Schema<IUser>({
+const UserSchema = new mongoose.Schema<User>({
 	email: { type: String, unique: true, required: true },
 	hashed_password: { type: String, required: true },
 	name: { type: String, required: true },
-	ranked_runway_ids: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Runway' }],
+	ranked_runway_ids: [{ type: Schema.Types.ObjectId, ref: 'Runway' }],
 });
 
-export const User = mongoose.model<IUser>('User', UserSchema);
+export const UserModel = mongoose.model<User>('User', UserSchema);
