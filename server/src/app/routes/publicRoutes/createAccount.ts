@@ -2,7 +2,7 @@ import express, { Router, Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 
-import { User } from 'src/app/database/models/User.js';
+import { UserModel } from '../../database/models/User.js';
 
 import { generateToken } from 'src/app/middleware/generateToken.js';
 
@@ -24,7 +24,7 @@ createAccount.post(
 		const { email, password, name } = req.body;
 
 		try {
-			const existingUser = await User.findOne({ email });
+			const existingUser = await UserModel.findOne({ email });
 			if (existingUser) {
 				return res
 					.status(400)
@@ -33,7 +33,7 @@ createAccount.post(
 
 			const hashedPassword = await bcrypt.hash(password, 10);
 
-			const newUser = new User({
+			const newUser = new UserModel({
 				email,
 				hashed_password: hashedPassword,
 				name,
