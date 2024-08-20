@@ -15,6 +15,7 @@ const envConfig = {
 	NODE_ENV: str({ choices: ['development', 'production'] }),
 	PORT: num(),
 	MONGO_STRING: removeQuotes(nonEmptyStr()),
+	JWT_SECRET: nonEmptyStr(),
 };
 
 export const environment = cleanEnv(process.env, envConfig);
