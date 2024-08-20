@@ -6,7 +6,6 @@ validateEnvironment();
 const port: number = environment.PORT;
 
 app.listen(port, () => {
-	if (environment.isDevelopment) {
+	environment.isDevelopment &&
 		console.log(`API available at http://localhost:${port}`);
-	}
 });
