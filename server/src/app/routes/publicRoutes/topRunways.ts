@@ -1,11 +1,11 @@
 import express, { Router, Request, Response } from 'express';
-import { Runway } from '../../database/models/Runway.js';
+import { RunwayModel } from '../../database/models/Runway.js';
 
 const topRunways: Router = express.Router();
 
 topRunways.get('/top-runways', async (req: Request, res: Response) => {
 	try {
-		const topRunways = await Runway.find()
+		const topRunways = await RunwayModel.find()
 			.sort({ score: -1 })
 			.limit(10)
 			.select('name queen_name franchise season episode score image_url');
