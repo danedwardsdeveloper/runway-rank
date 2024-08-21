@@ -12,7 +12,7 @@ const removeQuotes = makeValidator((value) => {
 });
 
 const envConfig = {
-	NODE_ENV: str({ choices: ['development', 'production'] }),
+	NODE_ENV: str({ choices: ['development', 'test', 'production'] }),
 	PORT: num(),
 	MONGO_STRING: removeQuotes(nonEmptyStr()),
 	JWT_SECRET: nonEmptyStr(),
