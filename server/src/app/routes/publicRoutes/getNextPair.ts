@@ -1,26 +1,12 @@
 import express, { Router, Response } from 'express';
 
-import {
-	CustomRequest,
-	RunwayItem,
-	NextPairResponse,
-	UserObject,
-} from '@/types.js';
+import { CustomRequest, RunwayItem, NextPairResponse } from '@/types.js';
 import {
 	getNextPairService,
 	updateRunwayScores,
 } from '@/app/database/services/runwayService.js';
 import { updateUser } from '@/app/database/services/userService.js';
-
-function sanitizeUser(user: any): UserObject {
-	return {
-		id: user.id,
-		name: user.name,
-		email: user.email,
-		accessTopRunways: user.accessTopRunways,
-		numRunwaysUntilAccess: user.numRunwaysUntilAccess,
-	};
-}
+import cleanUserObject from '@/app/utilities/cleanUserObject.js';
 
 export default express
 	.Router()
@@ -39,7 +25,7 @@ export default express
 					userId,
 					newRunwayIds: [winner, loser],
 				});
-				req.user = sanitizeUser(updatedUser);
+				req.user = cleanUserObject(updatedUser);
 				scoresUpdated = true;
 			}
 
@@ -59,7 +45,7 @@ export default express
 			const responseObject: NextPairResponse = {
 				message: message,
 				authenticated: !!userId,
-				user: req.user ? sanitizeUser(req.user) : null,
+				user: req.user ? cleanUserObject(req.user) : null,
 				...(nextPair ? { nextPair } : { noMorePairs: true }),
 			};
 
@@ -70,7 +56,7 @@ export default express
 			res.status(500).json({
 				message: 'Error processing request',
 				authenticated: !!req.user,
-				user: sanitizeUser(req.user),
+				user: cleanUserObject(req.user),
 			});
 			return;
 		}
