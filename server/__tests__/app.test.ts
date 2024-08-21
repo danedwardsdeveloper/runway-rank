@@ -2,6 +2,14 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
 import app from '../src/app/app';
 
+function isValidMongoId(id: string): boolean {
+	return /^[0-9a-fA-F]{24}$/.test(id);
+}
+
+function expectValidMongoId(id: string) {
+	expect(isValidMongoId(id)).toBe(true);
+}
+
 describe('MongoDB Express Tests', () => {
 	let server;
 	let userId;
@@ -157,14 +165,26 @@ describe('MongoDB Express Tests', () => {
 		);
 	});
 
-	it('accessTopRunways should be false', async () => {
+	it('should return correct user data for authenticated user without top runways access', async () => {
+		// Assuming you have a way to authenticate the user before this test
+		// For example:
+		// await agent.post('/sign-in').send({ email: 'test@example.com', password: 'password' });
+
 		const response = await agent.get('/top-runways');
 
 		expect(response.status).toBe(200);
-		expect(response.body).toMatchObject({
+		expect(response.body).toHaveProperty('user');
+
+		const user = response.body.user;
+
+		expect(user).toMatchObject({
+			name: 'Test',
+			email: 'test@gmail.com',
 			accessTopRunways: false,
+			numRunwaysUntilAccess: 10,
 		});
-		expect(response.body.numRunwaysUntilAccess).toBeGreaterThan(8);
+		expectValidMongoId(user.id);
+		expect(response.body).not.toHaveProperty('topRunways');
 	});
 
 	it('should update scores and get next pair', async () => {
