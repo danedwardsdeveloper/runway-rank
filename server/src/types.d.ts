@@ -17,6 +17,8 @@ export interface RunwayItem {
 export interface UserBase {
 	email: string;
 	name: string;
+	accessTopRunways: boolean;
+	numRunwaysUntilAccess: number;
 }
 
 export interface TokenInput extends UserBase {
@@ -35,16 +37,19 @@ export interface UserDocument extends UserBase, mongoose.Document {
 
 export interface CustomRequest extends Request {
 	user?: UserObject;
-	accessTopRunways?: boolean;
-	numRunwaysUntilAccess?: number;
+}
+
+export interface TopRunwayAccessResponse {
+	accessTopRunways: boolean;
+	numRunwaysUntilAccess: number;
 }
 
 export interface NextPairResponse {
-	message?: string;
 	authenticated: boolean;
 	user: UserObject | null;
 	nextPair?: RunwayItem[];
 	noMorePairs?: boolean;
+	message?: string;
 }
 
 export interface Queen {
