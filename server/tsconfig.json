@@ -8,7 +8,10 @@
 		"strict": true,
 		"resolveJsonModule": true,
 		"moduleResolution": "NodeNext",
-		"baseUrl": "."
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./src/*"]
+		}
 	},
 	"include": ["src/**/*"],
 	"exclude": ["node_modules", "__tests__", "dist"]
