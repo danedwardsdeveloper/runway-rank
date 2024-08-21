@@ -23,7 +23,7 @@ export interface TokenInput extends UserBase {
 	_id: mongoose.Types.ObjectId;
 }
 
-export interface JwtPayload extends UserBase {
+export interface UserObject extends UserBase {
 	id: string;
 }
 
@@ -33,18 +33,27 @@ export interface UserDocument extends UserBase, mongoose.Document {
 	ranked_runway_ids: mongoose.Types.ObjectId[];
 }
 
-export type DecodedToken = JwtPayload;
-
 export interface CustomRequest extends Request {
-	user?: JwtPayload;
+	user?: UserObject;
 	accessTopRunways?: boolean;
 	numRunwaysUntilAccess?: number;
 }
 
-export type SafeUser = Omit<UserDocument, 'hashed_password'>;
+export interface NextPairResponse {
+	message?: string;
+	authenticated: boolean;
+	user: UserObject | null;
+	nextPair?: RunwayItem[];
+	noMorePairs?: boolean;
+}
 
 export interface Queen {
 	name: string;
 	former_name?: string;
 	runways: ObjectId[];
+}
+
+export interface PairScores {
+	winnerRating: number;
+	loserRating: number;
 }
