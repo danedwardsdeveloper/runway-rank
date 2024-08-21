@@ -100,6 +100,7 @@ describe('MongoDB Express Tests', () => {
 
 		userId = response.body.user.id;
 		numRunwaysUntilAccess = response.body.user.numRunwaysUntilAccess;
+		expect(numRunwaysUntilAccess).toBeGreaterThan(8);
 	});
 
 	it('should fail to create an account with the same email', async () => {
@@ -166,10 +167,6 @@ describe('MongoDB Express Tests', () => {
 	});
 
 	it('should return correct user data for authenticated user without top runways access', async () => {
-		// Assuming you have a way to authenticate the user before this test
-		// For example:
-		// await agent.post('/sign-in').send({ email: 'test@example.com', password: 'password' });
-
 		const response = await agent.get('/top-runways');
 
 		expect(response.status).toBe(200);
@@ -181,7 +178,7 @@ describe('MongoDB Express Tests', () => {
 			name: 'Test',
 			email: 'test@gmail.com',
 			accessTopRunways: false,
-			numRunwaysUntilAccess: 10,
+			numRunwaysUntilAccess: numRunwaysUntilAccess,
 		});
 		expectValidMongoId(user.id);
 		expect(response.body).not.toHaveProperty('topRunways');
@@ -203,19 +200,50 @@ describe('MongoDB Express Tests', () => {
 		runwayIds = response.body.nextPair.map((item) => item._id);
 	});
 
-	// it('numRunwaysUntilAccess should decrease after voting', async () => {
-	// 	const response = await agent.get('/top-runways');
+	it('should continuously update scores until top runways access is granted', async () => {
+		let currentRunwayIds;
+		let previousRunwayIds = [];
+		let localNumRunwaysUntilAccess = numRunwaysUntilAccess;
 
-	// 	expect(response.status).toBe(200);
-	// 	if (numRunwaysUntilAccess <= 2) {
-	// 		expect(response.body.accessTopRunways).toBe(true);
-	// 	} else {
-	// 		expect(response.body.accessTopRunways).toBe(false);
-	// 		expect(response.body.numRunwaysUntilAccess).toBe(
-	// 			numRunwaysUntilAccess - 2
-	// 		);
-	// 	}
-	// });
+		while (localNumRunwaysUntilAccess > 0) {
+			const response = await agent.post('/get-next-pair').send({
+				winner: currentRunwayIds ? currentRunwayIds[0] : undefined,
+				loser: currentRunwayIds ? currentRunwayIds[1] : undefined,
+			});
+
+			expect(response.status).toBe(200);
+
+			console.log(
+				`First runway: ${response.body.nextPair[0]._id}, ${response.body.nextPair[0].queen_name}`
+			);
+			console.log(
+				`Second runway: ${response.body.nextPair[1]._id}, ${response.body.nextPair[1].queen_name}`
+			);
+
+			currentRunwayIds = response.body.nextPair.map((item) => item._id);
+			expect(previousRunwayIds).not.toContain(currentRunwayIds[0]);
+			expect(previousRunwayIds).not.toContain(currentRunwayIds[1]);
+			previousRunwayIds = currentRunwayIds;
+
+			expect(response.body.user.numRunwaysUntilAccess).toSatisfy(
+				(value) =>
+					value === localNumRunwaysUntilAccess ||
+					value === localNumRunwaysUntilAccess - 2
+			);
+			localNumRunwaysUntilAccess = response.body.user.numRunwaysUntilAccess;
+
+			console.log(`Runways until access: ${localNumRunwaysUntilAccess}`);
+
+			if (localNumRunwaysUntilAccess === 0) {
+				expect(response.body.user.accessTopRunways).toBe(true);
+			} else {
+				expect(response.body.user.accessTopRunways).toBe(false);
+			}
+		}
+
+		expect(localNumRunwaysUntilAccess).toBe(0);
+		numRunwaysUntilAccess = localNumRunwaysUntilAccess;
+	});
 
 	it('should sign out successfully', async () => {
 		const response = await agent.get('/sign-out');
