@@ -24,24 +24,22 @@ export async function updateUser({ userId, newRunwayIds }: UpdateUserOptions) {
 			throw new Error('User not found');
 		}
 
-		if (newRunwayIds?.length > 0) {
-			const totalRunways = await RunwayModel.countDocuments();
-			const userRankedRunways = user.ranked_runway_ids.length;
+		const totalRunways = await RunwayModel.countDocuments();
+		const userRankedRunways = user.ranked_runway_ids.length;
 
-			const accessTopRunways = userRankedRunways >= totalRunways;
-			const numRunwaysUntilAccess = Math.max(
-				0,
-				totalRunways - userRankedRunways
-			);
+		const accessTopRunways = userRankedRunways >= totalRunways;
+		const numRunwaysUntilAccess = Math.max(
+			0,
+			totalRunways - userRankedRunways
+		);
 
-			if (
-				user.accessTopRunways !== accessTopRunways ||
-				user.numRunwaysUntilAccess !== numRunwaysUntilAccess
-			) {
-				user.accessTopRunways = accessTopRunways;
-				user.numRunwaysUntilAccess = numRunwaysUntilAccess;
-				await user.save();
-			}
+		if (
+			user.accessTopRunways !== accessTopRunways ||
+			user.numRunwaysUntilAccess !== numRunwaysUntilAccess
+		) {
+			user.accessTopRunways = accessTopRunways;
+			user.numRunwaysUntilAccess = numRunwaysUntilAccess;
+			await user.save();
 		}
 
 		return user;
