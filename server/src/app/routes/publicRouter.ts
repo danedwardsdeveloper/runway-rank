@@ -1,7 +1,6 @@
 import express, { Router } from 'express';
 
 import { validateToken } from '../middleware/jwtToken.js';
-import { checkTopRunwaysAccess } from '@/app/middleware/checkTopRunwaysAccess.js';
 import welcome from './publicRoutes/welcome.js';
 import createAccount from './publicRoutes/createAccount.js';
 import signIn from './publicRoutes/signIn.js';
@@ -11,8 +10,7 @@ import signOut from './publicRoutes/signOut.js';
 
 const publicRouter: Router = express.Router();
 
-publicRouter.use(validateToken, checkTopRunwaysAccess);
-
+publicRouter.use(validateToken);
 publicRouter.use(
 	'/',
 	welcome,
