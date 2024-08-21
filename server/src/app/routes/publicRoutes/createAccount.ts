@@ -4,7 +4,9 @@ import bcrypt from 'bcrypt';
 
 import { UserModel } from '@/app/database/models/User.js';
 import { generateToken } from '@/app/middleware/jwtToken.js';
-import { TokenInput } from '@/types.js';
+import { TokenInput, NextPairResponse, CustomRequest } from '@/types.js';
+import { getNextPairService } from '@/app/database/services/runwayService.js';
+import { checkTopRunwaysAccess } from '@/app/middleware/checkTopRunwaysAccess.js';
 
 export default express
 	.Router()
@@ -37,27 +39,62 @@ export default express
 					email,
 					hashed_password: hashedPassword,
 					name,
+					accessTopRunways: false,
+					numRunwaysUntilAccess: await UserModel.countDocuments(),
 					runways_ranked: [],
 				});
 
 				await newUser.save();
 
-				const tokenUser: TokenInput = {
-					_id: newUser._id,
-					email: newUser.email,
+				(req as CustomRequest).user = {
+					id: newUser._id.toString(),
 					name: newUser.name,
+					email: newUser.email,
+					accessTopRunways: false,
+					numRunwaysUntilAccess: 0,
+				};
+
+				await new Promise<void>((resolve) => {
+					checkTopRunwaysAccess(req as CustomRequest, res, () => {
+						resolve();
+					});
+				});
+
+				const tokenUser: TokenInput = {
+					name: newUser.name,
+					email: newUser.email,
+					_id: newUser._id,
+					accessTopRunways: (req as CustomRequest).user!.accessTopRunways,
+					numRunwaysUntilAccess: (req as CustomRequest).user!
+						.numRunwaysUntilAccess,
 				};
 
 				generateToken(res, tokenUser);
 
-				res.status(201).json({
+				let nextPair;
+				try {
+					nextPair = await getNextPairService(newUser._id.toString());
+				} catch (error) {
+					console.error('Error getting next pair:', error);
+					nextPair = null;
+				}
+
+				const response: NextPairResponse = {
 					message: 'Account created successfully',
+					authenticated: true,
 					user: {
-						email: newUser.email,
+						id: newUser._id.toString(),
 						name: newUser.name,
-						id: newUser._id,
+						email: newUser.email,
+						accessTopRunways: (req as CustomRequest).user!
+							.accessTopRunways,
+						numRunwaysUntilAccess: (req as CustomRequest).user!
+							.numRunwaysUntilAccess,
 					},
-				});
+					nextPair: nextPair || undefined,
+				};
+
+				res.status(201).json(response);
 			} catch (error) {
 				console.error('Error creating account:', error);
 				res.status(500).json({
