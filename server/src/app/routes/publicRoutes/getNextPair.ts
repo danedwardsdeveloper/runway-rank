@@ -10,10 +10,9 @@ import {
 	getNextPairService,
 	updateRunwayScores,
 } from '@/app/database/services/runwayService.js';
-import { updateUserRankedRunways } from '@/app/database/services/userService.js';
+import { updateUser } from '@/app/database/services/userService.js';
 
-function sanitizeUser(user: any): UserObject | null {
-	if (!user) return null;
+function sanitizeUser(user: any): UserObject {
 	return {
 		id: user.id,
 		name: user.name,
@@ -36,7 +35,11 @@ export default express
 
 			if (userId && winner && loser) {
 				await updateRunwayScores(winner, loser);
-				await updateUserRankedRunways(userId, [winner, loser]);
+				const updatedUser = await updateUser({
+					userId,
+					newRunwayIds: [winner, loser],
+				});
+				req.user = sanitizeUser(updatedUser);
 				scoresUpdated = true;
 			}
 
