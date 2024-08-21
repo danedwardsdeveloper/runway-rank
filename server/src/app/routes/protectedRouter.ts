@@ -8,4 +8,4 @@ const protectedRouter: Router = express.Router();
 
 protectedRouter.use('/', validateToken, protectedRoute, deleteAccount);
 
-export default protectedRouter;
+export default protectedRouter as Router;
