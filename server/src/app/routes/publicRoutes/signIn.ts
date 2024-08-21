@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt';
 import { UserModel } from '@/app/database/models/User.js';
 import { generateToken } from '@/app/middleware/jwtToken.js';
 import { getNextPairService } from '@/app/database/services/runwayService.js';
+import { NextPairResponse } from '@/types.js';
 
 export default express
 	.Router()
@@ -41,6 +42,8 @@ export default express
 					_id: user._id,
 					name: user.name,
 					email: user.email,
+					accessTopRunways: user.accessTopRunways,
+					numRunwaysUntilAccess: user.numRunwaysUntilAccess,
 				});
 
 				let nextPair;
@@ -51,15 +54,21 @@ export default express
 					nextPair = null;
 				}
 
-				res.status(200).json({
+				const response: NextPairResponse = {
 					message: 'Sign in successful',
+					authenticated: true,
 					user: {
-						id: user._id,
 						name: user.name,
 						email: user.email,
+						id: user._id.toString(),
+						accessTopRunways: user.accessTopRunways,
+						numRunwaysUntilAccess: user.numRunwaysUntilAccess,
 					},
-					nextPair: nextPair,
-				});
+					nextPair: nextPair || undefined,
+					noMorePairs: !nextPair,
+				};
+
+				res.status(200).json(response);
 			} catch (error) {
 				console.error('Error signing in:', error);
 				res.status(500).json({
