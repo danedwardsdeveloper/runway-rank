@@ -1,6 +1,7 @@
 import { RunwayModel } from '../models/Runway.js';
 import { UserModel } from '../models/User.js';
 import { RunwayItem } from '@/types.js';
+import { calculateEloRatings } from '@/app/utilities/eloRating.js';
 
 export async function getNextPairService(
 	userId: string | null
@@ -49,11 +50,26 @@ export async function updateRunwayScores(
 	loserId: string
 ): Promise<void> {
 	try {
-		await RunwayModel.findByIdAndUpdate(winnerId, {
-			$inc: { score: 10, ratings_count: 1 },
+		const winner = await RunwayModel.findById(winnerId);
+		const loser = await RunwayModel.findById(loserId);
+
+		if (!winner || !loser) {
+			throw new Error('Winner or loser runway not found');
+		}
+
+		const { winnerRating, loserRating } = calculateEloRatings({
+			winnerRating: winner.score,
+			loserRating: loser.score,
 		});
+
+		await RunwayModel.findByIdAndUpdate(winnerId, {
+			$set: { score: winnerRating },
+			$inc: { ratings_count: 1 },
+		});
+
 		await RunwayModel.findByIdAndUpdate(loserId, {
-			$inc: { score: -10, ratings_count: 1 },
+			$set: { score: loserRating },
+			$inc: { ratings_count: 1 },
 		});
 	} catch (error) {
 		console.error('Error in updateRunwayScores:', error);
