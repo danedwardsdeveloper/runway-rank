@@ -7,7 +7,8 @@ export default express
 	.get('/sign-out', (req: Request, res: Response) => {
 		try {
 			if (!req.cookies.jwt) {
-				return res.status(200).json({ message: 'Not signed in' });
+				res.status(401).json({ message: 'Not signed in' });
+				return;
 			}
 
 			res.clearCookie('jwt', {
@@ -17,10 +18,12 @@ export default express
 			});
 
 			res.status(200).json({ message: 'Sign out successful' });
+			return;
 		} catch (error) {
 			console.error('Error signing out:', error);
 			res.status(500).json({
 				message: 'An error occurred while signing out',
 			});
+			return;
 		}
 	}) as Router;
