@@ -1,10 +1,10 @@
 import express, { Router } from 'express';
 
 import protectedRoute from './protectedRoutes/protectedRoute.js';
-import postRankings from './protectedRoutes/postRankings.js';
+import validateToken from '../middleware/validateToken.js';
 
 const protectedRouter: Router = express.Router();
 
-protectedRouter.use('/', protectedRoute, postRankings);
+protectedRouter.use('/', protectedRoute, validateToken);
 
 export default protectedRouter;
