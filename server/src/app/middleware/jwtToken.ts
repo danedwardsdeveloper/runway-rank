@@ -2,15 +2,10 @@ import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
 import { environment } from '@/environment.js';
-import {
-	CustomRequest,
-	DecodedToken,
-	JwtPayload,
-	TokenInput,
-} from '@/types.js';
+import { CustomRequest, TokenInput, UserObject } from '@/types.js';
 
 export function generateToken(res: Response, user: TokenInput): void {
-	const payload: JwtPayload = {
+	const payload: UserObject = {
 		id: user._id.toString(),
 		name: user.name,
 		email: user.email,
@@ -38,7 +33,7 @@ export async function validateToken(
 			return next();
 		}
 
-		const decoded = jwt.verify(token, environment.JWT_SECRET) as DecodedToken;
+		const decoded = jwt.verify(token, environment.JWT_SECRET) as UserObject;
 		req.user = decoded;
 		next();
 	} catch (error) {
