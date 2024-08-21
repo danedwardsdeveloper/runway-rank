@@ -39,19 +39,8 @@ export interface CustomRequest extends Request {
 	};
 }
 
-export interface Ranking {
-	user: mongoose.Types.ObjectId;
-	type: 'score' | 'ratings';
-	runways: ObjectId[];
-}
-
 export interface Queen {
 	name: string;
 	former_name?: string;
 	runways: ObjectId[];
 }
-
-type ValidateTokenResponse = {
-	nextPair: [RunwayItem, RunwayItem];
-	authenticated: boolean;
-};
