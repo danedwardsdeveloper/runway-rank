@@ -1,6 +1,6 @@
 import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { CustomRequest } from 'src/types.js';
+import { CustomRequest } from '@/types.js';
 
 const validateToken = async (
 	req: CustomRequest,

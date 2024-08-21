@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 
-import { Ranking } from '../../../types.js';
+import { Ranking } from '@/types.js';
 
 const RankingSchema = new mongoose.Schema<Ranking>({
 	user: { type: Schema.Types.ObjectId, ref: 'User', required: true },

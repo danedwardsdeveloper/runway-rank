@@ -2,7 +2,7 @@ import { Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { Types } from 'mongoose';
 
-import { environment } from 'src/environment.js';
+import { environment } from '@/environment.js';
 
 interface UserData {
 	_id: Types.ObjectId;

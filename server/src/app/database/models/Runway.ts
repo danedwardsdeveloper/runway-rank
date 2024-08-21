@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import { RunwayItem } from 'src/types.js';
+import { RunwayItem } from '@/types.js';
 
 const RunwaySchema = new mongoose.Schema<RunwayItem>({
 	name: { type: String, required: true },

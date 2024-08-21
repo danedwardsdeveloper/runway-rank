@@ -1,10 +1,10 @@
 import express, { Response } from 'express';
 import { isValidObjectId } from 'mongoose';
 
-import { CustomRequest } from 'src/types.js';
+import { CustomRequest } from '@/types.js';
 
-import validateToken from '../../middleware/validateToken.js';
-import { updateRankingsService } from 'src/app/database/services/rankingService.js';
+import validateToken from '@/app/middleware/validateToken.js';
+import { updateRankingsService } from '@/app/database/services/rankingService.js';
 
 const postRankings = express.Router();
 

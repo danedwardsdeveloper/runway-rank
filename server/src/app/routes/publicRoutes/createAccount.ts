@@ -2,9 +2,9 @@ import express, { Router, Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 
-import { UserModel } from '../../database/models/User.js';
+import { UserModel } from '@/app/database/models/User.js';
 
-import { generateToken } from 'src/app/middleware/generateToken.js';
+import { generateToken } from '@/app/middleware/generateToken.js';
 
 const createAccount: Router = express.Router();
 

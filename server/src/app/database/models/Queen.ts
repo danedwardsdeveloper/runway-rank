@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { Queen } from 'src/types.js';
+import { Queen } from '@/types.js';
 
 const QueenSchema = new mongoose.Schema<Queen>({
 	name: { type: String, required: true },

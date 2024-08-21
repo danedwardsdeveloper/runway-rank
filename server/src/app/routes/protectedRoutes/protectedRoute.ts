@@ -1,7 +1,7 @@
 import express, { Router, Response } from 'express';
 
-import { CustomRequest } from 'src/types.js';
-import validateToken from 'src/app/middleware/validateToken.js';
+import { CustomRequest } from '@/types.js';
+import validateToken from '@/app/middleware/validateToken.js';
 
 const protectedRoute: Router = express.Router();
 

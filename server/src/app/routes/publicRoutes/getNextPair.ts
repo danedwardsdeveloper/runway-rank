@@ -1,8 +1,8 @@
 import express, { Response } from 'express';
 
-import { CustomRequest } from '../../../types.js';
-import { getNextPairService } from '../../database/services/runwayService.js';
-import validateToken from '../../middleware/validateToken.js';
+import { CustomRequest } from '@/types.js';
+import { getNextPairService } from '@/app/database/services/runwayService.js';
+import validateToken from '@/app/middleware/validateToken.js';
 
 const getNextPair = express.Router();
 

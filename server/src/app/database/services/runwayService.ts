@@ -1,8 +1,5 @@
-import mongoose from 'mongoose';
-
 import { RunwayModel } from '../models/Runway.js';
-import { RunwayItem } from 'src/types.js';
-
+import { RunwayItem } from '@/types.js';
 import { getUserRankings } from './rankingService.js';
 
 export async function getNextPairService(

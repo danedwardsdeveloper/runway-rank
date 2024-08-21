@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 import { RankingModel } from '../models/Ranking.js';
 import { UserModel } from '../models/User.js';
 import { RunwayModel } from '../models/Runway.js';
-import { User, Ranking, RunwayItem } from 'src/types.js';
 
 interface UserRanking {
 	runwayId: mongoose.Types.ObjectId;

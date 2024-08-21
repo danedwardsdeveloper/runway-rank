@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import { environment } from 'src/environment.js';
+import { environment } from '@/environment.js';
 
 export async function createIndexes() {
 	const db = mongoose.connection.db;

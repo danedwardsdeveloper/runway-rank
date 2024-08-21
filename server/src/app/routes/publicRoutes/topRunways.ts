@@ -1,5 +1,5 @@
 import express, { Router, Request, Response } from 'express';
-import { RunwayModel } from '../../database/models/Runway.js';
+import { RunwayModel } from '@/app/database/models/Runway.js';
 
 const topRunways: Router = express.Router();
 

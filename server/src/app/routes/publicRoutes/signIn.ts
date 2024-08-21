@@ -2,9 +2,9 @@ import express, { Router, Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 
-import { UserModel } from 'src/app/database/models/User.js';
-import { generateToken } from 'src/app/middleware/generateToken.js';
-import { getNextPairService } from 'src/app/database/services/runwayService.js';
+import { UserModel } from '@/app/database/models/User.js';
+import { generateToken } from '@/app/middleware/generateToken.js';
+import { getNextPairService } from '@/app/database/services/runwayService.js';
 
 const signIn: Router = express.Router();
 
