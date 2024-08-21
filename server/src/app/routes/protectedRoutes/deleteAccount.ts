@@ -27,7 +27,7 @@ export default express
 			});
 
 			res.status(200).json({
-				message: `Account with email '${req.user?.email}' deleted successfully`,
+				message: `Account '${req.user?.email}' deleted successfully`,
 			});
 		} catch (error) {
 			console.error('Error deleting account:', error);
