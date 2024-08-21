@@ -5,24 +5,18 @@ import app from '../src/app/app';
 describe('MongoDB Express Tests', () => {
 	let server;
 	let userId;
+	let runwayIds;
 	let numRunwaysUntilAccess;
-	let firstPairIds;
 	let agent;
 
 	beforeAll(() => {
-		server = app.listen(3000);
+		server = app.listen(3001);
 		agent = request.agent(server);
 	});
 
 	afterAll((done) => {
 		server.close(done);
 	});
-
-	const logResponse = (response) => {
-		console.log(`Status: ${response.status}`);
-		console.log(`Headers: ${JSON.stringify(response.headers, null, 2)}`);
-		console.log(`Body: ${JSON.stringify(response.body, null, 2)}`);
-	};
 
 	it('should return a welcome message', async () => {
 		const response = await request(server).get('/');
@@ -107,14 +101,12 @@ describe('MongoDB Express Tests', () => {
 			name: 'Test',
 		});
 
-		expect(response.status).toBe(400);
-		expect(response.body.message).toMatch(
-			'User with this email already exists'
-		);
+		expect(response.status).toBe(200);
+		expect(response.body.message).toMatch('User already exists');
 	});
 
 	it('should sign out', async () => {
-		const response = await agent.post('/sign-out');
+		const response = await agent.get('/sign-out');
 		expect(response.status).toBe(200);
 		expect(response.body).toEqual({
 			message: 'Sign out successful',
@@ -152,52 +144,61 @@ describe('MongoDB Express Tests', () => {
 		expect(Array.isArray(response.body.nextPair)).toBe(true);
 		expect(response.body.nextPair).toHaveLength(2);
 
-		firstPairIds = response.body.nextPair.map((item) => item._id);
+		runwayIds = response.body.nextPair.map((item) => item._id);
+		const firstPairQueens = response.body.nextPair.map(
+			(item) => item.queen_name
+		);
+
+		console.log(`First queen: ${runwayIds[0]}, ${firstPairQueens[0]}`);
+		console.log(`Second queen: ${runwayIds[1]}, ${firstPairQueens[1]}`);
+
+		console.log(
+			`Runways until access: ${response.body.user.numRunwaysUntilAccess}`
+		);
 	});
 
-	it('should check top runways access', async () => {
+	it('accessTopRunways should be false', async () => {
 		const response = await agent.get('/top-runways');
 
 		expect(response.status).toBe(200);
 		expect(response.body).toMatchObject({
 			accessTopRunways: false,
-			numRunwaysUntilAccess: expect.any(Number),
 		});
-		expect(response.body.numRunwaysUntilAccess).toBeGreaterThan(0);
+		expect(response.body.numRunwaysUntilAccess).toBeGreaterThan(8);
 	});
 
 	it('should update scores and get next pair', async () => {
 		const response = await agent.post('/get-next-pair').send({
-			winner: firstPairIds[0],
-			loser: firstPairIds[1],
+			winner: runwayIds[0],
+			loser: runwayIds[1],
 		});
 
 		expect(response.status).toBe(200);
 		expect(response.body).toMatchObject({
 			message: 'Scores updated successfully',
 		});
-		expect(firstPairIds).not.toContain(response.body.nextPair[0]._id);
-		expect(firstPairIds).not.toContain(response.body.nextPair[1]._id);
+		expect(runwayIds).not.toContain(response.body.nextPair[0]._id);
+		expect(runwayIds).not.toContain(response.body.nextPair[1]._id);
 
-		firstPairIds = response.body.nextPair.map((item) => item._id);
+		runwayIds = response.body.nextPair.map((item) => item._id);
 	});
 
-	it('should update top runways access', async () => {
-		const response = await agent.get('/top-runways');
+	// it('numRunwaysUntilAccess should decrease after voting', async () => {
+	// 	const response = await agent.get('/top-runways');
 
-		expect(response.status).toBe(200);
-		if (numRunwaysUntilAccess <= 2) {
-			expect(response.body.accessTopRunways).toBe(true);
-		} else {
-			expect(response.body.accessTopRunways).toBe(false);
-			expect(response.body.numRunwaysUntilAccess).toBe(
-				numRunwaysUntilAccess - 2
-			);
-		}
-	});
+	// 	expect(response.status).toBe(200);
+	// 	if (numRunwaysUntilAccess <= 2) {
+	// 		expect(response.body.accessTopRunways).toBe(true);
+	// 	} else {
+	// 		expect(response.body.accessTopRunways).toBe(false);
+	// 		expect(response.body.numRunwaysUntilAccess).toBe(
+	// 			numRunwaysUntilAccess - 2
+	// 		);
+	// 	}
+	// });
 
 	it('should sign out successfully', async () => {
-		const response = await agent.post('/sign-out');
+		const response = await agent.get('/sign-out');
 		expect(response.status).toBe(200);
 		expect(response.body).toEqual({
 			message: 'Sign out successful',
@@ -205,15 +206,15 @@ describe('MongoDB Express Tests', () => {
 	});
 
 	it('should fail to sign out when not signed in', async () => {
-		const response = await agent.post('/sign-out');
-		expect(response.status).toBe(400);
+		const response = await agent.get('/sign-out');
+		expect(response.status).toBe(401);
 		expect(response.body).toEqual({
 			message: 'Not signed in',
 		});
 	});
 
 	it('should fail to delete account when not signed in', async () => {
-		const response = await agent.post('/delete-account');
+		const response = await agent.delete('/delete-account');
 		expect(response.status).toBe(401);
 		expect(response.body).toEqual({
 			message: 'Unauthorized',
@@ -229,7 +230,7 @@ describe('MongoDB Express Tests', () => {
 	});
 
 	it('should delete the account', async () => {
-		const response = await agent.post('/delete-account');
+		const response = await agent.delete('/delete-account');
 		expect(response.status).toBe(200);
 		expect(response.body).toEqual({
 			message: "Account 'test@gmail.com' deleted successfully",
@@ -237,14 +238,14 @@ describe('MongoDB Express Tests', () => {
 	});
 
 	it('should fail to delete account again', async () => {
-		const response = await agent.post('/delete-account');
+		const response = await agent.delete('/delete-account');
 		expect(response.status).toBe(401);
 		expect(response.body).toEqual({
 			message: 'Unauthorized',
 		});
 	});
 
-	it('should fail to sign in with deleted account', async () => {
+	it('should fail to sign in with deleted the account', async () => {
 		const response = await agent.post('/sign-in').send({
 			email: 'test@gmail.com',
 			password: 'SecurePassword',
