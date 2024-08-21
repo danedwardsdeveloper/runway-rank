@@ -52,14 +52,19 @@ export default express
 				nextPair = await getNextPairService(null);
 			}
 
+			let message = scoresUpdated
+				? 'Scores updated successfully'
+				: 'Scores not updated';
+
 			const responseObject: NextPairResponse = {
-				...(scoresUpdated && { message: 'Scores updated successfully' }),
+				message: message,
 				authenticated: !!userId,
-				user: sanitizeUser(req.user),
+				user: req.user ? sanitizeUser(req.user) : null,
 				...(nextPair ? { nextPair } : { noMorePairs: true }),
 			};
 
-			res.json(responseObject);
+			res.status(200).json(responseObject);
+			return;
 		} catch (error) {
 			console.error('Error in get-next-pair:', error);
 			res.status(500).json({
@@ -67,5 +72,6 @@ export default express
 				authenticated: !!req.user,
 				user: sanitizeUser(req.user),
 			});
+			return;
 		}
 	}) as Router;
