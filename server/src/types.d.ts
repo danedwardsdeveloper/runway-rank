@@ -33,6 +33,8 @@ export interface UserDocument extends UserBase, mongoose.Document {
 	_id: mongoose.Types.ObjectId;
 	hashed_password: string;
 	ranked_runway_ids: mongoose.Types.ObjectId[];
+	accessTopRunways: boolean;
+	numRunwaysUntilAccess: number;
 }
 
 export interface CustomRequest extends Request {
@@ -61,4 +63,9 @@ export interface Queen {
 export interface PairScores {
 	winnerRating: number;
 	loserRating: number;
+}
+
+export interface UpdateUserOptions {
+	userId: string;
+	newRunwayIds?: string[];
 }
