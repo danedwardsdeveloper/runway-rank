@@ -1,4 +1,3 @@
-// vitest.config.ts
 import { defineConfig } from 'vitest/config';
 import path from 'path';
 
@@ -12,17 +11,16 @@ export default defineConfig({
 			'**/cypress/**',
 			'**/.{idea,git,cache,output,temp}/**',
 		],
-
-		// Configure global settings for all tests
 		globals: true,
-
-		alias: {
-			'@': path.resolve(__dirname, './src'),
-		},
-
 		testTimeout: 10000,
 		watch: true,
 		silent: false,
 		retry: 0,
+	},
+	resolve: {
+		extensions: ['.ts', '.js'],
+		alias: {
+			'@': path.resolve(__dirname, './src'),
+		},
 	},
 });
