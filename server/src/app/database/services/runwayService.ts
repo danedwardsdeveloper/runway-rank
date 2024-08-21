@@ -1,33 +1,62 @@
 import { RunwayModel } from '../models/Runway.js';
+import { UserModel } from '../models/User.js';
 import { RunwayItem } from '@/types.js';
-import { getUserRankings } from './rankingService.js';
 
 export async function getNextPairService(
-	userId: string
-): Promise<[RunwayItem, RunwayItem]> {
+	userId: string | null
+): Promise<RunwayItem[] | null> {
 	try {
 		let runways;
 
 		if (userId) {
-			const userRankings = await getUserRankings(userId);
-			const rankedRunwayIds = userRankings.map(
-				(ranking) => ranking.runwayId
-			);
+			const user = await UserModel.findById(userId);
+			if (!user) throw new Error('User not found');
 
-			runways = await RunwayModel.find({ _id: { $nin: rankedRunwayIds } })
+			runways = await RunwayModel.find({
+				_id: { $nin: user.ranked_runway_ids },
+			})
 				.sort({ ratings_count: 1 })
 				.limit(2);
+
+			if (runways.length === 1) {
+				const randomRunway = await RunwayModel.aggregate([
+					{
+						$match: {
+							_id: { $nin: [...user.ranked_runway_ids, runways[0]._id] },
+						},
+					},
+					{ $sample: { size: 1 } },
+				]);
+				runways.push(randomRunway[0]);
+			}
 		} else {
 			runways = await RunwayModel.find().sort({ ratings_count: 1 }).limit(2);
 		}
 
 		if (runways.length < 2) {
-			throw new Error('Not enough runways available for ranking');
+			return null;
 		}
 
-		return [runways[0], runways[1]];
+		return runways;
 	} catch (error) {
 		console.error('Error in getNextPairService:', error);
+		throw error;
+	}
+}
+
+export async function updateRunwayScores(
+	winnerId: string,
+	loserId: string
+): Promise<void> {
+	try {
+		await RunwayModel.findByIdAndUpdate(winnerId, {
+			$inc: { score: 10, ratings_count: 1 },
+		});
+		await RunwayModel.findByIdAndUpdate(loserId, {
+			$inc: { score: -10, ratings_count: 1 },
+		});
+	} catch (error) {
+		console.error('Error in updateRunwayScores:', error);
 		throw error;
 	}
 }
