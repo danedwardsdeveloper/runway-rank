@@ -6,6 +6,7 @@ import { UserModel } from '@/app/database/models/User.js';
 import { generateToken } from '@/app/middleware/jwtToken.js';
 import { getNextPairService } from '@/app/database/services/runwayService.js';
 import { NextPairResponse } from '@/types.js';
+import { updateUser } from '@/app/database/services/userService.js';
 
 export default express
 	.Router()
@@ -21,7 +22,7 @@ export default express
 			const { email, password } = req.body;
 
 			try {
-				const user = await UserModel.findOne({ email });
+				let user = await UserModel.findOne({ email });
 				if (!user) {
 					return res
 						.status(401)
@@ -37,6 +38,8 @@ export default express
 						.status(401)
 						.json({ message: 'Invalid email or password' });
 				}
+
+				user = await updateUser({ userId: user._id.toString() });
 
 				generateToken(res, {
 					_id: user._id,
