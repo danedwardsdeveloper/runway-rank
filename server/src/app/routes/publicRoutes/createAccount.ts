@@ -6,7 +6,6 @@ import { UserModel } from '@/app/database/models/User.js';
 import { generateToken } from '@/app/middleware/jwtToken.js';
 import { TokenInput, NextPairResponse, CustomRequest } from '@/types.js';
 import { getNextPairService } from '@/app/database/services/runwayService.js';
-import { checkTopRunwaysAccess } from '@/app/middleware/checkTopRunwaysAccess.js';
 
 export default express
 	.Router()
@@ -17,7 +16,7 @@ export default express
 			body('password').isLength({ min: 6 }),
 			body('name').trim().notEmpty(),
 		],
-		async (req: Request, res: Response) => {
+		async (req: CustomRequest, res: Response) => {
 			const errors = validationResult(req);
 			if (!errors.isEmpty()) {
 				return res.status(400).json({ errors: errors.array() });
@@ -46,19 +45,13 @@ export default express
 
 				await newUser.save();
 
-				(req as CustomRequest).user = {
-					id: newUser._id.toString(),
-					name: newUser.name,
-					email: newUser.email,
+				req.user = {
+					id: user._id.toString(),
+					name: user.name,
+					email: user.email,
 					accessTopRunways: false,
 					numRunwaysUntilAccess: 0,
 				};
-
-				await new Promise<void>((resolve) => {
-					checkTopRunwaysAccess(req as CustomRequest, res, () => {
-						resolve();
-					});
-				});
 
 				const tokenUser: TokenInput = {
 					name: newUser.name,
