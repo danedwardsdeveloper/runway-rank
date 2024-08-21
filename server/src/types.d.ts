@@ -41,11 +41,6 @@ export interface CustomRequest extends Request {
 	user?: UserObject;
 }
 
-export interface TopRunwayAccessResponse {
-	accessTopRunways: boolean;
-	numRunwaysUntilAccess: number;
-}
-
 export interface NextPairResponse {
 	authenticated: boolean;
 	user: UserObject | null;
