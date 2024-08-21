@@ -1,7 +1,7 @@
 import { RunwayModel } from '../models/Runway.js';
 import { UserModel } from '../models/User.js';
 import { RunwayItem } from '@/types.js';
-import { calculateEloRatings } from '@/app/utilities/eloRating.js';
+import calculateEloRatings from '@/app/utilities/eloRating.js';
 
 export async function getNextPairService(
 	userId: string | null
