@@ -29,14 +29,11 @@ export interface JwtPayload {
 export interface CustomRequest extends Request {
 	user?: {
 		id: string;
-		email: string;
 		name: string;
-		accessTopRunways: boolean;
+		email: string;
 	};
-	body: {
-		authenticated: boolean;
-		[key: string]: any;
-	};
+	accessTopRunways?: boolean;
+	numRunwaysUntilAccess?: number;
 }
 
 export interface Queen {
