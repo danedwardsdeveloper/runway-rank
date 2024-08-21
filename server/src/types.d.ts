@@ -14,27 +14,30 @@ export interface RunwayItem {
 	image_url: string;
 }
 
-export interface User {
+export interface UserBase {
 	email: string;
-	hashed_password: string;
 	name: string;
+}
+
+export interface UserDocument extends UserBase, mongoose.Document {
+	_id: mongoose.Types.ObjectId;
+	hashed_password: string;
 	ranked_runway_ids: mongoose.Types.ObjectId[];
 }
 
-export interface JwtPayload {
+export interface JwtPayload extends UserBase {
 	id: string;
-	email: string;
 }
 
+export type DecodedToken = JwtPayload;
+
 export interface CustomRequest extends Request {
-	user?: {
-		id: string;
-		name: string;
-		email: string;
-	};
+	user?: JwtPayload;
 	accessTopRunways?: boolean;
 	numRunwaysUntilAccess?: number;
 }
+
+export type SafeUser = Omit<UserDocument, 'hashed_password'>;
 
 export interface Queen {
 	name: string;
