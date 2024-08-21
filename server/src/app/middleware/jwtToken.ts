@@ -4,12 +4,12 @@ import jwt from 'jsonwebtoken';
 import { environment } from '@/environment.js';
 import {
 	CustomRequest,
-	UserDocument,
 	DecodedToken,
 	JwtPayload,
+	TokenInput,
 } from '@/types.js';
 
-export function generateToken(res: Response, user: UserDocument): void {
+export function generateToken(res: Response, user: TokenInput): void {
 	const payload: JwtPayload = {
 		id: user._id.toString(),
 		name: user.name,

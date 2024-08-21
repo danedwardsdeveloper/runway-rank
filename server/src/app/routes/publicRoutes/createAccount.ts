@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 
 import { UserModel } from '@/app/database/models/User.js';
 import { generateToken } from '@/app/middleware/jwtToken.js';
+import { TokenInput } from '@/types.js';
 
 export default express
 	.Router()
@@ -41,11 +42,13 @@ export default express
 
 				await newUser.save();
 
-				generateToken(res, {
+				const tokenUser: TokenInput = {
 					_id: newUser._id,
 					email: newUser.email,
 					name: newUser.name,
-				});
+				};
+
+				generateToken(res, tokenUser);
 
 				res.status(201).json({
 					message: 'Account created successfully',

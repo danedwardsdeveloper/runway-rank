@@ -19,14 +19,18 @@ export interface UserBase {
 	name: string;
 }
 
-export interface UserDocument extends UserBase, mongoose.Document {
+export interface TokenInput extends UserBase {
 	_id: mongoose.Types.ObjectId;
-	hashed_password: string;
-	ranked_runway_ids: mongoose.Types.ObjectId[];
 }
 
 export interface JwtPayload extends UserBase {
 	id: string;
+}
+
+export interface UserDocument extends UserBase, mongoose.Document {
+	_id: mongoose.Types.ObjectId;
+	hashed_password: string;
+	ranked_runway_ids: mongoose.Types.ObjectId[];
 }
 
 export type DecodedToken = JwtPayload;
