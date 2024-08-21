@@ -1,6 +1,6 @@
 import { PairScores } from '@/types.js';
 
-export function calculateEloRatings({
+export default function calculateEloRatings({
 	winnerRating,
 	loserRating,
 }: PairScores): PairScores {
