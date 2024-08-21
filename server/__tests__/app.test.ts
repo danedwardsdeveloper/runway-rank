@@ -203,36 +203,65 @@ describe('MongoDB Express Tests', () => {
 	it('should continuously update scores until top runways access is granted', async () => {
 		let currentRunwayIds;
 		let previousRunwayIds = [];
-		let localNumRunwaysUntilAccess = numRunwaysUntilAccess;
+
+		const initialResponse = await agent.post('/get-next-pair');
+		let localNumRunwaysUntilAccess =
+			initialResponse.body.user.numRunwaysUntilAccess;
+		currentRunwayIds = initialResponse.body.nextPair.map((item) => item._id);
+
+		console.log(
+			`Initial runways until access: ${localNumRunwaysUntilAccess}`
+		);
 
 		while (localNumRunwaysUntilAccess > 0) {
+			console.log(
+				`Before request: localNumRunwaysUntilAccess = ${localNumRunwaysUntilAccess}`
+			);
+
 			const response = await agent.post('/get-next-pair').send({
-				winner: currentRunwayIds ? currentRunwayIds[0] : undefined,
-				loser: currentRunwayIds ? currentRunwayIds[1] : undefined,
+				winner: currentRunwayIds[0],
+				loser: currentRunwayIds[1],
 			});
 
 			expect(response.status).toBe(200);
 
+			// COMMENT: Add a check for nextPair existence
+			if (response.body.nextPair) {
+				console.log(
+					`First runway: ${response.body.nextPair[0]._id}, ${response.body.nextPair[0].queen_name}`
+				);
+				console.log(
+					`Second runway: ${response.body.nextPair[1]._id}, ${response.body.nextPair[1].queen_name}`
+				);
+
+				currentRunwayIds = response.body.nextPair.map((item) => item._id);
+				expect(previousRunwayIds).not.toContain(currentRunwayIds[0]);
+				expect(previousRunwayIds).not.toContain(currentRunwayIds[1]);
+				previousRunwayIds = currentRunwayIds;
+			} else {
+				console.log('No more pairs available');
+				// COMMENT: Break the loop if no more pairs are available
+				break;
+			}
+
 			console.log(
-				`First runway: ${response.body.nextPair[0]._id}, ${response.body.nextPair[0].queen_name}`
-			);
-			console.log(
-				`Second runway: ${response.body.nextPair[1]._id}, ${response.body.nextPair[1].queen_name}`
+				`Expected: ${localNumRunwaysUntilAccess - 2}, Actual: ${
+					response.body.user.numRunwaysUntilAccess
+				}`
 			);
 
-			currentRunwayIds = response.body.nextPair.map((item) => item._id);
-			expect(previousRunwayIds).not.toContain(currentRunwayIds[0]);
-			expect(previousRunwayIds).not.toContain(currentRunwayIds[1]);
-			previousRunwayIds = currentRunwayIds;
-
-			expect(response.body.user.numRunwaysUntilAccess).toSatisfy(
-				(value) =>
-					value === localNumRunwaysUntilAccess ||
-					value === localNumRunwaysUntilAccess - 2
+			expect(response.body.user.numRunwaysUntilAccess).toBeLessThanOrEqual(
+				localNumRunwaysUntilAccess - 2
 			);
+			expect(
+				response.body.user.numRunwaysUntilAccess
+			).toBeGreaterThanOrEqual(localNumRunwaysUntilAccess - 4);
+
 			localNumRunwaysUntilAccess = response.body.user.numRunwaysUntilAccess;
 
-			console.log(`Runways until access: ${localNumRunwaysUntilAccess}`);
+			console.log(
+				`After update: Runways until access: ${localNumRunwaysUntilAccess}`
+			);
 
 			if (localNumRunwaysUntilAccess === 0) {
 				expect(response.body.user.accessTopRunways).toBe(true);
@@ -241,7 +270,12 @@ describe('MongoDB Express Tests', () => {
 			}
 		}
 
-		expect(localNumRunwaysUntilAccess).toBe(0);
+		// COMMENT: Final check outside the loop
+		const finalResponse = await agent.post('/get-next-pair');
+		expect(finalResponse.body.user.numRunwaysUntilAccess).toBe(0);
+		expect(finalResponse.body.user.accessTopRunways).toBe(true);
+		expect(finalResponse.body.nextPair).toBeUndefined();
+
 		numRunwaysUntilAccess = localNumRunwaysUntilAccess;
 	});
 
