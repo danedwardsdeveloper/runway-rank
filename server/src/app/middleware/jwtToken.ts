@@ -9,6 +9,8 @@ export function generateToken(res: Response, user: TokenInput): void {
 		id: user._id.toString(),
 		name: user.name,
 		email: user.email,
+		accessTopRunways: user.accessTopRunways,
+		numRunwaysUntilAccess: user.numRunwaysUntilAccess,
 	};
 
 	const token = jwt.sign(payload, environment.JWT_SECRET, { expiresIn: '1h' });
