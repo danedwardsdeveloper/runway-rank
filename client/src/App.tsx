@@ -7,9 +7,11 @@ export default function App() {
 	const error = useRouteError();
 
 	return (
-		<>
+		<div className="flex flex-col h-screen">
 			<MenuBar />
-			<main>{error ? <ErrorElement /> : <Outlet />}</main>
-		</>
+			<main className="flex-1 overflow-auto bg-gradient-to-r from-violet-100 to-pink-100">
+				{error ? <ErrorElement /> : <Outlet />}
+			</main>
+		</div>
 	);
 }
