@@ -1,58 +1,150 @@
-export interface ImageInfo {
-	url: string;
-	title: string;
-	subtitle: string;
-	model: string;
+export interface RunwayPhoto {
 	description: string;
+	queenName: string;
+	franchise?: Franchise;
+	season?: number;
+	episode?: number;
+	episodeName?: string;
+	slug: string;
 }
 
-export const imageInfo: ImageInfo[] = [
+type Franchise =
+	| "RuPaul's Drag Race"
+	| 'All Stars'
+	| 'Drag Race UK'
+	| "Canada's Drag Race";
+
+export const runwayPhotos: RunwayPhoto[] = [
 	{
-		url: '/temp/landscape1.webp',
-		title: 'Sunset Beach',
-		subtitle: 'Golden Hour',
-		model: 'Canon EOS R5',
-		description:
-			'A breathtaking view of the sun setting over a tropical beach, painting the sky in vibrant hues.',
+		description: 'Amoeba Bacteria',
+		queenName: 'Bimini Bon Boulash',
+		franchise: `Drag Race UK`,
+		season: 2,
+		slug: 'bimini-bacteria',
 	},
 	{
-		url: '/temp/landscape2.webp',
-		title: 'Mountain Range',
-		subtitle: 'Alpine Peaks',
-		model: 'Nikon Z7 II',
-		description:
-			'A majestic panorama of snow-capped mountains stretching across the horizon.',
+		description: 'Tartan',
+		queenName: 'Violet Chachki',
+		franchise: `RuPaul's Drag Race`,
+		slug: 'chachki-tartan',
 	},
 	{
-		url: '/temp/square1.webp',
-		title: 'Urban Geometry',
-		subtitle: 'City Patterns',
-		model: 'Sony A7R IV',
-		description:
-			'An abstract composition of modern architecture, showcasing clean lines and symmetry.',
+		description: 'Freddy Krueger',
+		queenName: 'Crystal Methyd',
+		franchise: `RuPaul's Drag Race`,
+		season: 12,
+		slug: 'crystal-krueger',
 	},
 	{
-		url: '/temp/square2.webp',
-		title: 'Blooming Flower',
-		subtitle: 'Macro Beauty',
-		model: 'Fujifilm X-T4',
-		description:
-			'A close-up shot of a delicate flower, revealing intricate details and vivid colors.',
+		description: 'Black and White',
+		queenName: 'Detox',
+		franchise: `All Stars`,
+		season: 2,
+		episode: 1,
+		episodeName: 'All Star Talent Show Extravaganza',
+		slug: 'detox-black-white',
 	},
 	{
-		url: '/temp/portrait1.webp',
-		title: 'Mountain Climber',
-		subtitle: 'Conquering Heights',
-		model: 'Olympus OM-D E-M1 Mark III',
-		description:
-			'A determined climber scaling a challenging rock face, embodying human perseverance.',
+		description: 'Pirate Entrance',
+		queenName: 'Gigi Goode',
+		franchise: `RuPaul's Drag Race`,
+		season: 12,
+		episode: 1,
+		slug: 'gigi-pirate',
 	},
 	{
-		url: '/temp/portrait2.webp',
-		title: 'Forest Path',
-		subtitle: "Nature's Corridor",
-		model: 'Panasonic Lumix S1R',
-		description:
-			'A serene pathway through a lush forest, dappled sunlight filtering through the canopy.',
+		description: 'All Stars Promo',
+		queenName: 'Gottmik',
+		franchise: `All Stars`,
+		slug: 'gottmik-promo',
+	},
+	{
+		description: 'Scream Dress',
+		queenName: 'Gottmik',
+		franchise: `RuPaul's Drag Race`,
+		season: 13,
+		slug: 'gottmik-scream',
+	},
+	{
+		description: 'Promo',
+		queenName: 'Jimbo',
+		franchise: `All Stars`,
+		slug: 'jimbo-promo',
+	},
+	{
+		description: 'Pearl',
+		queenName: 'Plastique Tiara',
+		franchise: `RuPaul's Drag Race`,
+		season: 11,
+		slug: 'plastique-pearl',
+	},
+	{
+		description: 'All Stars Promo',
+		queenName: 'Plastique Tiara',
+		franchise: `All Stars`,
+		slug: 'plastique-promo',
+	},
+	{
+		description: 'Finale',
+		queenName: 'Priyanka',
+		franchise: `Canada's Drag Race`,
+		season: 1,
+		slug: 'priyanka-finale',
+	},
+	{
+		description: 'Finale',
+		queenName: 'Sasha Colby',
+		franchise: `RuPaul's Drag Race`,
+		season: 15,
+		slug: 'sasha-colby-finale',
+	},
+	{
+		description: `Love the Skin You're In`,
+		queenName: 'Shea Couleé',
+		franchise: `All Stars`,
+		season: 5,
+		episode: 5,
+		episodeName: 'Snatch Game of Love',
+		slug: 'shea-love-skin',
+	},
+	{
+		description: 'Sleeping Bag Dress',
+		queenName: 'Utica Queen',
+		franchise: `RuPaul's Drag Race`,
+		season: 13,
+		episode: 7,
+		episodeName: 'Bossy Rossy: The RuBoot',
+		slug: 'utica-sleeping-bag',
+	},
+	{
+		description: 'Entrance',
+		queenName: 'Starlet',
+		franchise: `Drag Race UK`,
+		season: 4,
+		episode: 1,
+		slug: 'starlet-entrance',
+	},
+	{
+		description: 'Season 8 Finale',
+		queenName: 'Violet Chachki',
+		franchise: `RuPaul's Drag Race`,
+		season: 8,
+		episode: 12,
+		episodeName: 'Grand Finale',
+		slug: 'violet-chachki-finale',
+	},
+	{
+		description: 'Three Heads Finale',
+		queenName: 'Willow Pill',
+		franchise: `RuPaul's Drag Race`,
+		season: 14,
+		slug: 'willow-pill-heads',
+	},
+	{
+		description: 'Mushroom',
+		queenName: 'Willow Pill',
+		franchise: `RuPaul's Drag Race`,
+		season: 14,
+		slug: 'willow-pill-mushroom',
 	},
 ];
