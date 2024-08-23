@@ -7,12 +7,14 @@ import signIn from './publicRoutes/signIn.js';
 import topRunways from './publicRoutes/topRunways.js';
 import getNextPair from './publicRoutes/getNextPair.js';
 import signOut from './publicRoutes/signOut.js';
+import images from './publicRoutes/images.js';
 
 const publicRouter: Router = express.Router();
 
-publicRouter.use(validateToken);
+publicRouter.use(images);
 publicRouter.use(
 	'/',
+	validateToken,
 	welcome,
 	createAccount,
 	signIn,
