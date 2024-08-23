@@ -148,3 +148,37 @@ export const runwayPhotos: RunwayPhoto[] = [
 		slug: 'willow-pill-mushroom',
 	},
 ];
+
+export const initialPair = {
+	message: 'Scores not updated',
+	authenticated: false,
+	user: null,
+	nextPair: [
+		{
+			_id: '66c5001eb804fda11a916db6',
+			name: 'Snatch Game',
+			queen_id: '507f1f77bcf86cd799439012',
+			queen_name: 'Jinkx Monsoon',
+			franchise: "RuPaul's Drag Race",
+			season: 5,
+			episode: 5,
+			episode_name: 'Snatch Game',
+			score: 1978,
+			ratings_count: 47,
+			image_url: 'https://example.com/images/jinkx_snatch_game.jpg',
+		},
+		{
+			_id: '66c5001eb804fda11a916dba',
+			name: 'Drag on a Dime',
+			queen_id: '507f1f77bcf86cd799439016',
+			queen_name: 'Temp data',
+			franchise: "RuPaul's Drag Race",
+			season: 4,
+			episode: 1,
+			episode_name: 'RuPocalypse Now!',
+			score: 1865,
+			ratings_count: 47,
+			image_url: 'https://example.com/images/sharon_drag_on_a_dime.jpg',
+		},
+	],
+};
