@@ -1,15 +1,18 @@
 {
-  "name": "runway-rank",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "mongoose": "^8.5.3"
-  }
+	"name": "runway-rank",
+	"version": "1.0.0",
+	"description": "A MERN web app that uses the Elo algorithm to rank runway looks from RuPaul's Drag Race.",
+	"scripts": {
+		"client": "pnpm --filter client dev",
+		"server": "pnpm --filter server dev",
+		"dev": "pnpm run -r --parallel dev",
+		"build": "pnpm run -r build",
+		"start": "pnpm --filter server start"
+	},
+	"author": "Dan Edwards",
+	"license": "ISC",
+	"dependencies": {
+		"mongoose": "^8.5.3",
+		"typescript": "^5.5.4"
+	}
 }
