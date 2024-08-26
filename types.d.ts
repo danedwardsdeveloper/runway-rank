@@ -1,9 +1,9 @@
-import { ObjectId } from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
+import { Request } from 'express';
 
 export interface RunwayItem {
-	_id: string;
 	name: string;
-	queen_id: string;
+	queen_id?: ObjectId;
 	queen_name: string;
 	franchise?: string;
 	season?: number;
@@ -13,6 +13,72 @@ export interface RunwayItem {
 	ratings_count: number;
 	image_url: string;
 }
+
+export interface UserBase {
+	email: string;
+	name: string;
+	accessTopRunways: boolean;
+	numRunwaysUntilAccess: number;
+}
+
+export interface TokenInput extends UserBase {
+	_id: mongoose.Types.ObjectId;
+}
+
+export interface UserObject extends UserBase {
+	id: string;
+}
+
+export interface UserDocument extends UserBase, mongoose.Document {
+	_id: mongoose.Types.ObjectId;
+	hashed_password: string;
+	ranked_runway_ids: mongoose.Types.ObjectId[];
+	accessTopRunways: boolean;
+	numRunwaysUntilAccess: number;
+}
+
+interface GetNextPairRequestBody {
+	winner?: string;
+	loser?: string;
+}
+
+export interface CustomRequest extends Request {
+	user?: UserObject | null;
+	body: GetNextPairRequestBody;
+	cookies: {
+		[key: string]: string;
+	};
+}
+
+export interface NextPairResponse {
+	authenticated: boolean;
+	user: UserObject | null;
+	nextPair?: RunwayItem[];
+	noMorePairs?: boolean;
+	message?: string;
+}
+
+export interface Queen {
+	name: string;
+	former_name?: string;
+	runways: ObjectId[];
+}
+
+export interface PairScores {
+	winnerRating: number;
+	loserRating: number;
+}
+
+export interface UpdateUserOptions {
+	userId: string;
+	newRunwayIds?: string[];
+}
+
+type Franchise =
+	| "RuPaul's Drag Race"
+	| 'All Stars'
+	| 'Drag Race UK'
+	| "Canada's Drag Race";
 
 export interface NextPairResponse {
 	authenticated: boolean;
