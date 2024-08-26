@@ -10,9 +10,9 @@ import { HelmetProvider } from 'react-helmet-async';
 
 import App from './App.tsx';
 import ErrorElement from './components/ErrorElement.tsx';
-import RankRunways from './components/RankRunways/index.tsx';
+import RankRunways from './components/RankRunways';
 import About from './components/About.tsx';
-import SignIn from './components/SignIn.tsx';
+import SignInPage from './SignInPage';
 import SignOut from './components/SignOut.tsx';
 import CreateAccount from './components/CreateAccount.tsx';
 import './index.tailwind.css';
@@ -23,7 +23,7 @@ const router = createBrowserRouter(
 			<Route index element={<RankRunways />} />
 			<Route path="about" element={<About />} />
 			<Route path="create-account" element={<CreateAccount />} />
-			<Route path="sign-in" element={<SignIn />} />
+			<Route path="sign-in" element={<SignInPage />} />
 			<Route path="sign-out" element={<SignOut />} />
 			<Route path="*" element={<ErrorElement />} />
 		</Route>
