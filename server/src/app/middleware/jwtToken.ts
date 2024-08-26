@@ -18,7 +18,7 @@ export function generateToken(res: Response, user: TokenInput): void {
 
 	res.cookie('token', token, {
 		httpOnly: true,
-		secure: environment.isProduction,
+		secure: true,
 		sameSite: 'none',
 		maxAge: 60 * 60 * 1000,
 	});
