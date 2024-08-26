@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 import { UserModel } from '@/app/database/models/User.js';
 import { generateToken } from '@/app/middleware/jwtToken.js';
 import { getNextPairService } from '@/app/database/services/runwayService.js';
-import { NextPairResponse } from '@/types.js';
+import { NextPairResponse } from '../../../../../types.js';
 import { updateUser } from '@/app/database/services/userService.js';
 
 export default express
