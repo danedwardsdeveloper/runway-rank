@@ -1,163 +1,148 @@
-export interface RunwayPhoto {
-	description: string;
-	queenName: string;
-	franchise?: Franchise;
-	season?: number;
-	episode?: number;
-	episodeName?: string;
-	slug: string;
-}
+import { NextPairResponse } from '../../../../types';
 
-type Franchise =
-	| "RuPaul's Drag Race"
-	| 'All Stars'
-	| 'Drag Race UK'
-	| "Canada's Drag Race";
-
-export const runwayPhotos: RunwayPhoto[] = [
+export const runwayPhotos = [
 	{
-		description: 'Amoeba Bacteria',
-		queenName: 'Bimini Bon Boulash',
+		name: 'Amoeba Bacteria',
+		queen_name: 'Bimini Bon Boulash',
 		franchise: `Drag Race UK`,
 		season: 2,
-		slug: 'bimini-bacteria',
+		image_url: 'bimini-bacteria',
 	},
 	{
-		description: 'Tartan',
-		queenName: 'Violet Chachki',
+		name: 'Tartan',
+		queen_name: 'Violet Chachki',
 		franchise: `RuPaul's Drag Race`,
-		slug: 'chachki-tartan',
+		image_url: 'chachki-tartan',
 	},
 	{
-		description: 'Freddy Krueger',
-		queenName: 'Crystal Methyd',
+		name: 'Freddy Krueger',
+		queen_name: 'Crystal Methyd',
 		franchise: `RuPaul's Drag Race`,
 		season: 12,
-		slug: 'crystal-krueger',
+		image_url: 'crystal-krueger',
 	},
 	{
-		description: 'Black and White',
-		queenName: 'Detox',
+		name: 'Black and White',
+		queen_name: 'Detox',
 		franchise: `All Stars`,
 		season: 2,
 		episode: 1,
 		episodeName: 'All Star Talent Show Extravaganza',
-		slug: 'detox-black-white',
+		image_url: 'detox-black-white',
 	},
 	{
-		description: 'Pirate Entrance',
-		queenName: 'Gigi Goode',
+		name: 'Pirate Entrance',
+		queen_name: 'Gigi Goode',
 		franchise: `RuPaul's Drag Race`,
 		season: 12,
 		episode: 1,
-		slug: 'gigi-pirate',
+		image_url: 'gigi-pirate',
 	},
 	{
-		description: 'All Stars Promo',
-		queenName: 'Gottmik',
+		name: 'All Stars Promo',
+		queen_name: 'Gottmik',
 		franchise: `All Stars`,
-		slug: 'gottmik-promo',
+		image_url: 'gottmik-promo',
 	},
 	{
-		description: 'Scream Dress',
-		queenName: 'Gottmik',
+		name: 'Scream Dress',
+		queen_name: 'Gottmik',
 		franchise: `RuPaul's Drag Race`,
 		season: 13,
-		slug: 'gottmik-scream',
+		image_url: 'gottmik-scream',
 	},
 	{
-		description: 'Promo',
-		queenName: 'Jimbo',
+		name: 'Promo',
+		queen_name: 'Jimbo',
 		franchise: `All Stars`,
-		slug: 'jimbo-promo',
+		image_url: 'jimbo-promo',
 	},
 	{
-		description: 'Pearl',
-		queenName: 'Plastique Tiara',
+		name: 'Pearl',
+		queen_name: 'Plastique Tiara',
 		franchise: `RuPaul's Drag Race`,
 		season: 11,
-		slug: 'plastique-pearl',
+		image_url: 'plastique-pearl',
 	},
 	{
-		description: 'All Stars Promo',
-		queenName: 'Plastique Tiara',
+		name: 'All Stars Promo',
+		queen_name: 'Plastique Tiara',
 		franchise: `All Stars`,
-		slug: 'plastique-promo',
+		image_url: 'plastique-promo',
 	},
 	{
-		description: 'Finale',
-		queenName: 'Priyanka',
+		name: 'Finale',
+		queen_name: 'Priyanka',
 		franchise: `Canada's Drag Race`,
 		season: 1,
-		slug: 'priyanka-finale',
+		image_url: 'priyanka-finale',
 	},
 	{
-		description: 'Finale',
-		queenName: 'Sasha Colby',
+		name: 'Finale',
+		queen_name: 'Sasha Colby',
 		franchise: `RuPaul's Drag Race`,
 		season: 15,
-		slug: 'sasha-colby-finale',
+		image_url: 'sasha-colby-finale',
 	},
 	{
-		description: `Love the Skin You're In`,
-		queenName: 'Shea Couleé',
+		name: `Love the Skin You're In`,
+		queen_name: 'Shea Couleé',
 		franchise: `All Stars`,
 		season: 5,
 		episode: 5,
 		episodeName: 'Snatch Game of Love',
-		slug: 'shea-love-skin',
+		image_url: 'shea-love-skin',
 	},
 	{
-		description: 'Sleeping Bag Dress',
-		queenName: 'Utica Queen',
+		name: 'Sleeping Bag Dress',
+		queen_name: 'Utica Queen',
 		franchise: `RuPaul's Drag Race`,
 		season: 13,
 		episode: 7,
 		episodeName: 'Bossy Rossy: The RuBoot',
-		slug: 'utica-sleeping-bag',
+		image_url: 'utica-sleeping-bag',
 	},
 	{
-		description: 'Entrance',
-		queenName: 'Starlet',
+		name: 'Entrance',
+		queen_name: 'Starlet',
 		franchise: `Drag Race UK`,
 		season: 4,
 		episode: 1,
-		slug: 'starlet-entrance',
+		image_url: 'starlet-entrance',
 	},
 	{
-		description: 'Season 8 Finale',
-		queenName: 'Violet Chachki',
+		name: 'Season 8 Finale',
+		queen_name: 'Violet Chachki',
 		franchise: `RuPaul's Drag Race`,
 		season: 8,
 		episode: 12,
 		episodeName: 'Grand Finale',
-		slug: 'violet-chachki-finale',
+		image_url: 'violet-chachki-finale',
 	},
 	{
-		description: 'Three Heads Finale',
-		queenName: 'Willow Pill',
+		name: 'Three Heads Finale',
+		queen_name: 'Willow Pill',
 		franchise: `RuPaul's Drag Race`,
 		season: 14,
-		slug: 'willow-pill-heads',
+		image_url: 'willow-pill-heads',
 	},
 	{
-		description: 'Mushroom',
-		queenName: 'Willow Pill',
+		name: 'Mushroom',
+		queen_name: 'Willow Pill',
 		franchise: `RuPaul's Drag Race`,
 		season: 14,
-		slug: 'willow-pill-mushroom',
+		image_url: 'willow-pill-mushroom',
 	},
 ];
 
-export const initialPair = {
-	message: 'Scores not updated',
+export const initialPair: NextPairResponse = {
+	message: 'Initial pair',
 	authenticated: false,
 	user: null,
 	nextPair: [
 		{
 			_id: '66c5001eb804fda11a916db6',
 			name: 'Snatch Game',
-			queen_id: '507f1f77bcf86cd799439012',
 			queen_name: 'Jinkx Monsoon',
 			franchise: "RuPaul's Drag Race",
 			season: 5,
@@ -170,7 +155,6 @@ export const initialPair = {
 		{
 			_id: '66c5001eb804fda11a916dba',
 			name: 'Drag on a Dime',
-			queen_id: '507f1f77bcf86cd799439016',
 			queen_name: 'Temp data',
 			franchise: "RuPaul's Drag Race",
 			season: 4,
