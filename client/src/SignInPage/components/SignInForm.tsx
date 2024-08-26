@@ -21,6 +21,7 @@ export default function SignInForm() {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({ email, password }),
+				credentials: 'include',
 			});
 
 			if (response.ok) {
