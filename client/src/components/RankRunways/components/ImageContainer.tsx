@@ -1,16 +1,20 @@
-import { NextPairResponse } from '../../../../../types';
+import { NextPairResponse, RunwayItem } from '../../../../../types';
+
+interface ImageContainerProps {
+	nextPairResponse: NextPairResponse;
+	onImageClick: (clickedItem: RunwayItem) => void;
+}
 
 export default function ImageContainer({
-	nextPair,
-}: {
-	nextPair: NextPairResponse;
-}) {
-	const runwayItems = nextPair.nextPair || [];
+	nextPairResponse,
+	onImageClick,
+}: ImageContainerProps) {
+	const runwayItems = nextPairResponse.nextPair || [];
 
 	return (
 		<div className="flex justify-center items-start p-4 w-full max-w-6xl mx-auto">
 			<div className="flex flex-col sm:flex-row justify-center items-stretch gap-20 sm:gap-8 w-full">
-				{nextPair &&
+				{nextPairResponse &&
 					runwayItems.map((img, index) => (
 						<div
 							key={index}
@@ -20,6 +24,7 @@ export default function ImageContainer({
 						>
 							<div className="flex-grow flex flex-col justify-end mb-4">
 								<img
+									onClick={() => onImageClick(img)}
 									src={`/runways/${img.image_url}.webp`}
 									alt={img.name}
 									className="w-full h-auto md:max-w-[400px] md:max-h-[400px] object-contain cursor-pointer rounded-lg border-4 border-transparent hover:border-pink-500 transition-all duration-200"
