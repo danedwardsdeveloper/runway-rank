@@ -23,4 +23,8 @@ publicRouter.use(
 	topRunways
 );
 
+publicRouter.use('/', (req, res) => {
+	res.status(404).json({ message: 'Route not found' });
+});
+
 export default publicRouter as Router;
