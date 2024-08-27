@@ -13,7 +13,7 @@ import './index.tailwind.css';
 import { AppProvider } from './contexts/AppContext';
 
 import App from './App';
-import ErrorElement from './components/ErrorElement';
+import ErrorElement from './components/ErrorPage';
 import RankRunways from './components/RankRunways';
 import About from './components/About';
 import SignIn from './components/SignIn';
