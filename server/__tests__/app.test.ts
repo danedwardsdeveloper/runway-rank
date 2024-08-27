@@ -13,15 +13,15 @@ function expectValidMongoId(id: string) {
 const expectedNextPairProperties = [
 	'_id',
 	'name',
-	'queen_id',
-	'queen_name',
+	'queenId',
+	'queenName',
 	'franchise',
 	'season',
 	'episode',
-	'episode_name',
+	'episodeName',
 	'score',
-	'ratings_count',
-	'image_url',
+	'ratingsCount',
+	'imageSlug',
 ];
 
 describe('MongoDB Express Tests', () => {
