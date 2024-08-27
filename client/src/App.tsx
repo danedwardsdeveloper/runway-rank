@@ -1,7 +1,7 @@
 import { Outlet, useRouteError } from 'react-router-dom';
 
 import MenuBar from './components/MenuBar';
-import ErrorElement from './components/ErrorElement';
+import ErrorElement from './components/ErrorPage';
 
 export default function App() {
 	const error = useRouteError();
