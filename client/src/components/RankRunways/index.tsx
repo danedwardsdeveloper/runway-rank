@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
+
 import ImageContainer from './components/ImageContainer';
 import { RunwayItem, AppData } from '../../../../types';
-import Message from '../Message';
 import { useApp } from '../../contexts/AppContext';
 import { logger } from '../../utilities/logger';
+import { Link } from 'react-router-dom';
 
 interface Results {
 	winner: string;
@@ -52,6 +53,11 @@ export default function Home() {
 			: null;
 
 	const handleImageClick = (clickedItem: RunwayItem) => {
+		if (!appData.isAuthenticated) {
+			logger.info('Image click prevented: User not authenticated');
+			return;
+		}
+
 		logger.info('Image clicked');
 		if (!currentRunways) {
 			console.error('Error: No current runways available.');
@@ -73,14 +79,25 @@ export default function Home() {
 
 	return (
 		<div>
-			<Message />
 			{currentRunways ? (
 				<ImageContainer
 					runways={currentRunways}
 					onImageClick={handleImageClick}
+					isAuthenticated={appData.isAuthenticated}
 				/>
 			) : (
-				<p>No runway pair available.</p>
+				<div className="text-center mt-5">
+					<p className="text-lg text-green-500">Thank you for voting! </p>
+					<p className="text-lg text-green-500">
+						Now check out the{' '}
+						<Link
+							to="/top-runways"
+							className="font-semibold leading-6 text-green-600 hover:text-green-500 dark:text-green-400 dark:hover:text-green-300"
+						>
+							top runways
+						</Link>
+					</p>
+				</div>
 			)}
 		</div>
 	);
