@@ -1,20 +1,18 @@
 import winston from 'winston';
 import expressWinston from 'express-winston';
 
+type Level = 'verbose' | 'info' | 'warn' | 'error' | 'debug' | 'silly';
+const level: Level = 'verbose';
+
 export const logger = winston.createLogger({
-	level: 'debug',
+	level: level,
 	format: winston.format.combine(
 		winston.format.colorize(),
 		winston.format.timestamp(),
 		winston.format.align(),
-		winston.format.printf(
-			(info) => `${info.timestamp} ${info.level}: ${info.message}`
-		)
+		winston.format.printf((info) => `${info.level}: ${info.message}`)
 	),
-	transports: [
-		new winston.transports.Console(),
-		new winston.transports.File({ filename: 'debug.log' }),
-	],
+	transports: [new winston.transports.Console()],
 });
 
 export const expressLogger = expressWinston.logger({
