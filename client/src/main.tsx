@@ -8,14 +8,19 @@ import {
 } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 
-import App from './App.tsx';
-import ErrorElement from './components/ErrorElement.tsx';
-import RankRunways from './components/RankRunways';
-import About from './components/About.tsx';
-import SignInPage from './SignInPage';
-import SignOut from './components/SignOut.tsx';
-import CreateAccount from './components/CreateAccount.tsx';
 import './index.tailwind.css';
+
+import { AppProvider } from './contexts/AppContext';
+
+import App from './App';
+import ErrorElement from './components/ErrorElement';
+import RankRunways from './components/RankRunways';
+import About from './components/About';
+import SignIn from './components/SignIn';
+import SignOut from './components/SignOut';
+import CreateAccount from './components/CreateAccount';
+import Profile from './components/Profile';
+import TopRunways from './components/TopRunways';
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -23,8 +28,10 @@ const router = createBrowserRouter(
 			<Route index element={<RankRunways />} />
 			<Route path="about" element={<About />} />
 			<Route path="create-account" element={<CreateAccount />} />
-			<Route path="sign-in" element={<SignInPage />} />
+			<Route path="sign-in" element={<SignIn />} />
 			<Route path="sign-out" element={<SignOut />} />
+			<Route path="profile" element={<Profile />} />
+			<Route path="top-runways" element={<TopRunways />} />
 			<Route path="*" element={<ErrorElement />} />
 		</Route>
 	)
@@ -33,7 +40,9 @@ const router = createBrowserRouter(
 ReactDOM.createRoot(document.getElementById('root')! as HTMLElement).render(
 	<React.StrictMode>
 		<HelmetProvider>
-			<RouterProvider router={router} />
+			<AppProvider>
+				<RouterProvider router={router} />
+			</AppProvider>
 		</HelmetProvider>
 	</React.StrictMode>
 );
