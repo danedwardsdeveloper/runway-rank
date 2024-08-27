@@ -1,17 +1,37 @@
 import mongoose, { ObjectId } from 'mongoose';
 import { Request } from 'express';
 
+export type ObjectIdString = string;
+
+export interface AppData {
+	message: {
+		content: string;
+		colour: string;
+	};
+	isAuthenticated: boolean;
+	user: {
+		name: string;
+		email: string;
+		id: ObjectIdString;
+		accessTopRunways: boolean;
+		pairsUntilAccess: number;
+	} | null;
+	runways: RunwayItem[] | null;
+	topRunways: RunwayItem[] | null;
+}
+
 export interface RunwayItem {
+	_id: ObjectIdString;
 	name: string;
-	queen_id?: ObjectId;
-	queen_name: string;
+	queenId?: ObjectIdString;
+	queenName: string;
 	franchise?: string;
 	season?: number;
 	episode?: number;
-	episode_name?: string;
+	episodeName?: string;
 	score: number;
-	ratings_count: number;
-	image_url: string;
+	ratingsCount: number;
+	imageSlug: string;
 }
 
 export interface UserBase {
@@ -22,7 +42,7 @@ export interface UserBase {
 }
 
 export interface TokenInput extends UserBase {
-	_id: mongoose.Types.ObjectId;
+	_id: ObjectIdString;
 }
 
 export interface UserObject extends UserBase {
