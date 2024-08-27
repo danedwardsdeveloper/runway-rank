@@ -1,11 +1,12 @@
 import { useState, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 import { logger } from '../../../utilities/logger';
 
 export default function SignInForm() {
-	const [name, setName] = useState('Dan');
-	const [email, setEmail] = useState('dan@gmail.com');
+	const [name, setName] = useState('Test');
+	const [email, setEmail] = useState('test@gmail.com');
 	const [password, setPassword] = useState('SecurePassword');
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const navigate = useNavigate();
@@ -16,27 +17,25 @@ export default function SignInForm() {
 
 		try {
 			logger.info('Attempting to create account', { email });
-			const response = await fetch(`http://localhost:3000/create-account`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ name, email, password }),
-			});
+			await axios.post(
+				'http://localhost:3000/create-account',
+				{ name, email, password },
+				{ withCredentials: true }
+			);
 
-			if (response.ok) {
-				logger.info('Account created successfully', { email });
-				navigate('/');
-			} else {
-				const data = await response.json();
+			logger.info('Account created successfully', { email });
+			navigate('/');
+		} catch (error) {
+			if (axios.isAxiosError(error)) {
 				const message =
-					data.message || 'Failed to create an account. Please try again.';
+					error.response?.data?.message ||
+					'Failed to create an account. Please try again.';
 				logger.warn('Failed to create an account', { email, message });
 				setErrorMessage(message);
+			} else {
+				logger.error('Account creation error', { email, error });
+				setErrorMessage('An error occurred. Please try again.');
 			}
-		} catch (error) {
-			logger.error('Account creation error', { email, error });
-			setErrorMessage('An error occurred. Please try again.');
 		}
 	};
 
@@ -60,7 +59,7 @@ export default function SignInForm() {
 							value={name}
 							placeholder="First name"
 							onChange={(event) => setName(event.target.value)}
-							className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 dark:text-white bg-white dark:bg-white/5 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-white/10 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 dark:focus:ring-indigo-500 sm:text-sm sm:leading-6"
+							className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 dark:text-white bg-white dark:bg-white/5 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-white/10 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pink-600 dark:focus:ring-pink-500 sm:text-sm sm:leading-6"
 						/>
 					</div>
 				</div>
@@ -80,7 +79,7 @@ export default function SignInForm() {
 							autoComplete="email"
 							value={email}
 							onChange={(event) => setEmail(event.target.value)}
-							className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 dark:text-white bg-white dark:bg-white/5 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-white/10 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 dark:focus:ring-indigo-500 sm:text-sm sm:leading-6"
+							className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 dark:text-white bg-white dark:bg-white/5 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-white/10 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pink-600 dark:focus:ring-pink-500 sm:text-sm sm:leading-6"
 						/>
 					</div>
 				</div>
@@ -103,7 +102,7 @@ export default function SignInForm() {
 							autoComplete="current-password"
 							value={password}
 							onChange={(event) => setPassword(event.target.value)}
-							className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 dark:text-white bg-white dark:bg-white/5 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-white/10 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 dark:focus:ring-indigo-500 sm:text-sm sm:leading-6"
+							className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 dark:text-white bg-white dark:bg-white/5 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-white/10 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pink-600 dark:focus:ring-pink-500 sm:text-sm sm:leading-6"
 						/>
 					</div>
 				</div>
@@ -118,7 +117,7 @@ export default function SignInForm() {
 					)}
 					<button
 						type="submit"
-						className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+						className="flex w-full justify-center rounded-md bg-pink-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-pink-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-600"
 					>
 						Sign in
 					</button>
@@ -129,7 +128,7 @@ export default function SignInForm() {
 				Don't have an account?{' '}
 				<Link
 					to="/create-account"
-					className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+					className="font-semibold leading-6 text-pink-600 hover:text-pink-500 dark:text-pink-400 dark:hover:text-pink-300"
 				>
 					Create an account
 				</Link>
