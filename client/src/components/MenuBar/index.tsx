@@ -16,6 +16,7 @@ export default function MenuBar() {
 		{ name: 'Create account', to: '/create-account' },
 		{ name: 'Sign out', to: '/sign-out' },
 		{ name: 'Delete account', to: '/delete-account' },
+		{ name: 'Profile', to: '/profile' },
 	];
 
 	return (
