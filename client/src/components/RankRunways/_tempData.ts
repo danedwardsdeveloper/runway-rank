@@ -55,13 +55,14 @@ export const runwayPhotos = [
 		name: 'Promo',
 		queen_name: 'Jimbo',
 		franchise: `All Stars`,
+		season: '8',
 		image_url: 'jimbo-promo',
 	},
 	{
 		name: 'Pearl',
 		queen_name: 'Plastique Tiara',
-		franchise: `RuPaul's Drag Race`,
-		season: 11,
+		franchise: `All Stars`,
+		season: 9,
 		image_url: 'plastique-pearl',
 	},
 	{
