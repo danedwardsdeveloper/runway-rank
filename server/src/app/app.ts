@@ -20,6 +20,7 @@ import protectedRouter from './routes/protectedRouter.js';
 import expressWinston from 'express-winston';
 import { logger, expressLogger } from './middleware/logger.js';
 import { limiter } from './middleware/limiter.js';
+import { validateToken } from './middleware/jwtToken.js';
 
 const app = express();
 connectToDatabase();
@@ -27,6 +28,8 @@ app.use(expressLogger, helmet()), limiter;
 app.use(express.static(path.join(__dirname, '../../public')));
 
 app.use(express.json(), cookieParser(), cors(corsOptions));
+
+app.use(validateToken);
 app.use('/', publicRouter, protectedRouter);
 
 app.use(
