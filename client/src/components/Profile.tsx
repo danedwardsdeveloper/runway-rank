@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 
 import { AppData } from '../../../types';
 import DeleteButton from './DeleteButton';
+import Spinner from './Spinner';
+import ErrorElement from './ErrorElement';
 
 export default function Profile() {
 	const [appData, setAppData] = useState<AppData | null>(null);
@@ -32,11 +34,16 @@ export default function Profile() {
 	}, []);
 
 	if (loading) {
-		return <div>Loading...</div>;
+		return (
+			<div className="flex justify-center items-center min-h-screen">
+				<h1 className="text-lg mr-2">Loading...</h1>
+				<Spinner />
+			</div>
+		);
 	}
 
 	if (error) {
-		return <div>Error: {error}</div>;
+		<ErrorElement error={error} />;
 	}
 
 	if (!appData?.isAuthenticated) {
