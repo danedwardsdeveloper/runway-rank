@@ -3,8 +3,8 @@ import express, { Router, Response } from 'express';
 import {
 	CustomRequest,
 	RunwayItem,
-	NextPairResponse,
 	TokenInput,
+	AppData,
 } from '../../../../../types.js';
 import {
 	getNextPairService,
@@ -20,7 +20,7 @@ export default express
 	.post('/get-next-pair', async (req: CustomRequest, res: Response) => {
 		try {
 			const { winner, loser } = req.body;
-			let nextPair: RunwayItem[] | null = null;
+			let runways: RunwayItem[] | null = null;
 			let noMorePairs = false;
 			let scoresUpdated = false;
 
@@ -44,7 +44,7 @@ export default express
 
 				if (req.user) {
 					const tokenInput: TokenInput = {
-						_id: req.user.id,
+						_id: req.user.id.toString(),
 						name: req.user.name,
 						email: req.user.email,
 						accessTopRunways: req.user.accessTopRunways,
@@ -56,13 +56,13 @@ export default express
 			}
 
 			if (userId) {
-				nextPair = await getNextPairService(userId);
-				if (!nextPair) {
+				runways = await getNextPairService(userId);
+				if (!runways) {
 					noMorePairs = true;
 					logger.info('No more pairs available for user', { userId });
 				}
 			} else {
-				nextPair = await getNextPairService(null);
+				runways = await getNextPairService(null);
 				logger.info('Retrieved next pair for anonymous user');
 			}
 
@@ -70,16 +70,20 @@ export default express
 				? 'Scores updated successfully'
 				: 'Scores not updated';
 
-			const responseObject: NextPairResponse = {
-				message: message,
-				authenticated: !!userId,
+			const responseObject: AppData = {
+				message: {
+					content: message,
+					colour: 'blue',
+				},
+				isAuthenticated: !!userId,
 				user: req.user ? cleanUserObject(req.user) : null,
-				...(nextPair ? { nextPair } : { noMorePairs: true }),
+				runways: runways,
+				topRunways: null,
 			};
 
 			logger.info('Sending response', {
-				authenticated: responseObject.authenticated,
-				hasNextPair: !!nextPair,
+				authenticated: responseObject.isAuthenticated,
+				hasNextPair: !!runways,
 			});
 
 			res.status(200).json(responseObject);
