@@ -64,7 +64,13 @@ interface GetNextPairRequestBody {
 
 export interface CustomRequest extends Request {
 	user?: UserObject | null;
-	body: GetNextPairRequestBody;
+	body: {
+		email?: string;
+		password?: string;
+		name?: string;
+		winner?: string;
+		loser?: string;
+	};
 	cookies: {
 		[key: string]: string;
 	};
@@ -76,6 +82,12 @@ export interface NextPairResponse {
 	nextPair?: RunwayItem[];
 	noMorePairs?: boolean;
 	message?: string;
+}
+
+interface CreateAccountRequestBody {
+	email: string;
+	password: string;
+	name: string;
 }
 
 export interface Queen {
