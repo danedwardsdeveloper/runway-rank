@@ -1,23 +1,32 @@
-import axios from 'axios';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
 import ConfirmationModal from './ConfirmationModal';
+import { logger } from '../utilities/logger';
+import { useApp } from '../contexts/AppContext';
+import { defaultAppData } from '../contexts/defaultAppData';
 
 export default function DeleteButton() {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
+	const navigate = useNavigate();
+	const { setAppData } = useApp();
 
 	const handleDelete = async () => {
 		setIsDeleting(true);
 		try {
 			const response = await axios.delete(
-				'http://localhost:3000/accounts/delete-account',
+				'http://localhost:3000/delete-account',
 				{
 					withCredentials: true,
 				}
 			);
 
 			if (response.status === 200) {
-				console.log('Account deleted successfully');
+				logger.info('Account deleted successfully');
+				setAppData(defaultAppData);
+				navigate('/');
 			} else {
 				throw new Error('Failed to delete account');
 			}
