@@ -50,9 +50,9 @@ export default function TopRunways() {
 	if (!appData?.isAuthenticated || !appData.user?.accessTopRunways) {
 		return (
 			<div className="w-full flex justify-center items-center p-4">
-				<p className="text-gray-600">
+				<p className="text-red-500 text-lg">
 					You don't have access to view the top runways yet. Keep ranking
-					to unlock this feature!
+					to unlock this page.
 				</p>
 			</div>
 		);
@@ -64,7 +64,7 @@ export default function TopRunways() {
 			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
 				{appData.topRunways?.map((runway: RunwayItem) => (
 					<div
-						key={runway.id}
+						key={runway._id}
 						className="bg-white shadow-md rounded-lg overflow-hidden flex flex-col max-w-80"
 					>
 						<div className="relative w-full p-4 h-auto">
