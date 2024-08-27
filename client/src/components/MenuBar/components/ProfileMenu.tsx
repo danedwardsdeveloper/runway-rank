@@ -7,7 +7,7 @@ export default function ProfileMenu({ menuItems }: MenuItemsArray) {
 	return (
 		<Menu as="div" className="relative ml-3">
 			<div>
-				<MenuButton className="relative flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+				<MenuButton className="relative flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2">
 					<span className="absolute -inset-1.5" />
 					<span className="sr-only">Open user menu</span>
 					<img
