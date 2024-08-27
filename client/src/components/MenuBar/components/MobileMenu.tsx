@@ -15,7 +15,7 @@ export default function MobileMenu({ menuItems }: MenuItemsArray) {
 						className={({ isActive }: { isActive: boolean }) =>
 							cleanTailwindClassNames(
 								isActive
-									? 'bg-indigo-50 border-indigo-500 text-indigo-700'
+									? 'bg-pink-50 border-pink-500 text-pink-700'
 									: 'text-gray-500 hover:bg-gray-50',
 								'block border-l-4 py-2 pl-3 pr-4 text-base font-medium '
 							)
