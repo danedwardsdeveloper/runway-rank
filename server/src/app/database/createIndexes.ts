@@ -15,9 +15,9 @@ export async function createIndexes() {
 		await db.collection('users').createIndex({ ranked_runway_ids: 1 });
 
 		await db.collection('runways').createIndex({ name: 1 });
-		await db.collection('runways').createIndex({ queen_name: 1 });
+		await db.collection('runways').createIndex({ queenName: 1 });
 		await db.collection('runways').createIndex({ score: -1 });
-		await db.collection('runways').createIndex({ ratings_count: 1 });
+		await db.collection('runways').createIndex({ ratingsCount: 1 });
 
 		await db.collection('queens').createIndex({ name: 1 });
 
