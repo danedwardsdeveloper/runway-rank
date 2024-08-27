@@ -18,6 +18,7 @@ export function generateToken(res: Response, user: TokenInput): void {
 
 	res.cookie('token', token, {
 		httpOnly: true,
+		// secure: environment.isProduction,
 		secure: true,
 		sameSite: 'none',
 		maxAge: 60 * 60 * 1000,
@@ -62,7 +63,7 @@ export async function validateToken(
 					jwtError instanceof Error ? jwtError.message : String(jwtError),
 			});
 			req.user = null;
-			res.clearCookie('jwt');
+			res.clearCookie('token');
 			next();
 		}
 	} catch (error) {
