@@ -3,11 +3,13 @@ import { RunwayItem } from '../../../../../types';
 interface ImageContainerProps {
 	runways: RunwayItem[] | null;
 	onImageClick: (clickedItem: RunwayItem) => void;
+	isAuthenticated: boolean;
 }
 
 export default function ImageContainer({
 	runways,
 	onImageClick,
+	isAuthenticated,
 }: ImageContainerProps) {
 	if (!runways || runways.length === 0) {
 		return null;
@@ -25,10 +27,14 @@ export default function ImageContainer({
 					>
 						<div className="flex-grow flex flex-col justify-end mb-4">
 							<img
-								onClick={() => onImageClick(img)}
+								onClick={() => isAuthenticated && onImageClick(img)}
 								src={`/runways/${img.imageSlug}.webp`}
 								alt={img.name}
-								className="w-full h-auto md:max-w-[400px] md:max-h-[400px] object-contain cursor-pointer rounded-lg border-4 border-transparent hover:border-pink-500 transition-all duration-200"
+								className={`w-full h-auto md:max-w-[400px] md:max-h-[400px] object-contain rounded-lg border-4 border-transparent transition-all duration-200 ${
+									isAuthenticated
+										? 'cursor-pointer hover:border-pink-500'
+										: 'cursor-not-allowed opacity-50'
+								}`}
 							/>
 						</div>
 						<div
