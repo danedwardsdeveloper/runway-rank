@@ -4,7 +4,7 @@ export const corsOptions: CorsOptions = {
 	origin: (origin, callback) => {
 		callback(null, true);
 	},
-	methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+	methods: ['GET', 'POST', 'DELETE'],
 	allowedHeaders: ['Content-Type', 'Authorization'],
 	credentials: true,
 	preflightContinue: false,
