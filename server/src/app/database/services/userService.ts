@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 import { UserModel } from '../models/User.js';
 import { RunwayModel } from '../models/Runway.js';
-import { UpdateUserOptions } from '@/types.js';
+import { UpdateUserOptions } from '../../../../../types.js';
 
 export async function updateUser({ userId, newRunwayIds }: UpdateUserOptions) {
 	try {
