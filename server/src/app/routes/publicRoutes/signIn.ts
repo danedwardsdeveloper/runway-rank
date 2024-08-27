@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 import { UserModel } from '@/app/database/models/User.js';
 import { generateToken } from '@/app/middleware/jwtToken.js';
 import { getNextPairService } from '@/app/database/services/runwayService.js';
-import { NextPairResponse } from '../../../../../types.js';
+import { NextPairResponse, TokenInput } from '../../../../../types.js';
 import { updateUser } from '@/app/database/services/userService.js';
 
 export default express
@@ -41,13 +41,15 @@ export default express
 
 				user = await updateUser({ userId: user._id.toString() });
 
-				generateToken(res, {
+				const tokenInput: TokenInput = {
 					_id: user._id,
 					name: user.name,
 					email: user.email,
 					accessTopRunways: user.accessTopRunways,
 					numRunwaysUntilAccess: user.numRunwaysUntilAccess,
-				});
+				};
+
+				generateToken(res, tokenInput);
 
 				let nextPair;
 				try {
