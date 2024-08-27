@@ -4,7 +4,11 @@ import bcrypt from 'bcrypt';
 
 import { UserModel } from '@/app/database/models/User.js';
 import { generateToken } from '@/app/middleware/jwtToken.js';
-import { TokenInput, NextPairResponse, CustomRequest } from '@/types.js';
+import {
+	TokenInput,
+	NextPairResponse,
+	CustomRequest,
+} from '../../../../../types.js';
 import { getNextPairService } from '@/app/database/services/runwayService.js';
 import { updateUser } from '@/app/database/services/userService.js';
 
