@@ -16,7 +16,10 @@ export default function SignInForm() {
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		setIsLoading(true);
-		setAppData((prevData) => ({ ...prevData, message: '' }));
+		setAppData((prevData) => ({
+			...prevData,
+			message: { content: '', colour: 'green' },
+		}));
 
 		try {
 			logger.info('Attempting sign-in', { email });
@@ -41,7 +44,7 @@ export default function SignInForm() {
 					noMorePairs: responseData.user.noMorePairs,
 					nextPair: responseData.nextPair,
 				}));
-				setTimeout(() => navigate('/profile'), 1500);
+				navigate('/profile');
 			} else {
 				const data = await response.json();
 				const message = data.message || 'Sign-in failed. Please try again.';
@@ -53,7 +56,7 @@ export default function SignInForm() {
 			logger.error('Sign-in error', { email, error });
 			setAppData((prevData) => ({
 				...prevData,
-				message: 'An error occurred. Please try again.',
+				message: { content: '', colour: 'black' },
 			}));
 			setIsLoading(false);
 		}
