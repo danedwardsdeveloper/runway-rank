@@ -1,58 +1,87 @@
-import { useState, useEffect } from 'react';
-
+import { useEffect } from 'react';
 import ImageContainer from './components/ImageContainer';
-import { NextPairResponse, RunwayItem } from '../../../../types';
-import { initialPair } from './_tempData';
+import { RunwayItem, AppData } from '../../../../types';
+import Message from '../Message';
+import { useApp } from '../../contexts/AppContext';
+import { logger } from '../../utilities/logger';
+
+interface Results {
+	winner: string;
+	loser: string;
+}
 
 export default function Home() {
-	const [nextPair, setNextPair] = useState<NextPairResponse>(initialPair);
+	const { appData, setAppData } = useApp();
 
-	const fetchNextPair = async (winner: string, loser: string) => {
+	const fetchNextPair = async (results?: Results) => {
 		try {
-			const body = JSON.stringify({ winner, loser });
-			console.log(body);
-
-			const response = await fetch('http://localhost:3000/get-next-pair', {
+			const url = 'http://localhost:3000/get-next-pair';
+			const options: RequestInit = {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: body,
 				credentials: 'include',
-			});
+			};
+
+			if (results) {
+				const body = JSON.stringify(results);
+				console.log(body);
+				options.body = body;
+			}
+
+			const response = await fetch(url, options);
 			if (!response.ok) {
 				throw new Error('Failed to fetch next pair');
 			}
-			const data: NextPairResponse = await response.json();
-			setNextPair(data);
+			const data: AppData = await response.json();
+			setAppData(data);
 			console.log(data);
 		} catch (error) {
 			console.error('Error fetching next pair:', error);
 		}
 	};
 
+	useEffect(() => {
+		fetchNextPair();
+	}, []);
+
+	const currentRunways =
+		appData.runways && appData.runways.length >= 2
+			? appData.runways.slice(0, 2)
+			: null;
+
 	const handleImageClick = (clickedItem: RunwayItem) => {
-		if (nextPair.nextPair && nextPair.nextPair.length === 2) {
-			const winner = clickedItem._id;
-			const loser = nextPair.nextPair.find(
-				(item) => item._id !== winner
-			)?._id;
-			if (loser) {
-				fetchNextPair(winner, loser);
-			}
+		logger.info('Image clicked');
+		if (!currentRunways) {
+			console.error('Error: No current runways available.');
+			return;
+		}
+
+		const winner = clickedItem._id.toString();
+		logger.debug(`Winner: ${winner}`);
+		const loser = currentRunways
+			.find((item) => item._id !== winner)
+			?._id.toString();
+
+		if (winner && loser) {
+			fetchNextPair({ winner, loser });
+		} else {
+			console.error('Error: Winner or loser is undefined.');
 		}
 	};
 
-	useEffect(() => {
-		fetchNextPair('', '');
-	}, []);
-
 	return (
 		<div>
-			<ImageContainer
-				nextPairResponse={nextPair}
-				onImageClick={handleImageClick}
-			/>
+			<Message />
+			{currentRunways ? (
+				<ImageContainer
+					runways={currentRunways}
+					onImageClick={handleImageClick}
+				/>
+			) : (
+				<p>No runway pair available.</p>
+			)}
 		</div>
 	);
 }
