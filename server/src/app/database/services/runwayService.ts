@@ -1,8 +1,9 @@
 import { RunwayModel } from '../models/Runway.js';
 import { UserModel } from '../models/User.js';
-import { RunwayItem } from '@/types.js';
+import { RunwayItem } from '../../../../../types.js';
 import calculateEloRatings from '@/app/utilities/eloRating.js';
 
+// Split this into userService/getNextPair and runwayService/getDefaultPair
 export async function getNextPairService(
 	userId: string | null
 ): Promise<RunwayItem[] | null> {
@@ -15,9 +16,7 @@ export async function getNextPairService(
 
 			runways = await RunwayModel.find({
 				_id: { $nin: user.ranked_runway_ids },
-			})
-				.sort({ ratings_count: 1 })
-				.limit(2);
+			}).sort({ ratingsCount: 1 });
 
 			if (runways.length === 1) {
 				const randomRunway = await RunwayModel.aggregate([
@@ -31,7 +30,7 @@ export async function getNextPairService(
 				runways.push(randomRunway[0]);
 			}
 		} else {
-			runways = await RunwayModel.find().sort({ ratings_count: 1 }).limit(2);
+			runways = await RunwayModel.find().sort({ ratingsCount: 1 }).limit(2);
 		}
 
 		if (runways.length < 2) {
@@ -64,15 +63,29 @@ export async function updateRunwayScores(
 
 		await RunwayModel.findByIdAndUpdate(winnerId, {
 			$set: { score: winnerRating },
-			$inc: { ratings_count: 1 },
+			$inc: { ratingsCount: 1 },
 		});
 
 		await RunwayModel.findByIdAndUpdate(loserId, {
 			$set: { score: loserRating },
-			$inc: { ratings_count: 1 },
+			$inc: { ratingsCount: 1 },
 		});
 	} catch (error) {
 		console.error('Error in updateRunwayScores:', error);
+		throw error;
+	}
+}
+
+export async function getTopRunways(): Promise<RunwayItem[]> {
+	try {
+		const topRunways = await RunwayModel.find()
+			.sort({ score: -1 })
+			.limit(10)
+			.lean();
+
+		return topRunways;
+	} catch (error) {
+		console.error('Error in getTopRunways:', error);
 		throw error;
 	}
 }
