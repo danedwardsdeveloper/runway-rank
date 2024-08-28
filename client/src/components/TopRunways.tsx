@@ -43,7 +43,7 @@ export default function TopRunways() {
 					>
 						<div className="relative w-full p-4 h-auto">
 							<img
-								src={`/runways/${runway.imageSlug}.webp`}
+								src={`http://localhost:3000/images/${runway.imageSlug}.webp`}
 								alt={`${runway.queenName} - ${runway.name}`}
 								className="w-full h-full rounded"
 							/>
