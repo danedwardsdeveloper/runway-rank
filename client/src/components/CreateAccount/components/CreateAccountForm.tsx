@@ -5,9 +5,9 @@ import axios from 'axios';
 import { logger } from '../../../utilities/logger';
 
 export default function SignInForm() {
-	const [name, setName] = useState('Test');
-	const [email, setEmail] = useState('test@gmail.com');
-	const [password, setPassword] = useState('SecurePassword');
+	const [name, setName] = useState('');
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const navigate = useNavigate();
 
@@ -58,6 +58,7 @@ export default function SignInForm() {
 							autoComplete="name"
 							value={name}
 							placeholder="First name"
+							data-testid="create-account-name-input"
 							onChange={(event) => setName(event.target.value)}
 							className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 dark:text-white bg-white dark:bg-white/5 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-white/10 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pink-600 dark:focus:ring-pink-500 sm:text-sm sm:leading-6"
 						/>
@@ -78,6 +79,7 @@ export default function SignInForm() {
 							required
 							autoComplete="email"
 							value={email}
+							data-testid="create-account-email-input"
 							onChange={(event) => setEmail(event.target.value)}
 							className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 dark:text-white bg-white dark:bg-white/5 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-white/10 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pink-600 dark:focus:ring-pink-500 sm:text-sm sm:leading-6"
 						/>
@@ -101,6 +103,7 @@ export default function SignInForm() {
 							required
 							autoComplete="current-password"
 							value={password}
+							data-testid="create-account-password-input"
 							onChange={(event) => setPassword(event.target.value)}
 							className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 dark:text-white bg-white dark:bg-white/5 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-white/10 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-pink-600 dark:focus:ring-pink-500 sm:text-sm sm:leading-6"
 						/>
@@ -110,13 +113,17 @@ export default function SignInForm() {
 				<div>
 					{errorMessage && (
 						<div className="error text-sm pb-2">
-							<p className="font-semibold text-center text-red-500 ">
+							<p
+								className="font-semibold text-center text-red-500 "
+								data-testid="create-account-error-message"
+							>
 								{errorMessage}
 							</p>
 						</div>
 					)}
 					<button
 						type="submit"
+						data-testid="create-account-submit-button"
 						className="flex w-full justify-center rounded-md bg-pink-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-pink-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-600"
 					>
 						Create account
