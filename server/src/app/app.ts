@@ -27,19 +27,25 @@ import createAccount from './routes/createAccount.js';
 import signIn from './routes/signIn.js';
 import getNextPair from './routes/getNextPair.js';
 import profile from './routes/profile.js';
-import images from './routes/images.js';
+import imageRoute from './routes/image.js';
 import imageUploadRoute from './routes/imageUpload.js';
 import addQueenRoute from './routes/addQueen.js';
 import getQueensRoute from './routes/getQueens.js';
 
 const app = express();
 connectToDatabase();
-app.use(expressLogger, helmet()), limiter;
+app.use(expressLogger, limiter);
+app.use(
+	helmet({
+		crossOriginResourcePolicy: { policy: 'cross-origin' },
+		contentSecurityPolicy: false,
+	})
+);
 app.use(express.static(path.join(__dirname, '../../public')));
 
 app.use(express.json(), cookieParser(), cors(corsOptions));
 
-app.use(images);
+app.use('/images', imageRoute);
 app.use('/queens', getQueensRoute);
 
 app.use('/', validateToken, welcome);
