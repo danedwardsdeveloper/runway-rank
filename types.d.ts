@@ -1,4 +1,4 @@
-import mongoose, { ObjectId } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import { Request } from 'express';
 
 export type ObjectIdString = string;
@@ -57,25 +57,6 @@ export interface UserDocument extends UserBase, mongoose.Document {
 	numRunwaysUntilAccess: number;
 }
 
-interface GetNextPairRequestBody {
-	winner?: string;
-	loser?: string;
-}
-
-export interface CustomRequest extends Request {
-	user?: UserObject | null;
-	body: {
-		email?: string;
-		password?: string;
-		name?: string;
-		winner?: string;
-		loser?: string;
-	};
-	cookies: {
-		[key: string]: string;
-	};
-}
-
 export interface NextPairResponse {
 	authenticated: boolean;
 	user: UserObject | null;
@@ -84,16 +65,10 @@ export interface NextPairResponse {
 	message?: string;
 }
 
-interface CreateAccountRequestBody {
-	email: string;
-	password: string;
-	name: string;
-}
-
 export interface Queen {
 	name: string;
-	former_name?: string;
-	runways: ObjectId[];
+	formerName?: string;
+	runways: Types.ObjectId[];
 }
 
 export interface PairScores {
@@ -145,11 +120,13 @@ export interface MetadataContent {
 	defaultImage: string;
 }
 
-export interface MetadataProps {
-	title?: string;
-	description?: string;
-	pageName?: string;
-	slug?: string;
+export interface MetadataContent {
+	siteName: string;
+	defaultTitle: string;
+	defaultDescription: string;
+	author: string;
+	siteUrl: string;
+	defaultImage: string;
 }
 
 interface MenuItem {
@@ -161,7 +138,40 @@ export interface MenuItemsArray {
 	menuItems: MenuItem[];
 }
 
+// Requests
+export interface AddQueenRequest extends Request {
+	body: {
+		name: string;
+		formerName?: string;
+	};
+}
+
 export interface ResultsRequestBody {
 	winner: string;
 	loser: string;
+}
+
+interface GetNextPairRequestBody {
+	winner?: string;
+	loser?: string;
+}
+
+export interface CustomRequest extends Request {
+	user?: UserObject | null;
+	body: {
+		email?: string;
+		password?: string;
+		name?: string;
+		winner?: string;
+		loser?: string;
+	};
+	cookies: {
+		[key: string]: string;
+	};
+}
+
+interface CreateAccountRequestBody {
+	email: string;
+	password: string;
+	name: string;
 }
