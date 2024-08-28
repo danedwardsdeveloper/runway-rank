@@ -1,5 +1,6 @@
 import { useState, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 import { useApp } from '../contexts/AppContext';
 import { logger } from '../utilities/logger';
@@ -25,38 +26,34 @@ export default function SignInForm() {
 
 		try {
 			logger.info('Attempting sign-in', { email });
-			const response = await fetch(`http://localhost:3000/sign-in`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ email, password }),
-				credentials: 'include',
-			});
+			const response = await axios.post(
+				'http://localhost:3000/sign-in',
+				{ email, password },
+				{ withCredentials: true }
+			);
 
-			if (response.ok) {
-				const responseData = await response.json();
-				logger.info('Sign-in successful', { email });
+			logger.info('Sign-in successful', { email });
 
-				setAppData((prevData) => ({
-					...prevData,
-					message: responseData.message,
-					authenticated: responseData.user.authenticated,
-					user: responseData.user.user,
-					noMorePairs: responseData.user.noMorePairs,
-					nextPair: responseData.nextPair,
-				}));
-				navigate('/profile');
-			} else {
-				const data = await response.json();
-				const errorMessage =
-					data.message || 'Sign-in failed. Please try again.';
-				logger.warn('Sign-in failed', { email, message: errorMessage });
-				setError(errorMessage);
-			}
+			setAppData((prevData) => ({
+				...prevData,
+				message: response.data.message,
+				authenticated: response.data.user.authenticated,
+				user: response.data.user.user,
+				noMorePairs: response.data.user.noMorePairs,
+				nextPair: response.data.nextPair,
+			}));
+			navigate('/');
 		} catch (error) {
-			logger.error('Sign-in error', { email, error });
-			setError('An unexpected error occurred. Please try again later.');
+			if (axios.isAxiosError(error)) {
+				const message =
+					error.response?.data?.message ||
+					'Sign-in failed. Please try again.';
+				logger.warn('Sign-in failed', { email, message });
+				setError(message);
+			} else {
+				logger.error('Sign-in error', { email, error });
+				setError('An unexpected error occurred. Please try again later.');
+			}
 		} finally {
 			setIsLoading(false);
 		}
@@ -64,7 +61,7 @@ export default function SignInForm() {
 
 	return (
 		<>
-			<Metadata pageName="Sign in" slug="sign-in" />
+			<Metadata pageName="Sign in" slug="sign-in" title="Sign in" />
 
 			<div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
 				<div className="sm:mx-auto sm:w-full sm:max-w-sm">
