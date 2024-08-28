@@ -21,6 +21,7 @@ import SignOut from './components/SignOut';
 import CreateAccount from './components/CreateAccount';
 import Profile from './components/Profile';
 import TopRunways from './components/TopRunways';
+import UploadPage from './components/UploadPage';
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -32,6 +33,7 @@ const router = createBrowserRouter(
 			<Route path="sign-out" element={<SignOut />} />
 			<Route path="profile" element={<Profile />} />
 			<Route path="top-runways" element={<TopRunways />} />
+			<Route path="upload" element={<UploadPage />} />
 			<Route path="*" element={<ErrorElement />} />
 		</Route>
 	)
