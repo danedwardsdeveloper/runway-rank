@@ -1,10 +1,15 @@
 import Metadata from '../Metadata';
 import CreateAccountForm from './components/CreateAccountForm';
 
-export default function SignInPage() {
+export default function CreateAccountPage() {
 	return (
 		<>
-			<Metadata pageName="Create an account" slug="create-account" />;
+			<Metadata
+				pageName="Create an account"
+				slug="create-account"
+				title="Create an account"
+			/>
+			;
 			<div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
 				<div className="sm:mx-auto sm:w-full sm:max-w-sm">
 					<img
