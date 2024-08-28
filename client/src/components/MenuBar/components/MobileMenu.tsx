@@ -1,6 +1,6 @@
 import { DisclosurePanel } from '@headlessui/react';
 
-import { MenuItemsArray } from '../../../../types';
+import { MenuItemsArray } from '../../../../../types';
 import cleanTailwindClassNames from '../../../utilities/cleanTailwindClassnames';
 import { NavLink } from 'react-router-dom';
 
