@@ -7,7 +7,10 @@ export default function ProfileMenu({ menuItems }: MenuItemsArray) {
 	return (
 		<Menu as="div" className="relative ml-3">
 			<div>
-				<MenuButton className="relative flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2">
+				<MenuButton
+					className="relative flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2"
+					data-testid="profile-menu-button"
+				>
 					<span className="absolute -inset-1.5" />
 					<span className="sr-only">Open user menu</span>
 					<img
@@ -25,6 +28,7 @@ export default function ProfileMenu({ menuItems }: MenuItemsArray) {
 					<MenuItem key={index}>
 						<Link
 							to={menuItem.to}
+							data-testid={menuItem.to}
 							className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
 						>
 							{menuItem.name}
