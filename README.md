@@ -15,13 +15,11 @@ A full-stack web app that ranks fashion looks using the Elo algorithm. Created w
 
 # Current Task
 
--  Logging in issues.
-   -  Create account logs in correctly
-   -  Sign in doesn't...
+-  Delete account page
 
 ## To-Do List
 
--  Puppeteer test suite
+-  Create and delete accounts test
 -  Upload success page
 -  Make image paths dynamic
 -  environment variable handling for front-end
@@ -31,3 +29,4 @@ A full-stack web app that ranks fashion looks using the Elo algorithm. Created w
 -  Delete photo route
 -  Disable top runways menu item
 -  You don't have access to top runways page...'
+-  Enforce strong passwords
