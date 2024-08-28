@@ -32,18 +32,16 @@ export async function getNextPairService(
 
 			if (runways.length === 1) {
 				logger.info(
-					`Only one runway found, fetching a random additional runway`
+					`Less than 2 unranked runways found, fetching from all runways`
 				);
-				const randomRunway = await RunwayModel.aggregate([
-					{
-						$match: {
-							_id: { $nin: [...user.ranked_runway_ids, runways[0]._id] },
-						},
-					},
-					{ $sample: { size: 1 } },
-				]);
-				runways.push(randomRunway[0]);
-				logger.info(`Added random runway: ${randomRunway[0]._id}`);
+				const additionalRunways = await RunwayModel.find({
+					_id: { $nin: runways.map((r) => r._id) },
+				})
+					.sort({ ratingsCount: 1 })
+					.limit(2 - runways.length);
+
+				runways.push(...additionalRunways);
+				logger.info(`Added ${additionalRunways.length} additional runways`);
 			}
 		} else {
 			logger.info(`No userId provided, fetching default pair of runways`);
