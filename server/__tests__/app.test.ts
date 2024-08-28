@@ -10,15 +10,9 @@ function expectValidMongoId(id: string) {
 	expect(isValidMongoId(id)).toBe(true);
 }
 
-const expectedNextPairProperties = [
+const expectedRunwayProperties = [
 	'_id',
 	'name',
-	'queenId',
-	'queenName',
-	'franchise',
-	'season',
-	'episode',
-	'episodeName',
 	'score',
 	'ratingsCount',
 	'imageSlug',
@@ -81,13 +75,13 @@ describe('MongoDB Express Tests', () => {
 
 		expect(response.status).toBe(200);
 		expect(response.body.user).toBe(null);
-		expect(response.body).toHaveProperty('nextPair');
-		expect(Array.isArray(response.body.nextPair)).toBe(true);
-		expect(response.body.nextPair).toHaveLength(2);
+		expect(response.body).toHaveProperty('runways');
+		expect(Array.isArray(response.body.runways)).toBe(true);
+		expect(response.body.runways.length).toBeGreaterThanOrEqual(2);
 
-		response.body.nextPair.forEach((item) => {
+		response.body.runways.forEach((item) => {
 			expect(typeof item).toBe('object');
-			expectedNextPairProperties.forEach((prop) => {
+			expectedRunwayProperties.forEach((prop) => {
 				expect(item).toHaveProperty(prop);
 			});
 		});
@@ -185,7 +179,7 @@ describe('MongoDB Express Tests', () => {
 
 		response.body.nextPair.forEach((item) => {
 			expect(typeof item).toBe('object');
-			expectedNextPairProperties.forEach((prop) => {
+			expectedRunwayProperties.forEach((prop) => {
 				expect(item).toHaveProperty(prop);
 			});
 		});
