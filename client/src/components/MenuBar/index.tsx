@@ -4,20 +4,25 @@ import { NavLink } from 'react-router-dom';
 import DesktopMenu from './components/DesktopMenu';
 import ProfileMenu from './components/ProfileMenu';
 import MobileMenu from './components/MobileMenu';
+import { useApp } from '../../contexts/AppContext';
 
 export default function MenuBar() {
+	const { appData } = useApp();
+
 	const mainMenuItems = [
 		{ name: 'About', to: '/about' },
 		{ name: 'Top runways', to: '/top-runways' },
 	];
 
-	const profileMenuItems = [
-		{ name: 'Sign in', to: '/sign-in' },
-		{ name: 'Create account', to: '/create-account' },
-		{ name: 'Sign out', to: '/sign-out' },
-		{ name: 'Delete account', to: '/delete-account' },
-		{ name: 'Profile', to: '/profile' },
-	];
+	const profileMenuItems = appData.isAuthenticated
+		? [
+				{ name: 'Profile', to: '/profile' },
+				{ name: 'Sign out', to: '/sign-out' },
+		  ]
+		: [
+				{ name: 'Sign in', to: '/sign-in' },
+				{ name: 'Create account', to: '/create-account' },
+		  ];
 
 	return (
 		<Disclosure as="nav" className="bg-pink-300 shadow">
