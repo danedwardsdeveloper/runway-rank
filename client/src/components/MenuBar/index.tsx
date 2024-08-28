@@ -18,6 +18,7 @@ export default function MenuBar() {
 		? [
 				{ name: 'Profile', to: '/profile' },
 				{ name: 'Sign out', to: '/sign-out' },
+				{ name: 'Upload', to: '/upload' },
 		  ]
 		: [
 				{ name: 'Sign in', to: '/sign-in' },
