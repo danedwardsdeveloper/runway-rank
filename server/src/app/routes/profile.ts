@@ -1,5 +1,5 @@
 import express, { Response } from 'express';
-import { AppData, RunwayItem, CustomRequest } from '../../../../../types.js';
+import { AppData, RunwayItem, CustomRequest } from '../../../../types.js';
 import {
 	getNextPairService,
 	getTopRunways,
