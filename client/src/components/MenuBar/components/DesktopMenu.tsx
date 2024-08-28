@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import cleanTailwindClassNames from '../../../utilities/cleanTailwindClassnames';
 
-import { MenuItemsArray } from '../../../../types';
+import { MenuItemsArray } from '../../../../../types';
 
 export default function DesktopMenu({ menuItems }: MenuItemsArray) {
 	return (
