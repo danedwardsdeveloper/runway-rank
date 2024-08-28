@@ -77,21 +77,19 @@ export default function Profile() {
 		appData.user ?? {};
 
 	return (
-		<div className="overflow-hidden bg-white shadow sm:rounded-lg lg:w-1/2 mx-auto my-5">
+		<div className="overflow-hidden bg-white shadow md:rounded-lg md:w-2/3 lg:max-w-1/3 mx-auto md:my-5">
 			<div className="px-4 py-6 sm:px-6">
 				<h3 className="text-base font-semibold leading-7 text-gray-900">
-					User Information
+					Profile
 				</h3>
 				<p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
-					Personal details and application.
+					Account details.
 				</p>
 			</div>
 			<div className="border-t border-gray-100">
 				<dl className="divide-y divide-gray-100">
 					<div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-						<dt className="text-sm font-medium text-gray-900">
-							Full name
-						</dt>
+						<dt className="text-sm font-medium text-gray-900">Name</dt>
 						<dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
 							{name}
 						</dd>
@@ -106,7 +104,7 @@ export default function Profile() {
 					</div>
 					<div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
 						<dt className="text-sm font-medium text-gray-900">
-							Access to Top Runways
+							Access top runways?
 						</dt>
 						<dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
 							{accessTopRunways ? 'Yes' : 'No'}
@@ -114,13 +112,13 @@ export default function Profile() {
 					</div>
 					<div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
 						<dt className="text-sm font-medium text-gray-900">
-							Pairs until access
+							Runway pairs to rank until access is granted
 						</dt>
 						<dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
 							{pairsUntilAccess}
 						</dd>
 					</div>
-					<div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 bg-red-100">
+					<div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 bg-red-50">
 						<dt className="text-sm font-medium text-red-500">
 							Delete account
 						</dt>
