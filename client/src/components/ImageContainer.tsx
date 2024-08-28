@@ -30,6 +30,7 @@ export default function ImageContainer({
 								onClick={() => isAuthenticated && onImageClick(img)}
 								src={`http://localhost:3000/images/${img.imageSlug}.webp`}
 								alt={`${img.queenName} - ${img.name}`}
+								data-testid="runway-image"
 								className={`w-full h-auto md:max-w-[400px] md:max-h-[400px] object-contain rounded-lg border-4 border-transparent transition-all duration-200 ${
 									isAuthenticated
 										? 'cursor-pointer hover:border-pink-500'
