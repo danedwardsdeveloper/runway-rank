@@ -5,7 +5,7 @@ import {
 	RunwayItem,
 	TokenInput,
 	AppData,
-} from '../../../../../types.js';
+} from '../../../../types.js';
 import {
 	getNextPairService,
 	updateRunwayScores,
