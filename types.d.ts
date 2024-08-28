@@ -81,11 +81,34 @@ export interface UpdateUserOptions {
 	newRunwayIds?: string[];
 }
 
-type Franchise =
+export type Franchise =
 	| "RuPaul's Drag Race"
-	| 'All Stars'
+	| `RuPaul's Drag Race All Stars`
 	| 'Drag Race UK'
-	| "Canada's Drag Race";
+	| "Canada's Drag Race"
+	| 'Drag Race Down Under'
+	| 'Drag Race España'
+	| 'Drag Race Italia'
+	| 'Drag Race France'
+	| 'Drag Race Philippines'
+	| 'Drag Race Thailand'
+	| 'Drag Race Holland'
+	| 'Drag Race Belgique'
+	| 'Drag Race Sverige'
+	| 'Drag Race Brasil'
+	| 'Drag Race Deutschland'
+	| 'Drag Race México'
+	| 'The Switch Drag Race'
+	| "RuPaul's Secret Celebrity Drag Race"
+	| 'UK vs the World'
+	| 'Canada vs the World'
+	| 'Global All Stars'
+	| 'Other';
+
+export interface FranchiseData {
+	name: Franchise;
+	seasons: number | undefined;
+}
 
 export interface NextPairResponse {
 	authenticated: boolean;
@@ -136,6 +159,16 @@ interface MenuItem {
 
 export interface MenuItemsArray {
 	menuItems: MenuItem[];
+}
+
+export interface UploadFormInterface {
+	description: string;
+	queen: string;
+	franchise: string;
+	season?: string;
+	episodeNumber?: string;
+	episodeName?: string;
+	image?: File;
 }
 
 // Requests
