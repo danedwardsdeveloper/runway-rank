@@ -16,7 +16,7 @@ const RunwaySchema = new mongoose.Schema<RunwayItem>({
 	episodeName: String,
 	score: { type: Number, default: 1600 },
 	ratingsCount: { type: Number, default: 0 },
-	imageSlug: { type: String, required: true },
+	imageSlug: { type: String, required: true, unique: true },
 });
 
 export const RunwayModel = mongoose.model<RunwayItem>('Runway', RunwaySchema);
