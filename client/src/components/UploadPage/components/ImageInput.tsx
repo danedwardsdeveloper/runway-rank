@@ -1,5 +1,5 @@
 import { useState, ChangeEvent, DragEvent } from 'react';
-import { PhotoIcon } from '@heroicons/react/24/solid';
+import { PhotoIcon, XCircleIcon } from '@heroicons/react/24/solid';
 
 interface ImageInputProps {
 	onFileChange: (file: File) => void;
@@ -26,9 +26,9 @@ export default function ImageInput({ onFileChange }: ImageInputProps) {
 	const validateImageDimensions = async (file: File): Promise<void> => {
 		return new Promise((resolve, reject) => {
 			const img = new Image();
-			img.onload = function (this: HTMLImageElement) {
-				const width = this.width;
-				const height = this.height;
+			img.onload = () => {
+				const width = img.width;
+				const height = img.height;
 
 				if (width > 2000 || height > 2000) {
 					reject(
@@ -55,7 +55,7 @@ export default function ImageInput({ onFileChange }: ImageInputProps) {
 	};
 
 	const processFile = async (file: File) => {
-		setErrorMessage('This is the error');
+		setErrorMessage('');
 
 		const fileError = validateFile(file);
 		if (fileError) {
@@ -107,17 +107,25 @@ export default function ImageInput({ onFileChange }: ImageInputProps) {
 			await processFile(file);
 		}
 	};
+
+	const handleClearImage = () => {
+		setPreviewUrl(null);
+		setErrorMessage('');
+		onFileChange(null);
+	};
+
 	return (
 		<div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
 			<label
-				htmlFor="cover-photo"
+				htmlFor="photo"
 				className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
 			>
 				Photo
+				<span className="text-red-500 pl-1">*</span>
 			</label>
 			<div className="mt-2 sm:col-span-2 sm:mt-0">
 				<div
-					className={`flex-col text-center max-w-2xl justify-center rounded-lg border border-dashed  px-6 py-10 ${
+					className={`relative flex flex-col items-center justify-center rounded-lg border border-dashed  px-6 py-10 ${
 						isDragging
 							? 'border-pink-600 bg-pink-50'
 							: 'border-gray-900/25'
@@ -152,6 +160,7 @@ export default function ImageInput({ onFileChange }: ImageInputProps) {
 										name="file-upload"
 										type="file"
 										className="sr-only"
+										required
 										onChange={handleFileChange}
 									/>
 								</label>
@@ -167,9 +176,23 @@ export default function ImageInput({ onFileChange }: ImageInputProps) {
 							</div>
 						</div>
 					)}
-					{errorMessage && (
-						<div>
-							<p className="mt-2 text-sm text-red-600">{errorMessage}</p>
+					{(errorMessage || previewUrl) && (
+						<div className="flex justify-center mt-4">
+							{errorMessage && (
+								<div>
+									<p className="mt-2 text-sm text-red-600">
+										{errorMessage}
+									</p>
+								</div>
+							)}
+							{previewUrl && (
+								<button
+									onClick={handleClearImage}
+									className=" text-red-500 hover:text-red-300 ml-3"
+								>
+									<XCircleIcon className="h-6 w-6" />
+								</button>
+							)}
 						</div>
 					)}
 				</div>
