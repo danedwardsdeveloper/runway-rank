@@ -1,37 +1,40 @@
 import axios from 'axios';
-import { useState } from 'react';
 
 import UploadForm from './components/UploadForm';
 import { UploadFormInterface } from '../../../../types';
 import { logger } from '../../utilities/logger';
 
 export default function UploadPage() {
-	// const [successMessage, setSuccessMessage] = useState('');
 	const handleSubmit = async (formData: UploadFormInterface) => {
 		logger.info('Form submission started', { formData });
 
+		if (
+			!formData.name ||
+			!formData.queenId ||
+			!formData.franchise ||
+			!formData.image
+		) {
+			logger.error('Missing required fields', { formData });
+			alert('Please fill in all required fields and upload an image.');
+			return;
+		}
+
 		try {
 			const data = new FormData();
+
 			Object.entries(formData).forEach(([key, value]) => {
-				if (value !== undefined) {
-					if (key === 'file' && value instanceof File) {
-						data.append('file', value);
-						logger.debug(`Appended file to FormData`, {
-							fileName: value.name,
-							fileSize: value.size,
-						});
+				if (value !== null && value !== '') {
+					if (key === 'image' && value instanceof File) {
+						data.append('image', value);
 					} else {
-						data.append(key, String(value));
-						logger.debug(`Appended ${key} to FormData`, { value });
+						data.append(key, value.toString());
 					}
-				} else {
-					logger.warn(`Skipped undefined value for key: ${key}`);
 				}
 			});
 
 			logger.info('Prepared FormData for submission', {
 				keys: Array.from(data.keys()),
-				fileIncluded: data.has('file'),
+				fileIncluded: data.has('image'),
 			});
 
 			logger.info('Sending POST request to images/upload');
@@ -42,11 +45,11 @@ export default function UploadPage() {
 					headers: {
 						'Content-Type': 'multipart/form-data',
 					},
+					withCredentials: true,
 				}
 			);
 
 			logger.info('Queen added successfully:', response.data);
-			// setSuccessMessage('Queen added successfully!');
 		} catch (error) {
 			logger.error('Error adding queen:', error);
 		}
