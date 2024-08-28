@@ -10,12 +10,14 @@ export default function SignInForm() {
 	const [email, setEmail] = useState('test@gmail.com');
 	const [password, setPassword] = useState('SecurePassword');
 	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState('');
 	const navigate = useNavigate();
 	const { setAppData } = useApp();
 
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		setIsLoading(true);
+		setError('');
 		setAppData((prevData) => ({
 			...prevData,
 			message: { content: '', colour: 'green' },
@@ -47,17 +49,15 @@ export default function SignInForm() {
 				navigate('/profile');
 			} else {
 				const data = await response.json();
-				const message = data.message || 'Sign-in failed. Please try again.';
-				logger.warn('Sign-in failed', { email, message });
-				setAppData((prevData) => ({ ...prevData, message }));
-				setIsLoading(false);
+				const errorMessage =
+					data.message || 'Sign-in failed. Please try again.';
+				logger.warn('Sign-in failed', { email, message: errorMessage });
+				setError(errorMessage);
 			}
 		} catch (error) {
 			logger.error('Sign-in error', { email, error });
-			setAppData((prevData) => ({
-				...prevData,
-				message: { content: '', colour: 'black' },
-			}));
+			setError('An unexpected error occurred. Please try again later.');
+		} finally {
 			setIsLoading(false);
 		}
 	};
@@ -126,6 +126,13 @@ export default function SignInForm() {
 								/>
 							</div>
 						</div>
+
+						{/* Error message */}
+						{error && (
+							<div className="text-red-600 text-sm font-medium">
+								{error}
+							</div>
+						)}
 
 						{/* Submit button */}
 						<div>
