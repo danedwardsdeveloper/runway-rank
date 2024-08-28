@@ -66,6 +66,7 @@ export interface NextPairResponse {
 }
 
 export interface Queen {
+	_id: string;
 	name: string;
 	formerName?: string;
 	runways: Types.ObjectId[];
@@ -162,13 +163,13 @@ export interface MenuItemsArray {
 }
 
 export interface UploadFormInterface {
-	description: string;
-	queen: string;
+	name: string;
+	queenId: string;
 	franchise: string;
+	image?: File | null;
 	season?: string;
 	episodeNumber?: string;
 	episodeName?: string;
-	image?: File;
 }
 
 // Requests
