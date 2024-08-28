@@ -18,9 +18,10 @@ export default function UploadForm({ onSubmit }: UploadFormProps) {
 	const [error, setError] = useState<string | null>(null);
 	const [selectedFranchise, setSelectedFranchise] = useState('');
 	const [formData, setFormData] = useState<UploadFormInterface>({
-		description: '',
-		queen: '',
+		name: '',
+		queenId: '',
 		franchise: '',
+		image: null,
 	});
 
 	useEffect(() => {
@@ -67,15 +68,24 @@ export default function UploadForm({ onSubmit }: UploadFormProps) {
 	if (loading) return <p>Loading queens...</p>;
 	if (error) return <p>Error: {error}</p>;
 
-	const handleFileChange = (file: File) => {
+	const handleFileChange = (file: File | null) => {
 		setFormData((prev) => ({ ...prev, image: file }));
 	};
 
 	const handleInputChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+		event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
 	) => {
-		const { name, value } = e.target;
-		setFormData((prev) => ({ ...prev, [name]: value }));
+		const { name, value } = event.target;
+		if (name === 'queenId') {
+			const selectedQueen = queens.find((queen) => queen._id === value);
+			setFormData((prev) => ({
+				...prev,
+				queenId: value,
+				queenName: selectedQueen ? selectedQueen.name : '',
+			}));
+		} else {
+			setFormData((prev) => ({ ...prev, [name]: value }));
+		}
 		if (name === 'franchise') {
 			setSelectedFranchise(value);
 		}
@@ -136,12 +146,12 @@ export default function UploadForm({ onSubmit }: UploadFormProps) {
 									</label>
 									<div className="mt-2 sm:col-span-2 sm:mt-0">
 										<input
-											id="description"
-											name="description"
+											id="name"
+											name="name"
 											type="text"
 											required
 											placeholder="Short description of the lewk"
-											value={formData.description}
+											value={formData.name}
 											onChange={handleInputChange}
 											className="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
 										/>
@@ -159,16 +169,16 @@ export default function UploadForm({ onSubmit }: UploadFormProps) {
 									</label>
 									<div className="mt-2 sm:col-span-2 sm:mt-0">
 										<select
-											id="queen"
-											name="queen"
+											id="queenId"
+											name="queenId"
 											required
-											value={formData.queen}
+											value={formData.queenId}
 											onChange={handleInputChange}
 											className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 px-2"
 										>
 											<option value="">Select a queen</option>
 											{queens.map((queen) => (
-												<option key={queen.name} value={queen.name}>
+												<option key={queen._id} value={queen._id}>
 													{queen.name}
 												</option>
 											))}
@@ -183,6 +193,7 @@ export default function UploadForm({ onSubmit }: UploadFormProps) {
 										className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
 									>
 										Franchise
+										<span className="text-red-500 pl-1">*</span>
 									</label>
 									<div className="mt-2 sm:col-span-2 sm:mt-0">
 										<select
@@ -206,83 +217,77 @@ export default function UploadForm({ onSubmit }: UploadFormProps) {
 								</div>
 
 								{/* Season */}
-								{selectedFranchise && selectedFranchise !== 'Other' && (
-									<div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
-										<label
-											htmlFor="season"
-											className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
+								<div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+									<label
+										htmlFor="season"
+										className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
+									>
+										Season
+									</label>
+									<div className="mt-2 sm:col-span-2 sm:mt-0">
+										<select
+											id="season"
+											name="season"
+											value={formData.season || ''}
+											onChange={handleInputChange}
+											className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 px-2"
 										>
-											Season
-										</label>
-										<div className="mt-2 sm:col-span-2 sm:mt-0">
-											<select
-												id="season"
-												name="season"
-												value={formData.season || ''}
-												onChange={handleInputChange}
-												className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 px-2"
-											>
-												<option value="">Select a season</option>
-												{renderSeasonOptions()}
-											</select>
-										</div>
+											<option value="">Select a season</option>
+											{renderSeasonOptions()}
+										</select>
 									</div>
-								)}
+								</div>
 
 								{/* Episode number */}
-								{selectedFranchise && selectedFranchise !== 'Other' && (
-									<div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
-										<label
-											htmlFor="episode"
-											className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
+								<div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+									<label
+										htmlFor="episode"
+										className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
+									>
+										Episode
+									</label>
+									<div className="mt-2 sm:col-span-2 sm:mt-0">
+										<select
+											id="episode"
+											name="episode"
+											value={formData.episodeNumber || ''}
+											onChange={handleInputChange}
+											className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 px-2"
 										>
-											Episode
-										</label>
-										<div className="mt-2 sm:col-span-2 sm:mt-0">
-											<select
-												id="episode"
-												name="episode"
-												value={formData.episodeNumber || ''}
-												onChange={handleInputChange}
-												className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 px-2"
-											>
-												<option value="">
-													Select an episode number
+											<option value="">
+												Select an episode number
+											</option>
+											{Array.from(
+												{ length: 16 },
+												(_, i) => i + 1
+											).map((num) => (
+												<option key={num} value={num.toString()}>
+													{num}
 												</option>
-												{Array.from(
-													{ length: 16 },
-													(_, i) => i + 1
-												).map((num) => (
-													<option key={num} value={num.toString()}>
-														{num}
-													</option>
-												))}
-											</select>
-										</div>
+											))}
+										</select>
 									</div>
-								)}
+								</div>
 
 								{/* Episode name */}
-								{selectedFranchise && selectedFranchise !== 'Other' && (
-									<div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
-										<label
-											htmlFor="episodeName"
-											className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
-										>
-											Episode name
-										</label>
-										<div className="mt-2 sm:col-span-2 sm:mt-0">
-											<input
-												id="episodeName"
-												name="episodeName"
-												type="text"
-												value={formData.episodeName || ''}
-												onChange={handleInputChange}
-												className="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-											/>
-										</div>
+								<div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+									<label
+										htmlFor="episodeName"
+										className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
+									>
+										Episode name
+									</label>
+									<div className="mt-2 sm:col-span-2 sm:mt-0">
+										<input
+											id="episodeName"
+											name="episodeName"
+											type="text"
+											value={formData.episodeName || ''}
+											onChange={handleInputChange}
+											className="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+										/>
 									</div>
-								)}
+								</div>
 							</div>
 						</div>
 					</div>
