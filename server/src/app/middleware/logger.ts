@@ -2,7 +2,7 @@ import winston from 'winston';
 import expressWinston from 'express-winston';
 
 type Level = 'verbose' | 'info' | 'warn' | 'error' | 'debug' | 'silly';
-const level: Level = 'error';
+const level: Level = 'info';
 
 export const logger = winston.createLogger({
 	level: level,
