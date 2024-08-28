@@ -7,6 +7,7 @@ import { logger } from '../utilities/logger';
 import { ResultsRequestBody } from '../../../types';
 import Banner from './Banner';
 import NoMorePairs from './NoMorePairs';
+import Metadata from './Metadata';
 
 export default function RankRunways() {
 	const { appData, setAppData } = useApp();
@@ -75,17 +76,20 @@ export default function RankRunways() {
 	};
 
 	return (
-		<div>
-			{!appData.isAuthenticated && <Banner />}
-			{appData.runways ? (
-				<ImageContainer
-					runways={currentRunways}
-					onImageClick={handleImageClick}
-					isAuthenticated={appData.isAuthenticated}
-				/>
-			) : (
-				<NoMorePairs />
-			)}
-		</div>
+		<>
+			<Metadata pageName="Home" slug="" title="Home" />
+			<div>
+				{!appData.isAuthenticated && <Banner />}
+				{appData.runways ? (
+					<ImageContainer
+						runways={currentRunways}
+						onImageClick={handleImageClick}
+						isAuthenticated={appData.isAuthenticated}
+					/>
+				) : (
+					<NoMorePairs />
+				)}
+			</div>
+		</>
 	);
 }
