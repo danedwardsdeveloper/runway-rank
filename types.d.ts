@@ -160,3 +160,8 @@ interface MenuItem {
 export interface MenuItemsArray {
 	menuItems: MenuItem[];
 }
+
+export interface ResultsRequestBody {
+	winner: string;
+	loser: string;
+}
