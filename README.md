@@ -6,11 +6,28 @@ A full-stack web app that ranks fashion looks using the Elo algorithm. Created w
 
 ### Front-End
 
--  Vue
-
 ### Back-End
 
 -  Express
 -  Envalid & Dotenv
 -  TypeScript, TSX, Nodemon
 -  Unit testing with Vitest
+
+# Current Task
+
+-  Logging in issues.
+   -  Create account logs in correctly
+   -  Sign in doesn't...
+
+## To-Do List
+
+-  Puppeteer test suite
+-  Upload success page
+-  Make image paths dynamic
+-  environment variable handling for front-end
+-  Limit size of uploads folder
+-  AWS email validation
+-  About page copy
+-  Delete photo route
+-  Disable top runways menu item
+-  You don't have access to top runways page...'
