@@ -14,7 +14,6 @@ addQueenRoute.post('/', async (req: AddQueenRequest, res: Response) => {
 	try {
 		const { name, formerName } = req.body;
 
-		// Check if a queen with this name already exists
 		const existingQueen = await QueenModel.findOne({
 			name: name.toLowerCase(),
 		});
