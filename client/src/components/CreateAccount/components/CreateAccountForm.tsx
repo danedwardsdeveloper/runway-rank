@@ -119,18 +119,18 @@ export default function SignInForm() {
 						type="submit"
 						className="flex w-full justify-center rounded-md bg-pink-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-pink-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-600"
 					>
-						Sign in
+						Create account
 					</button>
 				</div>
 			</form>
 
 			<p className="mt-10 text-center text-sm text-gray-500 dark:text-gray-400">
-				Don't have an account?{' '}
+				Already have an account?{' '}
 				<Link
-					to="/create-account"
+					to="/sign-in"
 					className="font-semibold leading-6 text-pink-600 hover:text-pink-500 dark:text-pink-400 dark:hover:text-pink-300"
 				>
-					Create an account
+					Sign in
 				</Link>
 			</p>
 		</div>
