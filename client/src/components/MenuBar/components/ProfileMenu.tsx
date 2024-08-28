@@ -1,6 +1,6 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 
-import { MenuItemsArray } from '../../../../types';
+import { MenuItemsArray } from '../../../../../types';
 import { Link } from 'react-router-dom';
 
 export default function ProfileMenu({ menuItems }: MenuItemsArray) {
