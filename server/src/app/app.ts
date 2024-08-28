@@ -29,6 +29,8 @@ import getNextPair from './routes/getNextPair.js';
 import profile from './routes/profile.js';
 import images from './routes/images.js';
 import imageUploadRoute from './routes/imageUpload.js';
+import addQueenRoute from './routes/addQueen.js';
+import getQueensRoute from './routes/getQueens.js';
 
 const app = express();
 connectToDatabase();
@@ -38,6 +40,7 @@ app.use(express.static(path.join(__dirname, '../../public')));
 app.use(express.json(), cookieParser(), cors(corsOptions));
 
 app.use(images);
+app.use('/queens', getQueensRoute);
 
 app.use('/', validateToken, welcome);
 app.use('/', validateToken, createAccount);
@@ -46,6 +49,7 @@ app.use('/', validateToken, signOut);
 app.use('/', validateToken, getNextPair);
 app.use('/', validateToken, profile);
 
+app.use('/add-queen', validateToken, addQueenRoute);
 app.use('/sign-out', validateToken, signOut);
 app.use('/delete-account', validateToken, deleteAccount);
 app.use('/images/upload', validateToken, imageUploadRoute);
