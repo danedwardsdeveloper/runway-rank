@@ -2,7 +2,7 @@ import { useState, ChangeEvent, DragEvent } from 'react';
 import { PhotoIcon, XCircleIcon } from '@heroicons/react/24/solid';
 
 interface ImageInputProps {
-	onFileChange: (file: File) => void;
+	onFileChange: (file: File | null) => void;
 }
 
 export default function ImageInput({ onFileChange }: ImageInputProps) {
