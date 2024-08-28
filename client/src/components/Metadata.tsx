@@ -1,6 +1,13 @@
 import { Helmet } from 'react-helmet-async';
 
-import type { MetadataContent, MetadataProps } from '../../types';
+import type { MetadataContent } from '../../../types';
+
+interface MetadataProps {
+	title?: string;
+	description?: string;
+	pageName?: string;
+	slug?: string;
+}
 
 export const metadataContent: MetadataContent = {
 	siteName: 'Runway Rank',
