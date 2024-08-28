@@ -22,6 +22,7 @@ import CreateAccount from './components/CreateAccount';
 import Profile from './components/Profile';
 import TopRunways from './components/TopRunways';
 import UploadPage from './components/UploadPage';
+import DeleteAccount from './components/DeleteAccount';
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -29,6 +30,7 @@ const router = createBrowserRouter(
 			<Route index element={<RankRunways />} />
 			<Route path="about" element={<About />} />
 			<Route path="create-account" element={<CreateAccount />} />
+			<Route path="delete-account" element={<DeleteAccount />} />
 			<Route path="sign-in" element={<SignIn />} />
 			<Route path="sign-out" element={<SignOut />} />
 			<Route path="profile" element={<Profile />} />
