@@ -1,7 +1,7 @@
 import express, { Router, Response } from 'express';
 
 import { UserModel } from '@/app/database/models/User.js';
-import { CustomRequest } from '../../../../../types.js';
+import { CustomRequest } from '../../../../types.js';
 import { logger } from '@/app/middleware/logger.js';
 import { environment } from '@/environment.js';
 
@@ -28,8 +28,7 @@ export default express
 			logger.info(`User with ID: ${userId} deleted successfully`);
 			res.clearCookie('token', {
 				httpOnly: true,
-				// secure: environment.isProduction,
-				secure: true,
+				secure: environment.isProduction,
 				sameSite: 'none',
 			});
 
