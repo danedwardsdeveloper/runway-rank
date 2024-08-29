@@ -27,7 +27,7 @@ describe('MongoDB Express Tests', () => {
 
 	async function deleteTestAccount(agent) {
 		try {
-			const signInResponse = await agent.post('/sign-in').send({
+			const signInResponse = await agent.post('/api/sign-in').send({
 				email: 'test@gmail.com',
 				password: 'SecurePassword',
 			});
@@ -35,7 +35,9 @@ describe('MongoDB Express Tests', () => {
 			if (signInResponse.status === 401) {
 				console.log('No existing test account found');
 			} else if (signInResponse.status === 200) {
-				const deleteAccountResponse = await agent.delete('/delete-account');
+				const deleteAccountResponse = await agent.delete(
+					'/api/delete-account'
+				);
 				if (deleteAccountResponse.status === 200) {
 					console.log('Existing test account deleted');
 				} else {
@@ -49,7 +51,7 @@ describe('MongoDB Express Tests', () => {
 		} catch (error) {
 			console.error('Error during account cleanup:', error.message);
 		} finally {
-			await agent.get('/sign-out');
+			await agent.get('/api/sign-out');
 		}
 	}
 
@@ -65,13 +67,13 @@ describe('MongoDB Express Tests', () => {
 	});
 
 	it('should return a welcome message', async () => {
-		const response = await request(server).get('/');
+		const response = await request(server).get('/api');
 		expect(response.status).toBe(200);
 		expect(response.text).toBe('Welcome to the Runway Rank API');
 	});
 
 	it('should return nextPair with null user if logged out', async () => {
-		const response = await request(server).post('/get-next-pair');
+		const response = await request(server).post('/api/get-next-pair');
 
 		expect(response.status).toBe(200);
 		expect(response.body.user).toBe(null);
@@ -88,7 +90,7 @@ describe('MongoDB Express Tests', () => {
 	});
 
 	it('should fail to sign in with non-existent account', async () => {
-		const response = await agent.post('/sign-in').send({
+		const response = await agent.post('/api/sign-in').send({
 			email: 'fakeAccount@gmail.com',
 			password: 'SecurePassword',
 		});
@@ -99,7 +101,7 @@ describe('MongoDB Express Tests', () => {
 	});
 
 	it('should create an account', async () => {
-		const response = await agent.post('/create-account').send({
+		const response = await agent.post('/api/create-account').send({
 			email: 'test@gmail.com',
 			password: 'SecurePassword',
 			name: 'Test',
@@ -128,7 +130,7 @@ describe('MongoDB Express Tests', () => {
 	});
 
 	it('should fail to create an account with the same email', async () => {
-		const response = await agent.post('/create-account').send({
+		const response = await agent.post('/api/create-account').send({
 			email: 'test@gmail.com',
 			password: 'SecurePassword',
 			name: 'Test',
@@ -139,7 +141,7 @@ describe('MongoDB Express Tests', () => {
 	});
 
 	it('should sign out', async () => {
-		const response = await agent.get('/sign-out');
+		const response = await agent.get('/api/sign-out');
 		expect(response.status).toBe(200);
 		expect(response.body).toEqual({
 			message: 'Sign out successful',
@@ -147,7 +149,7 @@ describe('MongoDB Express Tests', () => {
 	});
 
 	it('should fail to sign in with wrong password', async () => {
-		const response = await agent.post('/sign-in').send({
+		const response = await agent.post('/api/sign-in').send({
 			email: 'test@gmail.com',
 			password: 'WrongPassword',
 		});
@@ -159,7 +161,7 @@ describe('MongoDB Express Tests', () => {
 	});
 
 	it('should sign in with correct credentials', async () => {
-		const response = await agent.post('/sign-in').send({
+		const response = await agent.post('/api/sign-in').send({
 			email: 'test@gmail.com',
 			password: 'SecurePassword',
 		});
@@ -186,7 +188,7 @@ describe('MongoDB Express Tests', () => {
 	});
 
 	it('should return correct user data for authenticated user without top runways access', async () => {
-		const response = await agent.get('/top-runways');
+		const response = await agent.get('/api/top-runways');
 
 		expect(response.status).toBe(200);
 		expect(response.body).toHaveProperty('user');
@@ -207,7 +209,7 @@ describe('MongoDB Express Tests', () => {
 		let currentRunwayIds;
 		let previousRunwayIds = [];
 
-		const initialResponse = await agent.post('/get-next-pair');
+		const initialResponse = await agent.post('/api/get-next-pair');
 		let localNumRunwaysUntilAccess =
 			initialResponse.body.user.numRunwaysUntilAccess;
 		currentRunwayIds = initialResponse.body.nextPair.map((item) => item._id);
@@ -217,7 +219,7 @@ describe('MongoDB Express Tests', () => {
 		);
 
 		while (localNumRunwaysUntilAccess > 1) {
-			const response = await agent.post('/get-next-pair').send({
+			const response = await agent.post('/api/get-next-pair').send({
 				winner: currentRunwayIds[0],
 				loser: currentRunwayIds[1],
 			});
@@ -261,7 +263,7 @@ describe('MongoDB Express Tests', () => {
 			}
 		}
 
-		const finalResponse = await agent.post('/get-next-pair').send({
+		const finalResponse = await agent.post('/api/get-next-pair').send({
 			winner: currentRunwayIds[0],
 			loser: currentRunwayIds[1],
 		});
@@ -273,7 +275,7 @@ describe('MongoDB Express Tests', () => {
 	});
 
 	it('should sign out successfully', async () => {
-		const response = await agent.get('/sign-out');
+		const response = await agent.get('/api/sign-out');
 		expect(response.status).toBe(200);
 		expect(response.body).toEqual({
 			message: 'Sign out successful',
@@ -281,7 +283,7 @@ describe('MongoDB Express Tests', () => {
 	});
 
 	it('should fail to sign out when not signed in', async () => {
-		const response = await agent.get('/sign-out');
+		const response = await agent.get('/api/sign-out');
 		expect(response.status).toBe(401);
 		expect(response.body).toEqual({
 			message: 'Not signed in',
@@ -289,7 +291,7 @@ describe('MongoDB Express Tests', () => {
 	});
 
 	it('should fail to delete account when not signed in', async () => {
-		const response = await agent.delete('/delete-account');
+		const response = await agent.delete('/api/delete-account');
 		expect(response.status).toBe(401);
 		expect(response.body).toEqual({
 			message: 'Unauthorized',
@@ -297,7 +299,7 @@ describe('MongoDB Express Tests', () => {
 	});
 
 	it('should sign in again', async () => {
-		const response = await agent.post('/sign-in').send({
+		const response = await agent.post('/api/sign-in').send({
 			email: 'test@gmail.com',
 			password: 'SecurePassword',
 		});
@@ -305,7 +307,7 @@ describe('MongoDB Express Tests', () => {
 	});
 
 	it('should delete the account', async () => {
-		const response = await agent.delete('/delete-account');
+		const response = await agent.delete('/api/delete-account');
 		expect(response.status).toBe(200);
 		expect(response.body).toEqual({
 			message: "Account 'test@gmail.com' deleted successfully",
@@ -313,7 +315,7 @@ describe('MongoDB Express Tests', () => {
 	});
 
 	it('should fail to delete account again', async () => {
-		const response = await agent.delete('/delete-account');
+		const response = await agent.delete('/api/delete-account');
 		expect(response.status).toBe(401);
 		expect(response.body).toEqual({
 			message: 'Unauthorized',
@@ -321,7 +323,7 @@ describe('MongoDB Express Tests', () => {
 	});
 
 	it('should fail to sign in with deleted the account', async () => {
-		const response = await agent.post('/sign-in').send({
+		const response = await agent.post('/api/sign-in').send({
 			email: 'test@gmail.com',
 			password: 'SecurePassword',
 		});
