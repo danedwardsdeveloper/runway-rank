@@ -2,6 +2,7 @@ import { useState, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+import { environment } from '../../../environment';
 import { logger } from '../../../utilities/logger';
 
 export default function SignInForm() {
@@ -18,7 +19,7 @@ export default function SignInForm() {
 		try {
 			logger.info('Attempting to create account', { email });
 			await axios.post(
-				'http://localhost:3000/create-account',
+				`${environment.apiBase}/create-account`,
 				{ name, email, password },
 				{ withCredentials: true }
 			);

@@ -2,6 +2,7 @@ import { useState, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+import { environment } from '../environment';
 import { useApp } from '../contexts/AppContext';
 import { logger } from '../utilities/logger';
 import Metadata from './Metadata';
@@ -27,7 +28,7 @@ export default function SignInForm() {
 		try {
 			logger.info('Attempting sign-in', { email });
 			const response = await axios.post(
-				'http://localhost:3000/sign-in',
+				`${environment.apiBase}/sign-in`,
 				{ email, password },
 				{ withCredentials: true }
 			);

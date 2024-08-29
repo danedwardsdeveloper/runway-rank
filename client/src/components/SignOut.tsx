@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+import { environment } from '../environment';
 import { useApp } from '../contexts/AppContext';
 import { logger } from '../utilities/logger';
 import Metadata from './Metadata';
@@ -24,7 +25,7 @@ export default function SignOutButton() {
 
 		try {
 			logger.info('Attempting sign-out');
-			const response = await axios.get(`http://localhost:3000/sign-out`, {
+			const response = await axios.get(`${environment.apiBase}/sign-out`, {
 				withCredentials: true,
 				headers: {
 					'Content-Type': 'application/json',
@@ -74,7 +75,7 @@ export default function SignOutButton() {
 
 	return (
 		<>
-			<Metadata pageName="Sign out" slug="sign-out" />
+			<Metadata pageName="Sign out" slug="sign-out" title="Sign out" />
 
 			<div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
 				<div className="sm:mx-auto sm:w-full sm:max-w-sm">

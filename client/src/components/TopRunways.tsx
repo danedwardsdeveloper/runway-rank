@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
+
 import { AppData, RunwayItem } from '../../../types';
+import { environment } from '../environment';
 
 export default function TopRunways() {
 	const [appData, setAppData] = useState<AppData | null>(null);
@@ -11,7 +13,7 @@ export default function TopRunways() {
 		const fetchTopRunways = async () => {
 			try {
 				const response = await axios.get<AppData>(
-					'http://localhost:3000/profile',
+					`${environment.apiBase}/profile`,
 					{
 						withCredentials: true,
 					}
@@ -43,7 +45,7 @@ export default function TopRunways() {
 					>
 						<div className="relative w-full p-4 h-auto">
 							<img
-								src={`http://localhost:3000/images/${runway.imageSlug}.webp`}
+								src={`${environment.apiBase}/images/${runway.imageSlug}.webp`}
 								alt={`${runway.queenName} - ${runway.name}`}
 								className="w-full h-full rounded"
 							/>

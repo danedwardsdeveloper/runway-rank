@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import { environment } from '../environment';
 import ImageContainer from './ImageContainer';
 import { RunwayItem, AppData } from '../../../types';
 import { useApp } from '../contexts/AppContext';
@@ -14,7 +15,7 @@ export default function RankRunways() {
 
 	const fetchNextPair = async (results?: ResultsRequestBody) => {
 		try {
-			const url = 'http://localhost:3000/get-next-pair';
+			const url = `${environment.apiBase}/get-next-pair`;
 			const options: RequestInit = {
 				method: 'POST',
 				headers: {

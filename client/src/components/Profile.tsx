@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
+import { environment } from '../environment';
 import { AppData } from '../../../types';
 import DeleteButton from './DeleteButton';
 import Spinner from './Spinner';
@@ -15,7 +16,7 @@ export default function Profile() {
 	useEffect(() => {
 		const fetchProfileData = async () => {
 			try {
-				const response = await axios.get('http://localhost:3000/profile', {
+				const response = await axios.get(`${environment.apiBase}/profile`, {
 					withCredentials: true,
 				});
 				setAppData(response.data);
@@ -73,7 +74,7 @@ export default function Profile() {
 		);
 	}
 
-	const { name, email, accessTopRunways, pairsUntilAccess } =
+	const { name, email, accessTopRunways, runwaysUntilAccess } =
 		appData.user ?? {};
 
 	return (
@@ -115,7 +116,7 @@ export default function Profile() {
 							Runways to rank until access is granted
 						</dt>
 						<dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-							{pairsUntilAccess}
+							{runwaysUntilAccess}
 						</dd>
 					</div>
 					<div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 bg-red-50">

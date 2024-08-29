@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+import { environment } from '../../environment';
 import UploadForm from './components/UploadForm';
 import { UploadFormInterface } from '../../../../types';
 import { logger } from '../../utilities/logger';
@@ -39,7 +40,7 @@ export default function UploadPage() {
 
 			logger.info('Sending POST request to images/upload');
 			const response = await axios.post(
-				'http://localhost:3000/images/upload',
+				`${environment.apiBase}/images/upload`,
 				data,
 				{
 					headers: {

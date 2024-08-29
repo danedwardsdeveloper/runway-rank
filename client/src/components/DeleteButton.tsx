@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+import { environment } from '../environment';
 import ConfirmationModal from './ConfirmationModal';
 import { logger } from '../utilities/logger';
 import { useApp } from '../contexts/AppContext';
@@ -17,7 +18,7 @@ export default function DeleteButton() {
 		setIsDeleting(true);
 		try {
 			const response = await axios.delete(
-				'http://localhost:3000/delete-account',
+				`${environment.apiBase}/delete-account`,
 				{
 					withCredentials: true,
 				}

@@ -1,4 +1,5 @@
 import { RunwayItem } from '../../../types';
+import { environment } from '../environment';
 
 interface ImageContainerProps {
 	runways: RunwayItem[] | null;
@@ -28,7 +29,7 @@ export default function ImageContainer({
 						<div className="flex-grow flex flex-col justify-end mb-4 ">
 							<img
 								onClick={() => isAuthenticated && onImageClick(img)}
-								src={`http://localhost:3000/images/${img.imageSlug}.webp`}
+								src={`${environment.apiBase}/images/${img.imageSlug}.webp`}
 								alt={`${img.queenName} - ${img.name}`}
 								data-testid="runway-image"
 								className={`w-full h-auto md:max-w-[400px] md:max-h-[400px] object-contain rounded-lg border-4 border-transparent transition-all duration-200 ${

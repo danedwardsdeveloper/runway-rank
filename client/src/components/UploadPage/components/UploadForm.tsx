@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { environment } from '../../../environment';
 import Metadata from '../../Metadata';
 import ImageInput from './ImageInput';
 import {
@@ -27,7 +28,7 @@ export default function UploadForm({ onSubmit }: UploadFormProps) {
 	useEffect(() => {
 		const fetchQueens = async () => {
 			try {
-				const response = await fetch('http://localhost:3000/queens');
+				const response = await fetch(`${environment.apiBase}/queens`);
 				if (!response.ok) {
 					throw new Error('Failed to fetch queens');
 				}
