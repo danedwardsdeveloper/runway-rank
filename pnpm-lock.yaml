@@ -57,6 +57,9 @@ importers:
       '@eslint/js':
         specifier: ^9.9.0
         version: 9.9.0
+      '@flydotio/dockerfile':
+        specifier: ^0.5.8
+        version: 0.5.8
       '@testing-library/jest-dom':
         specifier: ^6.5.0
         version: 6.5.0
@@ -5031,7 +5034,7 @@ snapshots:
 
   axios@1.7.4:
     dependencies:
-      follow-redirects: 1.15.6(debug@4.3.6)
+      follow-redirects: 1.15.6
       form-data: 4.0.0
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
@@ -5890,9 +5893,7 @@ snapshots:
 
   fn.name@1.1.0: {}
 
-  follow-redirects@1.15.6(debug@4.3.6):
-    optionalDependencies:
-      debug: 4.3.6(supports-color@5.5.0)
+  follow-redirects@1.15.6: {}
 
   for-each@0.3.3:
     dependencies:

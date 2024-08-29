@@ -25,6 +25,7 @@
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.9.0",
+		"@flydotio/dockerfile": "^0.5.8",
 		"@testing-library/jest-dom": "^6.5.0",
 		"@testing-library/react": "^16.0.0",
 		"@types/puppeteer": "^7.0.4",
