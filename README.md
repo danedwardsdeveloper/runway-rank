@@ -15,15 +15,11 @@ A full-stack web app that ranks fashion looks using the Elo algorithm. Created w
 
 # Current Task
 
--  Configure http base for client use environment
-
 ## To-Do List
 
--  Extract helmet module from client/app.ts
+-  Turn message object into string (remove colour property)
 -  Create and delete accounts test
 -  Upload success page
--  Make image paths dynamic
--  environment variable handling for front-end
 -  Limit size of uploads folder
 -  AWS email validation
 -  About page copy
