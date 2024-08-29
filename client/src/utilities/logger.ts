@@ -1,3 +1,5 @@
+import { environment } from '../environment';
+
 enum LogLevel {
 	ERROR = 0,
 	WARN = 1,
@@ -42,5 +44,5 @@ class Logger {
 }
 
 export const logger = new Logger(
-	process.env.NODE_ENV === 'production' ? LogLevel.ERROR : LogLevel.DEBUG
+	environment.isProduction ? LogLevel.DEBUG : LogLevel.ERROR
 );
