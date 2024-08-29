@@ -14,7 +14,7 @@ export interface AppData {
 		email: string;
 		id: ObjectIdString;
 		accessTopRunways: boolean;
-		pairsUntilAccess: number;
+		runwaysUntilAccess: number;
 	} | null;
 	runways: RunwayItem[] | null;
 	topRunways: RunwayItem[] | null;
@@ -38,7 +38,7 @@ export interface UserBase {
 	email: string;
 	name: string;
 	accessTopRunways: boolean;
-	numRunwaysUntilAccess: number;
+	runwaysUntilAccess: number;
 }
 
 export interface TokenInput extends UserBase {
@@ -54,7 +54,7 @@ export interface UserDocument extends UserBase, mongoose.Document {
 	hashed_password: string;
 	ranked_runway_ids: mongoose.Types.ObjectId[];
 	accessTopRunways: boolean;
-	numRunwaysUntilAccess: number;
+	runwaysUntilAccess: number;
 }
 
 export interface NextPairResponse {
@@ -127,7 +127,7 @@ export interface UserBase {
 	email: string;
 	name: string;
 	accessTopRunways: boolean;
-	numRunwaysUntilAccess: number;
+	runwaysUntilAccess: number;
 }
 
 export interface UpdateUserOptions {
