@@ -24,7 +24,11 @@ export default function ErrorElement() {
 
 	return (
 		<>
-			<Metadata pageName="404 Error" />
+			<Metadata
+				pageName="404 Error"
+				title="Page not found"
+				slug="not-found"
+			/>
 
 			<div className="grid place-items-center  px-6 py-24 sm:py-32 lg:px-8">
 				<div className="text-center">
