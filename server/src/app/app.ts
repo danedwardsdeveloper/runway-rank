@@ -35,12 +35,19 @@ import getQueensRoute from './routes/getQueens.js';
 const app = express();
 connectToDatabase();
 app.use(expressLogger, limiter);
+
 app.use(
 	helmet({
 		crossOriginResourcePolicy: { policy: 'cross-origin' },
-		contentSecurityPolicy: false,
+		contentSecurityPolicy: {
+			directives: {
+				...helmet.contentSecurityPolicy.getDefaultDirectives(),
+				'img-src': ["'self'", 'data:', 'blob:'],
+			},
+		},
 	})
 );
+
 app.use(express.static(path.join(__dirname, '../../public')));
 
 app.use(express.json(), cookieParser(), cors(corsOptions));
