@@ -19,6 +19,7 @@ A full-stack web app that ranks fashion looks using the Elo algorithm. Created w
 
 ## To-Do List
 
+-  Extract helmet module from client/app.ts
 -  Create and delete accounts test
 -  Upload success page
 -  Make image paths dynamic
