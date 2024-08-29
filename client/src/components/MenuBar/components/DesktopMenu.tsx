@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import cleanTailwindClassNames from '../../../utilities/cleanTailwindClassnames';
+import cleanTailwindClasses from '../../../utilities/cleanTailwindClasses';
 
 import { MenuItemsArray } from '../../../../../types';
 
@@ -11,7 +11,7 @@ export default function DesktopMenu({ menuItems }: MenuItemsArray) {
 					to={item.to}
 					key={item.name}
 					className={({ isActive }: { isActive: boolean }) =>
-						cleanTailwindClassNames(
+						cleanTailwindClasses(
 							isActive
 								? 'border-pink-600 text-gray-900'
 								: 'border-transparent text-gray-500',

@@ -1,7 +1,7 @@
 import { DisclosurePanel } from '@headlessui/react';
 
 import { MenuItemsArray } from '../../../../../types';
-import cleanTailwindClassNames from '../../../utilities/cleanTailwindClassnames';
+import cleanTailwindClasses from '../../../utilities/cleanTailwindClasses';
 import { NavLink } from 'react-router-dom';
 
 export default function MobileMenu({ menuItems }: MenuItemsArray) {
@@ -13,7 +13,7 @@ export default function MobileMenu({ menuItems }: MenuItemsArray) {
 						to={menuItem.to}
 						key={index}
 						className={({ isActive }: { isActive: boolean }) =>
-							cleanTailwindClassNames(
+							cleanTailwindClasses(
 								isActive
 									? 'bg-pink-50 border-pink-500 text-pink-700'
 									: 'text-gray-500 hover:bg-gray-50',
