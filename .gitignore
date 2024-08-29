@@ -9,3 +9,4 @@
 *.log
 .DS_Store
 **/dist
+client/src/environment.ts
