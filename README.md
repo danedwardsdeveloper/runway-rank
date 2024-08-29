@@ -15,7 +15,7 @@ A full-stack web app that ranks fashion looks using the Elo algorithm. Created w
 
 # Current Task
 
--  Delete account page
+-  Configure http base for client use environment
 
 ## To-Do List
 
