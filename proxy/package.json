@@ -1,0 +1,6 @@
+{
+	"name": "proxy",
+	"scripts": {
+		"deploy": "fly deploy"
+	}
+}
