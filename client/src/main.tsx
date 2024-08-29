@@ -9,9 +9,7 @@ import {
 import { HelmetProvider } from 'react-helmet-async';
 
 import './index.tailwind.css';
-
 import { AppProvider } from './contexts/AppContext';
-
 import App from './App';
 import ErrorElement from './components/ErrorPage';
 import RankRunways from './components/RankRunways';
