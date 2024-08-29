@@ -4,68 +4,59 @@ import express, {
 	NextFunction,
 	ErrorRequestHandler,
 } from 'express';
-import helmet from 'helmet';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-
 import path from 'path';
 import { fileURLToPath } from 'url';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import expressWinston from 'express-winston';
 
 import { connectToDatabase } from './database/database.js';
 import { corsOptions } from './middleware/cors.js';
 import { logger, expressLogger } from './middleware/logger.js';
 import { limiter } from './middleware/limiter.js';
 import { validateToken } from './middleware/jwtToken.js';
+import { helmetConfig } from './middleware/helmet.js';
 
-import expressWinston from 'express-winston';
-import signOut from './routes/signOut.js';
-import deleteAccount from './routes/deleteAccount.js';
 import welcome from './routes/welcome.js';
 import createAccount from './routes/createAccount.js';
 import signIn from './routes/signIn.js';
-import getNextPair from './routes/getNextPair.js';
+import signOut from './routes/signOut.js';
+import deleteAccount from './routes/deleteAccount.js';
 import profile from './routes/profile.js';
+import getNextPair from './routes/getNextPair.js';
 import imageRoute from './routes/image.js';
 import imageUploadRoute from './routes/imageUpload.js';
-import addQueenRoute from './routes/addQueen.js';
 import getQueensRoute from './routes/getQueens.js';
+import addQueenRoute from './routes/addQueen.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 connectToDatabase();
+
 app.use(expressLogger, limiter);
-
-app.use(
-	helmet({
-		crossOriginResourcePolicy: { policy: 'cross-origin' },
-		contentSecurityPolicy: {
-			directives: {
-				...helmet.contentSecurityPolicy.getDefaultDirectives(),
-				'img-src': ["'self'", 'data:', 'blob:'],
-			},
-		},
-	})
-);
-
-app.use(express.static(path.join(__dirname, '../../public')));
-
+app.use(helmetConfig);
 app.use(express.json(), cookieParser(), cors(corsOptions));
 
-app.use('/images', imageRoute);
-app.use('/queens', getQueensRoute);
+app.use('/api/public', express.static(path.join(__dirname, '../../public')));
 
-app.use('/', validateToken, welcome);
-app.use('/', validateToken, createAccount);
-app.use('/', validateToken, signIn);
-app.use('/', validateToken, signOut);
-app.use('/', validateToken, getNextPair);
-app.use('/', validateToken, profile);
+const apiRouter = express.Router();
 
-app.use('/add-queen', validateToken, addQueenRoute);
-app.use('/sign-out', validateToken, signOut);
-app.use('/delete-account', validateToken, deleteAccount);
-app.use('/images/upload', validateToken, imageUploadRoute);
+apiRouter.use('/images', imageRoute);
+apiRouter.use('/queens', getQueensRoute);
+apiRouter.use('/', validateToken, welcome);
+apiRouter.use('/', validateToken, createAccount);
+apiRouter.use('/', validateToken, signIn);
+apiRouter.use('/', validateToken, signOut);
+apiRouter.use('/', validateToken, getNextPair);
+apiRouter.use('/', validateToken, profile);
+apiRouter.use('/add-queen', validateToken, addQueenRoute);
+apiRouter.use('/sign-out', validateToken, signOut);
+apiRouter.use('/delete-account', validateToken, deleteAccount);
+apiRouter.use('/images/upload', validateToken, imageUploadRoute);
+
+app.use('/api', apiRouter);
 
 app.use(
 	expressWinston.errorLogger({
