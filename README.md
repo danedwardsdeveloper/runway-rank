@@ -30,3 +30,5 @@ A full-stack web app that ranks fashion looks using the Elo algorithm. Created w
 -  Disable top runways menu item
 -  You don't have access to top runways page...'
 -  Enforce strong passwords
+-  Footer
+-  Split 'profile' route into top-runways
