@@ -16,6 +16,7 @@ const envConfig = {
 	PORT: num(),
 	MONGO_STRING: removeQuotes(nonEmptyStr()),
 	JWT_SECRET: nonEmptyStr(),
+	ALLOWED_ORIGIN: nonEmptyStr(),
 };
 
 export const environment = cleanEnv(process.env, envConfig);
