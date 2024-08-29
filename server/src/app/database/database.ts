@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
-import { environment } from '@/environment.js';
-import { createIndexes } from '@/app/database/createIndexes.js';
+import { environment } from '../../environment.js';
+import { createIndexes } from './createIndexes.js';
 
 export async function connectToDatabase(): Promise<void> {
 	try {

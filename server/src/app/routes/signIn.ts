@@ -2,11 +2,11 @@ import express, { Router, Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 
-import { UserModel } from '@/app/database/models/User.js';
-import { generateToken } from '@/app/middleware/jwtToken.js';
-import { getNextPairService } from '@/app/database/services/runwayService.js';
+import { UserModel } from '../database/models/User.js';
+import { generateToken } from '../middleware/jwtToken.js';
+import { getNextPairService } from '../database/services/runwayService.js';
 import { NextPairResponse, TokenInput } from '../../../../types.js';
-import { updateUser } from '@/app/database/services/userService.js';
+import { updateUser } from '../database/services/userService.js';
 
 export default express
 	.Router()
@@ -46,7 +46,7 @@ export default express
 					name: user.name,
 					email: user.email,
 					accessTopRunways: user.accessTopRunways,
-					numRunwaysUntilAccess: user.numRunwaysUntilAccess,
+					runwaysUntilAccess: user.runwaysUntilAccess,
 				};
 
 				generateToken(res, tokenInput);
@@ -67,7 +67,7 @@ export default express
 						email: user.email,
 						id: user._id.toString(),
 						accessTopRunways: user.accessTopRunways,
-						numRunwaysUntilAccess: user.numRunwaysUntilAccess,
+						runwaysUntilAccess: user.runwaysUntilAccess,
 					},
 					nextPair: nextPair || undefined,
 					noMorePairs: !nextPair,

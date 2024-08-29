@@ -1,6 +1,6 @@
 import express, { Router, Request, Response } from 'express';
-import { logger } from '@/app/middleware/logger.js';
-import { environment } from '@/environment.js';
+import { logger } from '../middleware/logger.js';
+import { environment } from '../../environment.js';
 
 export default express
 	.Router()

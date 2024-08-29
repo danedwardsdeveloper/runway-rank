@@ -2,12 +2,12 @@ import express, { Router, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 
-import { UserModel } from '@/app/database/models/User.js';
-import { generateToken } from '@/app/middleware/jwtToken.js';
-import { TokenInput, CustomRequest, AppData } from '../../../../../types.js';
-import { getNextPairService } from '@/app/database/services/runwayService.js';
-import { updateUser } from '@/app/database/services/userService.js';
-import { logger } from '@/app/middleware/logger.js';
+import { UserModel } from '../database/models/User.js';
+import { generateToken } from '../middleware/jwtToken.js';
+import { TokenInput, CustomRequest, AppData } from '../../../../types.js';
+import { getNextPairService } from '../database/services/runwayService.js';
+import { updateUser } from '../database/services/userService.js';
+import { logger } from '../middleware/logger.js';
 
 export default express
 	.Router()
@@ -51,7 +51,7 @@ export default express
 						hashed_password: hashedPassword,
 						name,
 						accessTopRunways: false,
-						numRunwaysUntilAccess: await UserModel.countDocuments(),
+						runwaysUntilAccess: await UserModel.countDocuments(),
 						ranked_runway_ids: [],
 					});
 
@@ -70,7 +70,7 @@ export default express
 					email: user.email,
 					id: user._id.toString(),
 					accessTopRunways: user.accessTopRunways,
-					numRunwaysUntilAccess: user.numRunwaysUntilAccess,
+					runwaysUntilAccess: user.runwaysUntilAccess,
 				};
 
 				const tokenUser: TokenInput = {
@@ -78,7 +78,7 @@ export default express
 					email: user.email,
 					_id: user._id.toString(),
 					accessTopRunways: req.user.accessTopRunways,
-					numRunwaysUntilAccess: req.user.numRunwaysUntilAccess,
+					runwaysUntilAccess: req.user.runwaysUntilAccess,
 				};
 
 				generateToken(res, tokenUser);
@@ -106,7 +106,7 @@ export default express
 						name: user.name,
 						email: user.email,
 						accessTopRunways: req.user.accessTopRunways,
-						pairsUntilAccess: req.user.numRunwaysUntilAccess,
+						runwaysUntilAccess: req.user.runwaysUntilAccess,
 					},
 					runways: nextPair || null,
 					topRunways: null,

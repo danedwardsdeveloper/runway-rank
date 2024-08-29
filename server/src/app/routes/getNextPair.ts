@@ -9,11 +9,11 @@ import {
 import {
 	getNextPairService,
 	updateRunwayScores,
-} from '@/app/database/services/runwayService.js';
-import { updateUser } from '@/app/database/services/userService.js';
-import cleanUserObject from '@/app/utilities/cleanUserObject.js';
-import { logger } from '@/app/middleware/logger.js';
-import { generateToken } from '@/app/middleware/jwtToken.js';
+} from '../database/services/runwayService.js';
+import { updateUser } from '../database/services/userService.js';
+import cleanUserObject from '../utilities/cleanUserObject.js';
+import { logger } from '../middleware/logger.js';
+import { generateToken } from '../middleware/jwtToken.js';
 
 export default express
 	.Router()
@@ -48,7 +48,7 @@ export default express
 						name: req.user.name,
 						email: req.user.email,
 						accessTopRunways: req.user.accessTopRunways,
-						numRunwaysUntilAccess: req.user.numRunwaysUntilAccess,
+						runwaysUntilAccess: req.user.runwaysUntilAccess,
 					};
 					generateToken(res, tokenInput);
 					logger.info('New token generated for user', { userId });

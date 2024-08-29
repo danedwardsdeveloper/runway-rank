@@ -1,7 +1,7 @@
 import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-import { environment } from '@/environment.js';
+import { environment } from '../../environment.js';
 import { CustomRequest, TokenInput, UserObject } from '../../../../types.js';
 import { logger } from './logger.js';
 
@@ -11,7 +11,7 @@ export function generateToken(res: Response, user: TokenInput): void {
 		name: user.name,
 		email: user.email,
 		accessTopRunways: user.accessTopRunways,
-		numRunwaysUntilAccess: user.numRunwaysUntilAccess,
+		runwaysUntilAccess: user.runwaysUntilAccess,
 	};
 
 	const token = jwt.sign(payload, environment.JWT_SECRET, { expiresIn: '1h' });

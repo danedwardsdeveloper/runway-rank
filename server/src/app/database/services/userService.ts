@@ -28,17 +28,14 @@ export async function updateUser({ userId, newRunwayIds }: UpdateUserOptions) {
 		const userRankedRunways = user.ranked_runway_ids.length;
 
 		const accessTopRunways = userRankedRunways >= totalRunways;
-		const numRunwaysUntilAccess = Math.max(
-			0,
-			totalRunways - userRankedRunways
-		);
+		const runwaysUntilAccess = Math.max(0, totalRunways - userRankedRunways);
 
 		if (
 			user.accessTopRunways !== accessTopRunways ||
-			user.numRunwaysUntilAccess !== numRunwaysUntilAccess
+			user.runwaysUntilAccess !== runwaysUntilAccess
 		) {
 			user.accessTopRunways = accessTopRunways;
-			user.numRunwaysUntilAccess = numRunwaysUntilAccess;
+			user.runwaysUntilAccess = runwaysUntilAccess;
 			await user.save();
 		}
 

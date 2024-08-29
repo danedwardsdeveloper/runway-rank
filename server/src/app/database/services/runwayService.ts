@@ -3,8 +3,8 @@ import { Types } from 'mongoose';
 import { RunwayModel } from '../models/Runway.js';
 import { UserModel } from '../models/User.js';
 import { RunwayItem } from '../../../../../types.js';
-import calculateEloRatings from '@/app/utilities/eloRating.js';
-import { logger } from '@/app/middleware/logger.js';
+import calculateEloRatings from '../../utilities/eloRating.js';
+import { logger } from '../../middleware/logger.js';
 
 // Split this into userService/getNextPair and runwayService/getDefaultPair
 export async function getNextPairService(

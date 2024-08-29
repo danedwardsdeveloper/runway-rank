@@ -1,4 +1,4 @@
-import { AppData } from '../../../../../types.js';
+import { AppData } from '../../../../types.js';
 
 const appData: AppData = {
 	message: {
@@ -11,7 +11,7 @@ const appData: AppData = {
 		email: 'email@gmail.com',
 		id: '123456789',
 		accessTopRunways: true,
-		pairsUntilAccess: 6,
+		runwaysUntilAccess: 6,
 	},
 	runways: [],
 	topRunways: [],

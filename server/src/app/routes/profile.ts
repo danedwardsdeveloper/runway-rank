@@ -3,7 +3,7 @@ import { AppData, RunwayItem, CustomRequest } from '../../../../types.js';
 import {
 	getNextPairService,
 	getTopRunways,
-} from '@/app/database/services/runwayService.js';
+} from '../database/services/runwayService.js';
 
 export default express
 	.Router()
@@ -39,7 +39,7 @@ export default express
 					email: req.user.email,
 					id: req.user.id,
 					accessTopRunways: req.user.accessTopRunways,
-					pairsUntilAccess: req.user.numRunwaysUntilAccess,
+					runwaysUntilAccess: req.user.runwaysUntilAccess,
 				},
 				runways: pairs || [],
 				topRunways: topRunways,

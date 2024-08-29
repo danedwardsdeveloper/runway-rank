@@ -1,4 +1,4 @@
-import { UserObject } from '@/types.js';
+import { UserObject } from '../../../../types.js';
 
 export default function cleanUserObject(user: any): UserObject {
 	return {
@@ -6,6 +6,6 @@ export default function cleanUserObject(user: any): UserObject {
 		name: user.name,
 		email: user.email,
 		accessTopRunways: user.accessTopRunways,
-		numRunwaysUntilAccess: user.numRunwaysUntilAccess,
+		runwaysUntilAccess: user.runwaysUntilAccess,
 	};
 }

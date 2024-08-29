@@ -1,9 +1,9 @@
 import express, { Router, Response } from 'express';
 
-import { UserModel } from '@/app/database/models/User.js';
+import { UserModel } from '../database/models/User.js';
 import { CustomRequest } from '../../../../types.js';
-import { logger } from '@/app/middleware/logger.js';
-import { environment } from '@/environment.js';
+import { logger } from '../middleware/logger.js';
+import { environment } from '../../environment.js';
 
 export default express
 	.Router()
