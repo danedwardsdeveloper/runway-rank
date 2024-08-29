@@ -72,6 +72,7 @@ describe('Home Page', () => {
 			}
 		}
 	});
+
 	it('should make an account', async () => {
 		await page.goto(`${baseUrl}/create-account`);
 
@@ -101,6 +102,33 @@ describe('Home Page', () => {
 			'create-account-error-message'
 		);
 		expect(errorMessage).toBeNull();
+	});
+
+	it('should should have sign out in the menu', async () => {
+		const profileMenuButton = await getByTestId(page, 'profile-menu-button');
+		expect(profileMenuButton).not.toBeNull();
+
+		if (profileMenuButton) {
+			const isVisible = await profileMenuButton.isVisible();
+			expect(isVisible).toBe(true);
+		}
+	});
+
+			const signInLink = await getByTestId(page, '/sign-in');
+			const createAccountLink = await getByTestId(page, '/create-account');
+
+			expect(signInLink).not.toBeNull();
+			expect(createAccountLink).not.toBeNull();
+
+			if (signInLink && createAccountLink) {
+				const signInLinkVisible = await signInLink.isVisible();
+				const createAccountLinkVisible =
+					await createAccountLink.isVisible();
+
+				expect(signInLinkVisible).toBe(true);
+				expect(createAccountLinkVisible).toBe(true);
+			}
+		}
 	});
 
 	it('should delete the account', async () => {
