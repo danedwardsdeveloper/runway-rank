@@ -104,29 +104,20 @@ describe('Home Page', () => {
 		expect(errorMessage).toBeNull();
 	});
 
-	it('should should have sign out in the menu', async () => {
+	it('should have sign out in the menu after creating an account', async () => {
+		await page.goto(baseUrl);
 		const profileMenuButton = await getByTestId(page, 'profile-menu-button');
 		expect(profileMenuButton).not.toBeNull();
 
 		if (profileMenuButton) {
-			const isVisible = await profileMenuButton.isVisible();
-			expect(isVisible).toBe(true);
-		}
-	});
+			await profileMenuButton.click();
 
-			const signInLink = await getByTestId(page, '/sign-in');
-			const createAccountLink = await getByTestId(page, '/create-account');
+			const signOutLink = await getByTestId(page, 'sign-out');
+			expect(signOutLink).not.toBeNull();
 
-			expect(signInLink).not.toBeNull();
-			expect(createAccountLink).not.toBeNull();
-
-			if (signInLink && createAccountLink) {
-				const signInLinkVisible = await signInLink.isVisible();
-				const createAccountLinkVisible =
-					await createAccountLink.isVisible();
-
-				expect(signInLinkVisible).toBe(true);
-				expect(createAccountLinkVisible).toBe(true);
+			if (signOutLink) {
+				const signOutLinkVisible = await signOutLink.isVisible();
+				expect(signOutLinkVisible).toBe(true);
 			}
 		}
 	});
