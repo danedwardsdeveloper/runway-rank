@@ -52,7 +52,3 @@ WORKDIR /app
 EXPOSE 3000
 # CHANGE: Update the start command to run the compiled JavaScript
 CMD [ "pnpm", "run", "start" ]
-
-# SUGGESTION: Add a healthcheck
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:3000/health || exit 1
