@@ -1,7 +1,17 @@
-import { ErrorRequestHandler } from 'express';
+import {
+	ErrorRequestHandler,
+	Request,
+	Response,
+	NextFunction as ExpressNextFunction,
+} from 'express';
 import { NextFunction } from 'http-proxy-middleware/dist/types';
 
-const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+const errorHandler: ErrorRequestHandler = (
+	err: Error,
+	req: Request,
+	res: Response,
+	next: ExpressNextFunction
+) => {
 	console.error('Server Error:', err);
 	res.status(500).json({
 		error: 'Internal Server Error',
@@ -11,7 +21,11 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 
 export default errorHandler;
 
-export const notFoundHandler = (req, res, next) => {
+export const notFoundHandler = (
+	req: Request,
+	res: Response,
+	next: ExpressNextFunction
+) => {
 	console.log(`Unhandled request: ${req.method} ${req.url}`);
 	res.status(404).json({
 		error: 'Not Found',
