@@ -1,12 +1,5 @@
 http:
    routers:
-      frontend:
-         rule: 'PathPrefix(`/`)'
-         service: frontend
-         entryPoints:
-            - web
-            - websecure
-
       backend:
          rule: 'PathPrefix(`/api/`)'
          service: backend
@@ -15,6 +8,23 @@ http:
             - websecure
          middlewares:
             - cors
+
+      images:
+         rule: 'PathPrefix(`/api/images/`)'
+         service: backend
+         entryPoints:
+            - web
+            - websecure
+         middlewares:
+            - cors
+            - add-image-headers
+
+      frontend:
+         rule: 'PathPrefix(`/`)'
+         service: frontend
+         entryPoints:
+            - web
+            - websecure
 
    services:
       frontend:
@@ -44,15 +54,21 @@ http:
                - 'Content-Type'
                - 'Authorization'
                - 'X-Requested-With'
-               - 'create-account'
-               - 'sign-in'
-               - 'sign-out'
-               - 'delete-account'
-               - 'get-next-pair'
-               - 'profile'
-               - 'add-queen'
-               - 'upload'
             addVaryHeader: true
+         cors:
+            allowCredentials: true
+            allowOrigin: 'https://runway-rank.fly.dev'
+            allowMethods:
+               - GET
+               - POST
+               - PUT
+               - DELETE
+               - OPTIONS
+            allowHeaders:
+               - 'Content-Type'
+               - 'Authorization'
+               - 'X-Requested-With'
+
       securityHeaders:
          headers:
             stsSeconds: 31536000
