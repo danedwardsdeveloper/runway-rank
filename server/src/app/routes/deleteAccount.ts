@@ -29,7 +29,7 @@ export default express
 			res.clearCookie('token', {
 				httpOnly: true,
 				secure: environment.isProduction,
-				sameSite: 'none',
+				sameSite: 'strict',
 			});
 
 			res.status(200).json({
