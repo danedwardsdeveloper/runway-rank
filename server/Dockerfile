@@ -27,7 +27,6 @@ RUN apt-get update -qq && \
 COPY --link package.json pnpm-lock.yaml ./
 
 # Install node modules
-# CHANGE: Install only production dependencies
 RUN pnpm install
 
 # Copy only the necessary files
