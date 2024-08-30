@@ -21,6 +21,11 @@ imagesRoute.get('/:imageId', (req: Request, res: Response) => {
 		.readFile(imagePath)
 		.then((data) => {
 			logger.info(`Successfully read image: ${imageId}`);
+			res.setHeader('X-Content-Type-Options', 'nosniff');
+			res.setHeader(
+				'Access-Control-Allow-Origin',
+				'https://runway-rank.fly.dev'
+			);
 			res.contentType('image/webp');
 			res.send(data);
 		})
