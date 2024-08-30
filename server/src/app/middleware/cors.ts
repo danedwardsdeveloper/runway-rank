@@ -3,7 +3,7 @@ import { CorsOptions } from 'cors';
 import { environment } from '../../environment.js';
 
 const productionOrigin = environment.ALLOWED_ORIGIN;
-const developmentOrigin = 'http://localhost:5173';
+const developmentOrigin = 'http://localhost:8080';
 
 export const corsOptions: CorsOptions = {
 	origin: environment.isProduction ? productionOrigin : developmentOrigin,
