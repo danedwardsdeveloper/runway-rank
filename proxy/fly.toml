@@ -10,8 +10,8 @@ primary_region = 'lhr'
   dockerfile = 'Dockerfile'
 
 [[services]]
-  protocol = 'tcp'
-  internal_port = 80
+  internal_port = 8080
+  protocol = "tcp"
 
   [[services.ports]]
     port = 80
@@ -25,3 +25,12 @@ primary_region = 'lhr'
   memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
+
+[env]
+  SERVER_URL = "https://runway-rank-server.fly.dev"
+  CLIENT_URL = "https://runway-rank.fly.dev"
+  
+[[restart]]
+  policy = "on-failure"
+  retries = 2
+  processes = ["app"]

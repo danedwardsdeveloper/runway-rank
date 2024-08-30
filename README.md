@@ -15,13 +15,17 @@ A full-stack web app that ranks fashion looks using the Elo algorithm. Created w
 
 # Current Task
 
+-  Configure CORS properly
+
 ## To-Do List
 
+-  AWS email validation
+-  Footer
+   -  Simple analytics badge
 -  Turn message object into string (remove colour property)
 -  Create and delete accounts test
 -  Upload success page
 -  Limit size of uploads folder
--  AWS email validation
 -  About page copy
 -  Delete photo route
 -  Disable top runways menu item
