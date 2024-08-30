@@ -12,8 +12,6 @@ const envConfig = {
 	PORT: num(),
 	PRODUCTION_FRONT_END: nonEmptyStr(),
 	PRODUCTION_BACK_END: nonEmptyStr(),
-	DEVELOPMENT_FRONT_END: nonEmptyStr(),
-	DEVELOPMENT_BACK_END: nonEmptyStr(),
 };
 
 export const environment = cleanEnv(process.env, envConfig);
