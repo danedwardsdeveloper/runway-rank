@@ -40,7 +40,7 @@ export default function ImageContainer({
 							/>
 						</div>
 						<div
-							className={`w-full md:w-1/2 md:min-h-32 ${
+							className={`w-full ${
 								index === 0 ? 'sm:text-right' : 'sm:text-left'
 							}`}
 						>
