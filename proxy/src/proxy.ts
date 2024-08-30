@@ -1,27 +1,29 @@
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import { createProxyMiddleware, Options } from 'http-proxy-middleware';
-import { environment } from './environment';
+
 import * as http from 'http';
 import path from 'path';
+
 import errorHandler, {
 	notFoundHandler,
 	setupUncaughtExceptionHandler,
 } from './errorHandler';
+import {
+	backendTarget,
+	frontendTarget,
+	port,
+	isProduction,
+} from './environment';
 
 const app = express();
-
-const backendTarget = environment.isProduction
-	? environment.PRODUCTION_BACK_END
-	: `http://localhost:3000`;
-
-const frontendTarget = environment.isProduction
-	? environment.PRODUCTION_FRONT_END
-	: `http://localhost:5173`;
 
 const apiProxyOptions: Options = {
 	target: backendTarget,
 	changeOrigin: true,
 	secure: false,
+	pathRewrite: {
+		'^/api': '/api',
+	},
 	logger: console,
 	on: {
 		proxyReq: (proxyReq, req, res) => {
@@ -46,8 +48,17 @@ const apiProxyOptions: Options = {
 
 const apiProxy = createProxyMiddleware(apiProxyOptions);
 
-if (environment.isProduction) {
-	app.use(express.static(path.join(__dirname, '..', 'frontend', 'dist')));
+app.use('/api', (req: Request, res: Response, next: NextFunction) => {
+	console.log(
+		`[API Proxy] Forwarding ${req.method} request to ${backendTarget}${req.url}`
+	);
+	next();
+});
+
+app.use('/api', apiProxy);
+
+if (isProduction) {
+	app.use(express.static(path.join(__dirname, 'client-dist')));
 } else {
 	const frontendProxy = createProxyMiddleware({
 		target: frontendTarget,
@@ -57,18 +68,14 @@ if (environment.isProduction) {
 	app.use('/', frontendProxy);
 }
 
-app.use('/api', apiProxy);
-
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
 	console.log(`Received ${req.method} request for ${req.url}`);
 	next();
 });
 
-app.get('*', (req, res) => {
-	if (environment.isProduction) {
-		res.sendFile(
-			path.join(__dirname, '..', '..', 'client', 'dist', 'index.html')
-		);
+app.get('*', (req: Request, res: Response) => {
+	if (isProduction) {
+		res.sendFile(path.join(__dirname, 'client-dist', 'index.html'));
 	} else {
 		res.redirect('/');
 	}
@@ -77,7 +84,6 @@ app.get('*', (req, res) => {
 app.use(errorHandler);
 app.use(notFoundHandler);
 
-const port = environment.PORT;
 app.listen(port, () => {
 	console.log(`Proxy server is running on http://localhost:${port}`);
 	console.log(`Backend target: ${backendTarget}`);
