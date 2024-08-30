@@ -9,8 +9,7 @@
 		"lint": "eslint .",
 		"preview": "vite preview",
 		"test": "vitest",
-		"coverage": "vitest run --coverage",
-		"deploy": "pnpm run build && fly deploy"
+		"coverage": "vitest run --coverage"
 	},
 	"dependencies": {
 		"@headlessui/react": "^2.1.2",
