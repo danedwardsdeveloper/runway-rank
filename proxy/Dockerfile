@@ -26,31 +26,18 @@ RUN apt-get update -qq && \
 # Copy only the files needed for installation
 COPY --link package.json ./
 
-# Install node modules
-# CHANGE: Install only production dependencies
-RUN pnpm install
-
 # Copy only the necessary files
-COPY . . 
-
-# Remove development dependencies
-RUN pnpm prune --prod
+RUN pnpm install --prod
 
 # Final stage for app image
 FROM base
 
-# Copy built application from the 'build' stage
-COPY --from=build /app/dist /app/dist
-COPY --from=build /app/node_modules /app/node_modules
-COPY --from=build /app/package.json /app/package.json
+# Copy built application
+COPY --from=build /app /app
 
 # Set the working directory
 WORKDIR /app
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-
-# Start the server by default, this can be overwritten at runtime
-EXPOSE 3000
-# CHANGE: Kept original start command
 CMD [ "node", "dist/proxy.js" ]
