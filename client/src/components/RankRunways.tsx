@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 import { environment } from '../environment';
 import ImageContainer from './ImageContainer';
-import { RunwayItem, AppData } from '../../../types';
+import { RunwayItem } from '../../../types';
 import { useApp } from '../contexts/AppContext';
 import { logger } from '../utilities/logger';
 import { ResultsRequestBody } from '../../../types';
@@ -12,38 +13,47 @@ import Metadata from './Metadata';
 
 export default function RankRunways() {
 	const { appData, setAppData } = useApp();
+	const [isLoading, setIsLoading] = useState(false);
 
-	const fetchNextPair = async (results?: ResultsRequestBody) => {
+	const getNextPair = async (results?: ResultsRequestBody) => {
+		logger.info('Fetching next pair', results);
+
+		setIsLoading(true);
 		try {
-			const url = `${environment.apiBase}/get-next-pair`;
-			const options: RequestInit = {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				credentials: 'include',
-			};
+			const response = await axios.post(
+				`${environment.apiBase}/get-next-pair`,
+				results,
+				{
+					withCredentials: true,
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				}
+			);
 
-			if (results) {
-				const body = JSON.stringify(results);
-				console.log(body);
-				options.body = body;
-			}
+			logger.info('Next pair fetched successfully', { data: response.data });
 
-			const response = await fetch(url, options);
-			if (!response.ok) {
-				throw new Error('Failed to fetch next pair');
-			}
-			const data: AppData = await response.json();
-			setAppData(data);
-			console.log(data);
+			setAppData(response.data);
+			logger.info(response.data);
 		} catch (error) {
-			console.error('Error fetching next pair:', error);
+			if (axios.isAxiosError(error)) {
+				const message =
+					error.response?.data?.message || 'Failed to fetch next pair';
+				logger.warn('Failed to fetch next pair', { message });
+				console.error('Error fetching next pair:', message);
+			} else {
+				logger.error('Unexpected error while fetching next pair', {
+					error,
+				});
+				console.error('Unexpected error:', error);
+			}
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
 	useEffect(() => {
-		fetchNextPair();
+		getNextPair();
 	}, []);
 
 	const currentRunways =
@@ -70,7 +80,7 @@ export default function RankRunways() {
 			?._id.toString();
 
 		if (winner && loser) {
-			fetchNextPair({ winner, loser });
+			getNextPair({ winner, loser });
 		} else {
 			console.error('Error: Winner or loser is undefined.');
 		}
@@ -81,6 +91,9 @@ export default function RankRunways() {
 			<Metadata pageName="Home" slug="" title="Home" />
 			<div>
 				{!appData.isAuthenticated && <Banner />}
+				{isLoading && (
+					<h1 className="text-2xl text-blue-500">Loading...</h1>
+				)}
 				{appData.runways ? (
 					<ImageContainer
 						runways={currentRunways}
@@ -90,6 +103,7 @@ export default function RankRunways() {
 				) : (
 					<NoMorePairs />
 				)}
+				)
 			</div>
 		</>
 	);
