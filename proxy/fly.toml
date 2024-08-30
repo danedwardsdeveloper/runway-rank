@@ -1,34 +1,26 @@
-# fly.toml app configuration file generated for runway-rank-proxy on 2024-08-29T11:51:46+01:00
-#
-# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
-
-app = 'runway-rank-proxy'
-primary_region = 'lhr'
+app = "runway-rank-proxy"
 
 [build]
-  dockerfile = 'Dockerfile'
+  dockerfile = "Dockerfile"
 
 [[services]]
-  internal_port = 8080
+  internal_port = 8000
   protocol = "tcp"
 
   [[services.ports]]
-    port = 80
-    handlers = ['http']
+    handlers = ["http"]
+    port = "80"
+
+[[services]]
+  internal_port = 8443
+  protocol = "tcp"
 
   [[services.ports]]
-    port = 443
-    handlers = ['tls', 'http']
-
-[[vm]]
-  memory = '1gb'
-  cpu_kind = 'shared'
-  cpus = 1
+    handlers = ["tls", "http"]
+    port = "443"
 
 [env]
-  SERVER_URL = "https://runway-rank-server.fly.dev"
-  CLIENT_URL = "https://runway-rank.fly.dev"
+  PORT = "8000"
   
 [[restart]]
   policy = "on-failure"
