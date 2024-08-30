@@ -10,7 +10,7 @@ export default function TopRunways() {
 	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
-		const fetchTopRunways = async () => {
+		const getTopRunways = async () => {
 			try {
 				const response = await axios.get<AppData>(
 					`${environment.apiBase}/profile`,
@@ -33,7 +33,7 @@ export default function TopRunways() {
 			}
 		};
 
-		fetchTopRunways();
+		getTopRunways();
 	}, []);
 
 	const memoizedRunwayGrid = useMemo(() => {
