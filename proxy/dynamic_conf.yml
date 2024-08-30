@@ -1,0 +1,77 @@
+http:
+   routers:
+      frontend:
+         rule: 'PathPrefix(`/`)'
+         service: frontend
+         entryPoints:
+            - web
+            - websecure
+
+      backend:
+         rule: 'PathPrefix(`/api/`)'
+         service: backend
+         entryPoints:
+            - web
+            - websecure
+         middlewares:
+            - cors
+
+   services:
+      frontend:
+         loadBalancer:
+            servers:
+               - url: 'https://runway-rank.fly.dev'
+
+      backend:
+         loadBalancer:
+            servers:
+               - url: 'https://runway-rank-server.fly.dev'
+
+   middlewares:
+      cors:
+         headers:
+            accessControlAllowMethods:
+               - GET
+               - POST
+               - PUT
+               - DELETE
+               - OPTIONS
+            accessControlAllowOriginList:
+               - https://runway-rank.fly.dev
+            accessControlAllowCredentials: true
+            accessControlMaxAge: 100
+            accessControlAllowHeaders:
+               - 'Content-Type'
+               - 'Authorization'
+               - 'X-Requested-With'
+               - 'create-account'
+               - 'sign-in'
+               - 'sign-out'
+               - 'delete-account'
+               - 'get-next-pair'
+               - 'profile'
+               - 'add-queen'
+               - 'upload'
+            addVaryHeader: true
+      securityHeaders:
+         headers:
+            stsSeconds: 31536000
+            stsIncludeSubdomains: true
+            stsPreload: true
+            customFrameOptionsValue: 'SAMEORIGIN'
+            contentTypeNosniff: true
+            browserXssFilter: true
+            referrerPolicy: 'strict-origin-when-cross-origin'
+            permissionsPolicy: 'camera=(), microphone=(), geolocation=()'
+      add-image-headers:
+         headers:
+            customResponseHeaders:
+               X-Content-Type-Options: 'nosniff'
+               Access-Control-Allow-Origin: 'https://runway-rank.fly.dev'
+               Content-Type: 'image/webp'
+
+tls:
+   options:
+      default:
+         minVersion: VersionTLS12
+         sniStrict: true
