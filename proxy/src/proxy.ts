@@ -11,11 +11,11 @@ const app = express();
 
 const backendTarget = environment.isProduction
 	? environment.PRODUCTION_BACK_END
-	: environment.DEVELOPMENT_BACK_END;
+	: `http://localhost:3000`;
 
 const frontendTarget = environment.isProduction
 	? environment.PRODUCTION_FRONT_END
-	: environment.DEVELOPMENT_FRONT_END;
+	: `http://localhost:5173`;
 
 const options: Options = {
 	target: backendTarget,
