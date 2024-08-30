@@ -1,13 +1,12 @@
-# fly.toml app configuration file generated for runway-rank-server on 2024-08-28T22:28:15+01:00
+# fly.toml app configuration file generated for runway-rank on 2024-08-30T21:53:55+01:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'runway-rank-proxy'
+app = 'runway-rank'
 primary_region = 'lhr'
 
 [build]
-     command = "pnpm install"
 
 [http_service]
   internal_port = 3000
@@ -17,12 +16,12 @@ primary_region = 'lhr'
   min_machines_running = 0
   processes = ['app']
 
+[[restart]]
+  policy = 'on-failure'
+  retries = 2
+  processes = ['app']
+
 [[vm]]
   memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
-
-[[restart]]
-  policy = "on-failure"
-  retries = 2
-  processes = ["app"]
