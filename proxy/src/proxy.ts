@@ -1,10 +1,11 @@
 import express, { Request, Response } from 'express';
-import {
-	createProxyMiddleware,
-	RequestHandler,
-	Options,
-} from 'http-proxy-middleware';
+import { createProxyMiddleware, Options } from 'http-proxy-middleware';
 import { environment } from './environment';
+import * as http from 'http';
+import errorHandler, {
+	notFoundHandler,
+	setupUncaughtExceptionHandler,
+} from './errorHandler';
 
 const app = express();
 
@@ -19,24 +20,50 @@ const frontendTarget = environment.isProduction
 const options: Options = {
 	target: backendTarget,
 	changeOrigin: true,
-	onProxyRes: (proxyRes, req: Request, res: Response) => {
-		proxyRes.headers['Access-Control-Allow-Origin'] = frontendTarget;
-		proxyRes.headers['Access-Control-Allow-Methods'] =
-			'GET,POST,PUT,DELETE,OPTIONS';
-		proxyRes.headers['Access-Control-Allow-Headers'] =
-			'Content-Type, Authorization';
+	pathFilter: '/api',
+	logger: console,
+	on: {
+		proxyReq: (proxyReq, req, res) => {
+			console.log(
+				`Proxying request to: ${backendTarget}${(req as Request).url}`
+			);
+		},
+		proxyRes: (proxyRes, req, res) => {
+			console.log(
+				`Received response from: ${backendTarget}${
+					(req as Request).url
+				}, status: ${proxyRes.statusCode}`
+			);
+			proxyRes.headers['Access-Control-Allow-Origin'] = frontendTarget;
+			proxyRes.headers['Access-Control-Allow-Methods'] =
+				'GET,POST,PUT,DELETE,OPTIONS';
+			proxyRes.headers['Access-Control-Allow-Headers'] =
+				'Content-Type, Authorization';
+		},
+		error: (err, req, res, target) => {
+			console.error('Proxy Error:', err);
+			(res as http.ServerResponse).writeHead(500, {
+				'Content-Type': 'application/json',
+			});
+			(res as http.ServerResponse).end(
+				JSON.stringify({ error: 'Proxy Error', message: err.message })
+			);
+		},
 	},
 };
 
 const apiProxy = createProxyMiddleware(options);
 
-app.use('/api', apiProxy);
+app.use('/', apiProxy);
 
-app.get('/', (req: Request, res: Response) => {
-	res.send('Reverse Proxy Server is running');
-});
+app.use(errorHandler);
+app.use(notFoundHandler);
 
 const port = environment.PORT;
 app.listen(port, () => {
 	console.log(`Proxy server is running on http://localhost:${port}`);
+	console.log(`Backend target: ${backendTarget}`);
+	console.log(`Frontend target: ${frontendTarget}`);
 });
+
+setupUncaughtExceptionHandler();
