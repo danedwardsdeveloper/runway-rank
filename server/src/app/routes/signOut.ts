@@ -22,9 +22,8 @@ export default express
 			logger.info('Attempting to clear token cookie');
 			res.clearCookie('token', {
 				httpOnly: true,
-				// secure: environment.isProduction,
-				secure: true,
-				sameSite: 'none',
+				secure: environment.isProduction,
+				sameSite: 'strict',
 			});
 			logger.info('Token cookie cleared successfully');
 
