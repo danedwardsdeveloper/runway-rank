@@ -5,6 +5,7 @@
 	"scripts": {
 		"client": "pnpm --filter client dev",
 		"server": "pnpm --filter server dev",
+		"proxy": "pnpm --filter proxy dev",
 		"dev": "pnpm run -r --parallel dev",
 		"build": "pnpm run -r build",
 		"start": "pnpm --filter server start"
