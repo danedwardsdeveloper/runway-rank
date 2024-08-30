@@ -7,8 +7,8 @@ const developmentOrigin = 'http://localhost:5173';
 
 export const corsOptions: CorsOptions = {
 	origin: environment.isProduction ? productionOrigin : developmentOrigin,
-	methods: ['GET', 'POST', 'DELETE'],
-	allowedHeaders: ['Content-Type', 'Authorization'],
+	methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+	allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
 	credentials: true,
 	preflightContinue: false,
 	optionsSuccessStatus: 204,
