@@ -18,9 +18,8 @@ export function generateToken(res: Response, user: TokenInput): void {
 
 	res.cookie('token', token, {
 		httpOnly: true,
-		// secure: environment.isProduction,
-		secure: true,
-		sameSite: 'none',
+		secure: environment.isProduction,
+		sameSite: 'strict',
 		maxAge: 60 * 60 * 1000,
 	});
 
@@ -28,7 +27,7 @@ export function generateToken(res: Response, user: TokenInput): void {
 		token: token.substring(0, 10) + '...',
 		httpOnly: true,
 		secure: environment.isProduction,
-		sameSite: 'none',
+		sameSite: 'strict',
 		maxAge: 60 * 60 * 1000,
 	});
 }
