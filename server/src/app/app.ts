@@ -58,7 +58,7 @@ apiRouter.use('/sign-out', validateToken, signOut);
 apiRouter.use('/delete-account', validateToken, deleteAccount);
 apiRouter.use('/images/upload', validateToken, imageUploadRoute);
 
-app.use('/api', apiRouter);
+app.use('/', apiRouter);
 
 app.use(
 	expressWinston.errorLogger({
