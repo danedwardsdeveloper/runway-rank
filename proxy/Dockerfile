@@ -1,7 +1,7 @@
-FROM nginx:alpine
+FROM traefik:v2.9
 
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY traefik.yml /etc/traefik/traefik.yml
+COPY dynamic_conf.yml /etc/traefik/dynamic_conf.yml
 
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 8080
+EXPOSE 8443
