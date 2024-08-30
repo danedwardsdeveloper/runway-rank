@@ -17,13 +17,13 @@ import { limiter } from './middleware/limiter.js';
 import { validateToken } from './middleware/jwtToken.js';
 import { helmetConfig } from './middleware/helmet.js';
 
-import welcome from './routes/welcome.js';
+import welcomeRoute from './routes/welcome.js';
 import createAccount from './routes/createAccount.js';
 import signIn from './routes/signIn.js';
 import signOut from './routes/signOut.js';
 import deleteAccount from './routes/deleteAccount.js';
 import profile from './routes/profile.js';
-import getNextPair from './routes/getNextPair.js';
+import getNextPairRoute from './routes/getNextPair.js';
 import imageRoute from './routes/image.js';
 import imageUploadRoute from './routes/imageUpload.js';
 import getQueensRoute from './routes/getQueens.js';
@@ -35,6 +35,8 @@ const __dirname = path.dirname(__filename);
 const app = express();
 connectToDatabase();
 
+app.set('trust proxy', 1);
+
 app.use(expressLogger, limiter);
 app.use(helmetConfig);
 app.use(express.json(), cookieParser(), cors(corsOptions));
@@ -45,11 +47,11 @@ const apiRouter = express.Router();
 
 apiRouter.use('/images', imageRoute);
 apiRouter.use('/queens', getQueensRoute);
-apiRouter.use('/', validateToken, welcome);
+apiRouter.use('/', validateToken, welcomeRoute);
 apiRouter.use('/', validateToken, createAccount);
 apiRouter.use('/', validateToken, signIn);
 apiRouter.use('/', validateToken, signOut);
-apiRouter.use('/', validateToken, getNextPair);
+apiRouter.use('/get-next-pair', validateToken, getNextPairRoute);
 apiRouter.use('/', validateToken, profile);
 apiRouter.use('/add-queen', validateToken, addQueenRoute);
 apiRouter.use('/sign-out', validateToken, signOut);
