@@ -22,7 +22,7 @@ const apiProxyOptions: Options = {
 	changeOrigin: true,
 	secure: false,
 	pathRewrite: {
-		'^/api': '/api',
+		'^/api': '',
 	},
 	logger: console,
 	on: {
