@@ -21,7 +21,12 @@ export default function SignInForm() {
 			await axios.post(
 				`${environment.apiBase}/create-account`,
 				{ name, email, password },
-				{ withCredentials: true }
+				{
+					withCredentials: true,
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				}
 			);
 
 			logger.info('Account created successfully', { email });

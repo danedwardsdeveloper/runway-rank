@@ -30,7 +30,12 @@ export default function SignInForm() {
 			const response = await axios.post(
 				`${environment.apiBase}/sign-in`,
 				{ email, password },
-				{ withCredentials: true }
+				{
+					withCredentials: true,
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				}
 			);
 
 			logger.info('Sign-in successful', { email });

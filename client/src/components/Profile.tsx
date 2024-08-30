@@ -18,6 +18,9 @@ export default function Profile() {
 			try {
 				const response = await axios.get(`${environment.apiBase}/profile`, {
 					withCredentials: true,
+					headers: {
+						'Content-Type': 'application/json',
+					},
 				});
 				setAppData(response.data);
 				setLoading(false);

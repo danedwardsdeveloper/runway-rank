@@ -16,6 +16,9 @@ export default function TopRunways() {
 					`${environment.apiBase}/profile`,
 					{
 						withCredentials: true,
+						headers: {
+							'Content-Type': 'application/json',
+						},
 					}
 				);
 				setAppData(response.data);

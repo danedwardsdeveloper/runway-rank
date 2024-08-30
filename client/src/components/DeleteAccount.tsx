@@ -27,7 +27,12 @@ export default function DeleteAccount() {
 			logger.info('Attempting account deletion');
 			const response = await axios.delete(
 				`${environment.apiBase}/delete-account`,
-				{ withCredentials: true }
+				{
+					withCredentials: true,
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				}
 			);
 
 			logger.info('Account deletion successful');
