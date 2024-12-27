@@ -13,9 +13,9 @@ export default function DesktopMenu({ menuItems }: MenuItemsArray) {
 					className={({ isActive }: { isActive: boolean }) =>
 						cleanTailwindClasses(
 							isActive
-								? 'border-pink-600 text-gray-900'
-								: 'border-transparent text-gray-500',
-							'inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 hover:border-gray-300 hover:text-gray-700'
+								? 'border-pink-600'
+								: 'border-transparent text-white',
+							'inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 hover:border-gray-300 hover:bg-pink-500'
 						)
 					}
 				>
