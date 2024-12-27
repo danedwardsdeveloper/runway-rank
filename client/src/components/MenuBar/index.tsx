@@ -26,7 +26,10 @@ export default function MenuBar() {
 		  ];
 
 	return (
-		<Disclosure as="nav" className="bg-pink-300 shadow">
+		<Disclosure
+			as="nav"
+			className="bg-gradient-to-br from-pink-800 to-pink-700 shadow"
+		>
 			<div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
 				<div className="relative flex h-16 justify-between">
 					<div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
