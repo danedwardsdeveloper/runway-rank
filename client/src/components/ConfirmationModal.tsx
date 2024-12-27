@@ -78,7 +78,15 @@ export default function ConfirmationModal({
 								type="button"
 								data-autofocus
 								onClick={onClose}
-								className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
+								className={`
+									flex justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm
+									bg-gradient-to-tr from-orange-600 via-red-500 to-rose-600
+									ring-1 ring-red-600
+									hover:ring-red-700
+									hover:from-orange-700 hover:via-red-600 hover:to-rose-700
+									focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600
+									disabled:opacity-50
+								  `}
 							>
 								{cancelText}
 							</button>
