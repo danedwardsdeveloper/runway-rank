@@ -43,7 +43,15 @@ export default function DeleteButton() {
 		<>
 			<button
 				onClick={() => setIsModalOpen(true)}
-				className="flex justify-center rounded-md bg-red-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:opacity-50"
+				className={`
+					flex justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm
+					bg-gradient-to-tr from-orange-600 via-red-500 to-rose-600
+					ring-1 ring-red-600
+					hover:ring-red-700
+					hover:from-orange-700 hover:via-red-600 hover:to-rose-700
+					focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600
+					disabled:opacity-50
+				  `}
 			>
 				Delete account
 			</button>
